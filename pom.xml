@@ -24,7 +24,7 @@
     </dependencies>
 
     <build>
-        <defaultGoal> clea </defaultGoal>
+        <defaultGoal> clean </defaultGoal>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
