@@ -9,41 +9,8 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.unc.concurrente.rdp.RDP;
-import com.unc.concurrente.rdp.RDPTemporal;
-import com.unc.concurrente.utils.FileManagement;
-import com.unc.concurrente.utils.ShootingStates;
-
 public class GestorDeMonitor {
-	private static final Logger LOG = LoggerFactory.getLogger(GestorDeMonitor.class); 
-	private FileManagement manejador;
-	private Semaphore mutex;
-	private RDP rdp;
-	private RDPTemporal rdpTemp;
-	private Cola[] colas;
-	private boolean k;
 	
-	public GestorDeMonitor(RDP rdp, FileManagement manejador) {
-		this.rdp = rdp;
-		this.mutex = new Semaphore(1, true);
-		this.colas = new Cola[rdp.getTransiciones()];
-		this.manejador = manejador;
-		
-		for(int i = 0; i < colas.length; i++){
-			colas[i] = new Cola();
-		}
-	}
-	
-	public GestorDeMonitor(RDPTemporal rdpTemp, FileManagement manejador) {
-		this.rdpTemp = rdpTemp;
-		this.mutex = new Semaphore(1, true);
-		this.colas = new Cola[rdpTemp.getTransiciones()];
-		this.manejador = manejador;
-		
-		for(int i = 0; i < colas.length; i++){
-			colas[i] = new Cola();
-		}
-	}
 	
 	public void dispararTransicionSinTiempo(int transicion) {
 		try {
@@ -155,32 +122,4 @@ public class GestorDeMonitor {
 		return;
 	}
 	
-	Boolean[] getVectorDeColas() {
-		Boolean[] vc = new Boolean[colas.length];
-		
-		for(int i = 0; i < colas.length; i++){
-			vc[i] = colas[i].quienesEstan();
-		}
-		return vc;
-	}
-	
-	Boolean[] operacionAnd( Boolean[] vectorUno, Boolean[] vectorDos) {
-		if(Objects.isNull(vectorUno) || Objects.isNull(vectorDos)) {
-			throw new NullPointerException();
-		} else if(vectorUno.length != vectorDos.length) {
-			throw new IllegalArgumentException();
-		} else {
-			Boolean[] vAnd = new Boolean[vectorUno.length];
-			
-			for(int i = 0; i < vAnd.length; i++) {
-				vAnd[i] =Boolean.logicalAnd(vectorUno[i].booleanValue(),
-						vectorDos[i].booleanValue());
-			}
-			return vAnd;
-		}
-	}
-	
-	public int contarSensibilizadas(Boolean[] a) {
-		return Arrays.asList(a).stream().filter(d -> d == true).collect(Collectors.toList()).size();
-	}
 }
