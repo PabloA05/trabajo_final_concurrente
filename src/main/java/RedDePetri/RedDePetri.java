@@ -57,7 +57,8 @@ public class RedDePetri {
             }
         }
         if (k){
-            //todo falta la otra parte
+            calculoDeVectorEstado(transicion);
+            actualiceSensibilizadoT();
         }
         return k;
     }
