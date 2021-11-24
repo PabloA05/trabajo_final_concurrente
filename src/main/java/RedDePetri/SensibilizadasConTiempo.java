@@ -25,7 +25,7 @@ package RedDePetri;
                 && ((ahora - startTime) < beta);
     }
 
-
+    //todo reset timeStamp
         public void setNuevoTimeStamp( ) { //todo resetea o se sensibiliza la transicion? hay que actualizar todos los elementos del vector en rdp?
             flag=false;
             startTime=-1;
