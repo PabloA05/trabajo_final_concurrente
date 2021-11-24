@@ -77,7 +77,7 @@ public class RedDePetri {
     }
 
     private boolean antesDeLaVentana(int posicion) {
-        return false;
+        return (transicionesConTiempo[posicion].getStartTime()+transicionesConTiempo[posicion].getAlpha()-System.currentTimeMillis()<0);
     }
 
     public void actualiceSensibilizadoT() {
