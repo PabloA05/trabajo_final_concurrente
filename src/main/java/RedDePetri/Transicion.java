@@ -5,7 +5,7 @@ public class Transicion {
     private boolean temporizada;
     private int posicion;
 
-    public Transicion(char id, int posicion, boolean temporizada){
+    public Transicion(char id, int posicion, boolean temporizada){ //todo controlar que no sea nulo
         this.id = id;
         this.posicion = posicion;
         this.temporizada = temporizada;
