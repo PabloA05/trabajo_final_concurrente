@@ -26,7 +26,7 @@ package RedDePetri;
     }
 
 
-        public void setNuevoTimeStamp( ) { //todo resetea o se sensibiliza la transicion? hay que actualizar todos los vectores?
+        public void setNuevoTimeStamp( ) { //todo resetea o se sensibiliza la transicion? hay que actualizar todos los elementos del vector en rdp?
             flag=false;
             startTime=-1;
             id=-999999;
