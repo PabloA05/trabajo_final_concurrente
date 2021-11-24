@@ -26,7 +26,7 @@ package RedDePetri;
     }
 
 
-        public void setNuevoTimeStamp( ) { //todo resetea o se sensibiliza la transicion
+        public void setNuevoTimeStamp( ) { //todo resetea o se sensibiliza la transicion? hay que actualizar todos los vectores?
             flag=false;
             startTime=-1;
             id=-999999;

@@ -36,7 +36,7 @@ public class RedDePetri {
         return sensibilizadas;
     }
 
-    public boolean disparar(Transicion transicion) {
+    public boolean disparar(Transicion transicion) {//todo para transiciones inmediatas
         k = false;
         antes = false;
         if (estaSensibilizado(transicion.getPosicion())) {
