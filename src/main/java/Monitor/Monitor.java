@@ -32,11 +32,7 @@ public class Monitor {
 
     public void disparaTransicion(Transicion transicion) {
 
-        try {
-            semaforoMonitor.acquire();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        acquireMonitor();
         k = true;
         while (k) {
             k = this.redDePetri.disparar(transicion);
@@ -61,7 +57,7 @@ public class Monitor {
                 }
 
             } else {
-                semaforoMonitor.release();
+                releaseMonitor();
                 // this.cola[transicion.getPosicion()].acquire();
             }
         }
