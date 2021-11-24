@@ -5,7 +5,7 @@ package RedDePetri;
         private int alpha;
         private int beta;
         private long id;
-        private boolean flag;// todo id y flag hay que implementarlo
+        private boolean flag;// todo id y flag hay que implementarlo 
         private long startTime;
         private boolean esperando;
 

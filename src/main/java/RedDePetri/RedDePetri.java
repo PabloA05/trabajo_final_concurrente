@@ -50,7 +50,7 @@ public class RedDePetri {
                 antes = antesDeLaVentana(transicion.getPosicion());
                 Monitor.releaseMonitor();
                 if (antes) {
-                    setEsperando(transicion.getPosicion());
+                    transicionesConTiempo[transicion.getPosicion()].setEsperando();
                     sleepThread(transicion.getPosicion());
                 }
                 Monitor.acquireMonitor();
@@ -72,9 +72,7 @@ public class RedDePetri {
         }
     }
 
-    private void setEsperando(int posicion) {
 
-    }
 
     private boolean antesDeLaVentana(int posicion) {
         return (transicionesConTiempo[posicion].getStartTime()+transicionesConTiempo[posicion].getAlpha()-System.currentTimeMillis()<0);
