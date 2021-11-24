@@ -56,6 +56,9 @@ public class RedDePetri {
                 Monitor.acquireMonitor();
             }
         }
+        if (k){
+            //todo falta la otra parte
+        }
         return k;
     }
 
@@ -93,11 +96,7 @@ public class RedDePetri {
         return sensibilizadas[posicion];
     }
 
-    public boolean[] vectoresSensibilizadosEsperando(int[] temp, int[] aux) {
-        //todo hacer
-        return null;
 
-    }
 
     public int getCantTransisiones() {
         return incidencia[0].length;
