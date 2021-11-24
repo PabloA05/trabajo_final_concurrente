@@ -59,7 +59,7 @@ public class RedDePetri {
         return k;
     }
 
-    private void sleepThread(int posicion) {
+    private void sleepThread(int posicion) { //todo no se si esta bien
         long sleepTime = transicionesConTiempo[posicion].getStartTime() + transicionesConTiempo[posicion].getAlpha() - System.currentTimeMillis();
         try {
             Thread.sleep(sleepTime);
@@ -123,7 +123,6 @@ public class RedDePetri {
         if (marcado_siguiente == null) {
             throw new NullPointerException("Marcado null.");
         }
-
         for (int j : marcado_siguiente) {
             if (j < 0) {
                 return false;
