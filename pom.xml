@@ -18,13 +18,19 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.13.1</version>
+            <version>4.13.2</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>RELEASE</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 
     <build>
-        <defaultGoal> clean </defaultGoal>
+        <defaultGoal> compile </defaultGoal>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
