@@ -4,6 +4,7 @@ import Monitor.Monitor;
 import Monitor.Operaciones;
 
 public class RedDePetri {
+
     int[][] incidencia;
     // private int[][] intervalos_tiempo; //matriz de intervalos de tiempo
     final int[] mki; //marca inicial. columna. NO VARIA
@@ -17,6 +18,7 @@ public class RedDePetri {
     private boolean k = false;
     private boolean antes = false;
     private boolean[] VectorSensibilazadas;
+    private Transicion[] transiciones;
     ;
 
     public RedDePetri(String mji, String I) {
@@ -29,7 +31,11 @@ public class RedDePetri {
         this.vectorDeEstado = Operaciones.vector(mji);
         this.mki = vectorDeEstado; //marca inicial
         this.transicionesConTiempo = new SensibilizadasConTiempo[getCantTransisiones()];
-
+        transiciones = new Transicion[getCantTransisiones()];
+        //int a = 97;
+        for(int i=0;i<getCantTransisiones();i++){
+            transiciones[i] = new Transicion((char) (97+i),i,esTemporizada(i));
+        }
     }
 
     public boolean[] getSensibilizadas() {
@@ -40,6 +46,9 @@ public class RedDePetri {
         k = false;
         antes = false;
         if (estaSensibilizado(transicion.getPosicion())) {
+
+            transiciones[transicion.getPosicion()].incrementoDisparo();
+
             boolean ventana = transicionesConTiempo[transicion.getPosicion()].testVentanaTiempo();
             if (ventana) {
                 if (!transicionesConTiempo[transicion.getPosicion()].isEsperando()) {
@@ -129,5 +138,14 @@ public class RedDePetri {
             }
         }
         return true;
+    }
+
+    public Transicion[] getTransiciones(){
+        return transiciones;
+    }
+
+    public boolean esTemporizada(int a){
+        return a == 5 || a == 6 || a == 9 || a==11 || a==2 ;
+        //return false;
     }
 }
