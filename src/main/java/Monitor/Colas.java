@@ -3,28 +3,31 @@ package Monitor;
 
 public class Colas {
 
-    private int hilos_en_cola;
+    private int hilosEnCola;
 
     public Colas(){
-        this.hilos_en_cola=0;
+        this.hilosEnCola =0;
     }
 
     public void acquire() {
-        try {
-            super.wait();
-            hilos_en_cola++;
-        } catch (InterruptedException e) {
+        hilosEnCola++;
+        try{
+            wait(); //El hilo entra a la cola, sumando la cantidad de hilos en cola
+        }catch(InterruptedException e){
             e.printStackTrace();
+        }
+        finally {
+            hilosEnCola--; //Cuando sale, resta la cantidad de hilos
         }
     }
 
     public void release(){
-        super.notify();
-        hilos_en_cola--;
+        notify();
+        hilosEnCola--;
     }
 
     public boolean isEmpty(){
-        return hilos_en_cola == 0;
+        return hilosEnCola == 0;
     }
 
 

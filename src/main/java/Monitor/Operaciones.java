@@ -10,24 +10,18 @@ public class Operaciones {
     private static int CANTIDAD; //hilos
     private static Scanner INPUT_STREAM;
 
-    public static synchronized  boolean[] andVector(boolean[] lista1, boolean[] lista2) throws IndexOutOfBoundsException{
-        if (lista1.length==lista2.length) {
-            boolean[] resultado = new boolean[lista1.length];
-            for(int i = 0; i < lista1.length; i++) {
-                resultado[i] =(lista1[i] == lista2[i]);
-            }
-            return resultado;
-        }
+    public static synchronized  boolean[] andVector(boolean[] lista1, boolean[] lista2) {
 
-        else{
-
-            throw new IndexOutOfBoundsException("Listas de diferentes tamanios");
+        boolean[] resultado = new boolean[lista1.length];
+        for(int i = 0; i < lista1.length; i++) {
+            resultado[i] =(lista1[i] == lista2[i]);
         }
+        return resultado;
 
     }
 
 
-    public static synchronized boolean comprobarUnos(boolean[] lista){ //todo chequear para que sirve
+    public static synchronized boolean comprobarUnos(boolean[] lista){
         for (boolean b : lista) {
             if (b) {
                 return true;
@@ -36,13 +30,7 @@ public class Operaciones {
         return false;
     }
 
-    public static int[] marcadoSiguiente(int[] old, int position, int[][] incidencia) { //todo poner en rdp
-        int[] temp = new int[old.length];
-        for (int i = 0; i < temp.length; i++) {
-            temp[i] = old[i] + incidencia[i][position];
-        }
-        return temp;
-    }
+
 
     public static synchronized int[][] productoMatrices(int[][] a, int[][] b) throws IllegalArgumentException {
 

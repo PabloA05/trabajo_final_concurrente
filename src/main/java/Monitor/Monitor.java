@@ -11,6 +11,7 @@ public class Monitor {
     private boolean k;
     private RedDePetri redDePetri;
     private Colas[] cola;
+    private Politica politica;
 
     public Monitor(RedDePetri rdp) {
         semaforoMonitor = new Semaphore(1, true);
@@ -42,25 +43,29 @@ public class Monitor {
                 boolean[] Vs = this.redDePetri.getSensibilizadas();
                 boolean[] Vc = quienesEstan();
                 boolean[] m = new boolean[Vs.length];
-                try {
-                    m = Operaciones.andVector(Vs, Vc);
-                } catch (IndexOutOfBoundsException e) {
-                    e.printStackTrace();
-                    System.exit(0);
-                }
+                m = Operaciones.andVector(Vs, Vc);
 
                 if (Operaciones.comprobarUnos(m)) {
-                    //todo colas
-                    // todo politicas
+                    try{
+                        Transicion transicionADisparar = politica.cualDisparo(m,redDePetri);
+                        cola[transicionADisparar.getPosicion()].release();
+                    }
+                    catch(IndexOutOfBoundsException e){
+                        e.printStackTrace();
+                    }
+                    //releaseMonitor();
                 } else {
                     k = false;
+                    return;
+                    //releaseMonitor();
                 }
 
             } else {
                 releaseMonitor();
-                // this.cola[transicion.getPosicion()].acquire();
+                cola[transicion.getPosicion()].acquire();
             }
         }
+        releaseMonitor();
     }
 
     public static void acquireMonitor() {

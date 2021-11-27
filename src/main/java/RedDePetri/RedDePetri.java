@@ -4,6 +4,7 @@ import Monitor.Monitor;
 import Monitor.Operaciones;
 
 public class RedDePetri {
+
     int[][] incidencia;
     // private int[][] intervalos_tiempo; //matriz de intervalos de tiempo
     final int[] mki; //marca inicial. columna. NO VARIA
@@ -16,6 +17,7 @@ public class RedDePetri {
     //private int[] z; //Vector de transiciones des-sensibilizadas por tiempo
     private boolean k = false;
     private boolean[] VectorSensibilazadas;
+    private Transicion[] transiciones;
     ;
 
     public RedDePetri(String mji, String I) {
@@ -28,7 +30,10 @@ public class RedDePetri {
         this.vectorDeEstado = Operaciones.vector(mji);
         this.mki = vectorDeEstado; //marca inicial
         this.transicionesConTiempo = new SensibilizadasConTiempo[getCantTransisiones()];
-
+        transiciones = new Transicion[getCantTransisiones()];
+        for(int i=0;i<getCantTransisiones();i++){
+            transiciones[i] = new Transicion((char) (97+i),i,esTemporizada(i));
+        }
     }
 
     public boolean[] getSensibilizadas() {
@@ -38,6 +43,9 @@ public class RedDePetri {
     public boolean disparar(Transicion transicion) {//todo para transiciones inmediatas
         k = false;
         if (estaSensibilizado(transicion.getPosicion())) {
+
+            transiciones[transicion.getPosicion()].incrementoDisparo();
+
             boolean ventana = transicionesConTiempo[transicion.getPosicion()].testVentanaTiempo();
             if (ventana) {
                 if (!transicionesConTiempo[transicion.getPosicion()].isEsperando() ||
@@ -88,9 +96,7 @@ public class RedDePetri {
     public void actualiceSensibilizadoT() {
         for (int i = 0; i < getCantTransisiones(); i++) {
             try {
-                if (esDisparoValido(Operaciones.marcadoSiguiente(vectorDeEstado, i, incidencia))) {
-                    sensibilizadas[i] = true;
-                } else sensibilizadas[i] = false;
+                sensibilizadas[i] = esDisparoValido(marcadoSiguiente(vectorDeEstado, i));
             } catch (Exception e) {
                 e.printStackTrace();
                 System.out.println("Error en getSensibilizadas()");
@@ -109,7 +115,7 @@ public class RedDePetri {
     }
 
     public void calculoDeVectorEstado(Transicion transicion) {
-        vectorDeEstado = Operaciones.marcadoSiguiente(vectorDeEstado, transicion.getPosicion(), incidencia);
+        vectorDeEstado = marcadoSiguiente(vectorDeEstado, transicion.getPosicion());
     }
 
     public int[] getColumna() {
@@ -135,4 +141,22 @@ public class RedDePetri {
         }
         return true;
     }
+
+    public Transicion[] getTransiciones(){
+        return transiciones;
+    }
+
+    public boolean esTemporizada(int a){
+        //return a == 5 || a == 6 || a == 9 || a==11 || a==2 ;
+        return false;
+    }
+
+    public int[] marcadoSiguiente(int[] old, int position) {
+        int[] temp = new int[old.length];
+        for (int i = 0; i < temp.length; i++) {
+            temp[i] = old[i] + incidencia[i][position];
+        }
+        return temp;
+    }
+
 }
