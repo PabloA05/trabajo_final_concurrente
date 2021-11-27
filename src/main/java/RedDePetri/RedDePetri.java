@@ -32,7 +32,6 @@ public class RedDePetri {
         this.mki = vectorDeEstado; //marca inicial
         this.transicionesConTiempo = new SensibilizadasConTiempo[getCantTransisiones()];
         transiciones = new Transicion[getCantTransisiones()];
-        //int a = 97;
         for(int i=0;i<getCantTransisiones();i++){
             transiciones[i] = new Transicion((char) (97+i),i,esTemporizada(i));
         }
@@ -145,7 +144,7 @@ public class RedDePetri {
     }
 
     public boolean esTemporizada(int a){
-        return a == 5 || a == 6 || a == 9 || a==11 || a==2 ;
-        //return false;
+        //return a == 5 || a == 6 || a == 9 || a==11 || a==2 ;
+        return false;
     }
 }
