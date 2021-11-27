@@ -36,7 +36,7 @@ public class Operaciones {
         return false;
     }
 
-    public static int[] marcadoSiguiente(int[] old, int position, int[][] incidencia) {
+    public static int[] marcadoSiguiente(int[] old, int position, int[][] incidencia) { //todo poner en rdp
         int[] temp = new int[old.length];
         for (int i = 0; i < temp.length; i++) {
             temp[i] = old[i] + incidencia[i][position];

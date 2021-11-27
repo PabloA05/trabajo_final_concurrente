@@ -15,7 +15,6 @@ public class RedDePetri {
     int[] ex; //vector de sensibilizado extendido
     //private int[] z; //Vector de transiciones des-sensibilizadas por tiempo
     private boolean k = false;
-    private boolean antes = false;
     private boolean[] VectorSensibilazadas;
     ;
 
@@ -38,18 +37,18 @@ public class RedDePetri {
 
     public boolean disparar(Transicion transicion) {//todo para transiciones inmediatas
         k = false;
-        antes = false;
         if (estaSensibilizado(transicion.getPosicion())) {
             boolean ventana = transicionesConTiempo[transicion.getPosicion()].testVentanaTiempo();
             if (ventana) {
-                if (!transicionesConTiempo[transicion.getPosicion()].isEsperando()) {
-                    transicionesConTiempo[transicion.getPosicion()].setNuevoTimeStamp();
+                if (!transicionesConTiempo[transicion.getPosicion()].isEsperando() ||
+                        ( transicionesConTiempo[transicion.getPosicion()].isEsperando()
+                                && (transicionesConTiempo[transicion.getPosicion()].getId()==Thread.currentThread().getId()))) {
+                    setNuevoTimeStamp(); //todo no esta bien
                     k = true;
                 }
             } else {
-                antes = antesDeLaVentana(transicion.getPosicion());
                 Monitor.releaseMonitor();
-                if (antes) {
+                if (antesDeLaVentana(transicion.getPosicion())) {
                     transicionesConTiempo[transicion.getPosicion()].setEsperando();
                     sleepThread(transicion.getPosicion());
                 }
@@ -61,6 +60,14 @@ public class RedDePetri {
             actualiceSensibilizadoT();
         }
         return k;
+    }
+
+    private void setNuevoTimeStamp() {
+        for (int i=0;i<transicionesConTiempo.length;i++){
+            if(sensibilizadas[i]){
+                transicionesConTiempo[i].nuevoTimeStamp();
+            }
+        }
     }
 
     private void sleepThread(int posicion) { //todo no se si esta bien

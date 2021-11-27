@@ -5,14 +5,14 @@ package RedDePetri;
         private int alpha;
         private int beta;
         private long id;
-        private boolean flag;// todo id y flag hay que implementarlo 
+     //   private boolean flag;// todo id y flag hay que implementarlo
         private long startTime;
         private boolean esperando;
 
         SensibilizadasConTiempo(int alpha, int beta){
             this.alpha = alpha;
             this.beta = beta;
-            this.flag = false;
+        //    this.flag = false;
             this.startTime = -1;
             this.id = -999999;
             this.esperando=false;
@@ -26,10 +26,15 @@ package RedDePetri;
     }
 
     //todo reset timeStamp
-        public void setNuevoTimeStamp( ) { //todo resetea o se sensibiliza la transicion? hay que actualizar todos los elementos del vector en rdp?
-            flag=false;
+ /*       public void setNuevoTimeStamp( ) { //todo resetea o se sensibiliza la transicion? hay que actualizar todos los elementos del vector en rdp?
+        //    flag=false;
             startTime=-1;
-            id=-999999;
+            this.id = -999999;
+
+        }*/
+        public void nuevoTimeStamp(){
+            startTime=System.currentTimeMillis();
+            //todo que pasa con esperando?
         }
         public boolean isEsperando() {
             return esperando;
@@ -37,6 +42,7 @@ package RedDePetri;
 
         public void setEsperando() {
             this.esperando = true;
+            id=Thread.currentThread().getId();
         }
 
         public int getAlpha() {
@@ -46,5 +52,10 @@ package RedDePetri;
         public long getStartTime() {
             return startTime;
         }
+
+        public long getId() {
+            return id;
+        }
+
 
     }
