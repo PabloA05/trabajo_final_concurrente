@@ -32,18 +32,15 @@ public class Monitor {
     }
 
     public void disparaTransicion(Transicion transicion) {
-
-        acquireMonitor();
         k = true;
-        while (k) {
+        while (k) {//todo hace falta la k????
+            acquireMonitor();
             k = this.redDePetri.disparar(transicion);
             if (k) {
-
-                //todo deberia devolver algo
                 boolean[] Vs = this.redDePetri.getSensibilizadas();
                 boolean[] Vc = quienesEstan();
                 boolean[] m = new boolean[Vs.length];
-                m = Operaciones.andVector(Vs, Vc);
+                m = Operaciones.andVector(Vs, Vc); //todo ver si se puede simplificar
 
                 if (Operaciones.comprobarUnos(m)) {
                     try{
@@ -56,9 +53,9 @@ public class Monitor {
                     //releaseMonitor();
                 } else {
                     k = false;
-                    return;
                     //releaseMonitor();
                 }
+                break;
 
             } else {
                 releaseMonitor();

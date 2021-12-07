@@ -10,7 +10,7 @@ public class Operaciones {
     private static int CANTIDAD; //hilos
     private static Scanner INPUT_STREAM;
 
-    public static synchronized  boolean[] andVector(boolean[] lista1, boolean[] lista2) {
+    public static boolean[] andVector(boolean[] lista1, boolean[] lista2) {
 
         boolean[] resultado = new boolean[lista1.length];
         for(int i = 0; i < lista1.length; i++) {
@@ -21,7 +21,7 @@ public class Operaciones {
     }
 
 
-    public static synchronized boolean comprobarUnos(boolean[] lista){
+    public static boolean comprobarUnos(boolean[] lista){
         for (boolean b : lista) {
             if (b) {
                 return true;
@@ -32,7 +32,7 @@ public class Operaciones {
 
 
 
-    public static synchronized int[][] productoMatrices(int[][] a, int[][] b) throws IllegalArgumentException {
+    public static int[][] productoMatrices(int[][] a, int[][] b) throws IllegalArgumentException {
 
         int[][] c = new int[a.length][b[0].length]; //inicializo c
         //se comprueba si las matrices se pueden multiplicar
@@ -56,7 +56,7 @@ public class Operaciones {
     }
 
 
-    public static synchronized int[][] sumaMatrices(int[][] a, int[][] b) throws IllegalArgumentException {
+    public static int[][] sumaMatrices(int[][] a, int[][] b) throws IllegalArgumentException {
         int[][] c = new int[a.length][a[0].length]; //inicializo c con mismos tamanios
         if ((a[0].length == b[0].length) && (a.length == b.length)) { //compruebo que a y b sean del mismo tamanio
             for (int x = 0; x < a.length; x++) { //recorro en un for y sumo los elementos de las matrices
@@ -77,7 +77,7 @@ public class Operaciones {
      * @param a Matriz a transponer
      * @return int[][] Matriz transpuesta
      */
-    public static synchronized int[][] transpuesta(int[][] a) {
+    public static int[][] transpuesta(int[][] a) {
         int[][] c = new int[a[0].length][a.length];
         for (int fila = 0; fila < a.length; fila++) {
             for (int columna = 0; columna < a[0].length; columna++) {
