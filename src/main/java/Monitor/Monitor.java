@@ -35,7 +35,7 @@ public class Monitor {
         k = true;
         while (k) {//todo hace falta la k????
             acquireMonitor();
-            System.out.print("Hilo: "+Thread.currentThread().getId()+" entro al monitor con transicion "+transicion.getPosicion()+"\n");
+            //System.out.print("Hilo: "+Thread.currentThread().getId()+" entro al monitor con transicion "+transicion.getPosicion()+"\n");
             k = this.redDePetri.disparar(transicion);
             System.out.println("valor de k:"+k);
             if (k) {

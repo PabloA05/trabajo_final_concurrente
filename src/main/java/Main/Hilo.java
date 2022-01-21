@@ -20,7 +20,7 @@ public class Hilo implements Runnable{
 
     @Override
     public void run() {
-        int k=100;
+        int k=2;
         while(k>0){
             for(int i=0;i<transiciones.length;i++){
                 if(secuencia[i]){

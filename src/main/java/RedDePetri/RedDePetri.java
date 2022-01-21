@@ -5,7 +5,7 @@ import Monitor.Operaciones;
 public class RedDePetri {
 
     int[][] incidencia;
-    int [][]inhibidor;
+    final int[][] inhibidor;
     // private int[][] intervalos_tiempo; //matriz de intervalos de tiempo
     final int[] mki; //marca inicial. columna. NO VARIA
     private int[] vectorDeEstado; //la marca actual
@@ -18,7 +18,8 @@ public class RedDePetri {
     private boolean k = false;
     private boolean[] VectorSensibilazadas;
     private Transicion[] transiciones;
-    ;
+    private int[] vectorQ;
+    private int[] vectorB;
 
     public RedDePetri(String mji, String I, String h) {
 
@@ -27,17 +28,19 @@ public class RedDePetri {
 
         this.incidencia = Operaciones.matriz2d(I);
         this.vectorDeEstado = Operaciones.vector(mji);
-        this.inhibidor=Operaciones.matriz2d(h);
+        this.inhibidor = Operaciones.matriz2d(h);
         this.mki = vectorDeEstado; //marca inicial
+        vectorQ = new int[vectorDeEstado.length];
         sensibilizadas = new boolean[getCantTransisiones()];
-        for(int i=0;i<getCantTransisiones();i++){
-            sensibilizadas[i]=false;
+        for (int i = 0; i < getCantTransisiones(); i++) {
+            sensibilizadas[i] = false;
         }
         this.transicionesConTiempo = new SensibilizadasConTiempo[getCantTransisiones()];
         transiciones = new Transicion[getCantTransisiones()];
-        for(int i=0;i<getCantTransisiones();i++){
-            transiciones[i] = new Transicion((char) (97+i),i,esTemporizada(i));
+        for (int i = 0; i < getCantTransisiones(); i++) {
+            transiciones[i] = new Transicion((char) (97 + i), i, esTemporizada(i));
         }
+        calcularVectorB();
 
         actualiceSensibilizadoT();
     }
@@ -48,11 +51,9 @@ public class RedDePetri {
     }
 
 
-
-
     public boolean disparar(Transicion transicion) {//todo para transiciones inmediatas
-     /*   k = true;
-        *//*if (estaSensibilizado(transicion.getPosicion())) {
+        /*   k = true;
+         *//*if (estaSensibilizado(transicion.getPosicion())) {
 
             transiciones[transicion.getPosicion()].incrementoDisparo();
 
@@ -79,13 +80,12 @@ public class RedDePetri {
         }
         return k;*/
         k = false;
-        if (estaSensibilizado(transicion.getPosicion())){
-            k=true;
+        if (estaSensibilizado(transicion.getPosicion())) {
+            k = true;
+        } else {
+            k = false;
         }
-        else    {
-            k=false;
-        }
-        if (k){
+        if (k) {
             calculoDeVectorEstado(transicion);
             actualiceSensibilizadoT();
         }
@@ -93,8 +93,8 @@ public class RedDePetri {
     }
 
     private void setNuevoTimeStamp() {
-        for (int i=0;i<transicionesConTiempo.length;i++){
-            if(sensibilizadas[i]){
+        for (int i = 0; i < transicionesConTiempo.length; i++) {
+            if (sensibilizadas[i]) {
                 transicionesConTiempo[i].nuevoTimeStamp();
             }
         }
@@ -110,9 +110,8 @@ public class RedDePetri {
     }
 
 
-
     private boolean antesDeLaVentana(int posicion) {
-        return (transicionesConTiempo[posicion].getStartTime()+transicionesConTiempo[posicion].getAlpha()-System.currentTimeMillis()<0);
+        return (transicionesConTiempo[posicion].getStartTime() + transicionesConTiempo[posicion].getAlpha() - System.currentTimeMillis() < 0);
     }
 
     public void actualiceSensibilizadoT() {
@@ -131,13 +130,13 @@ public class RedDePetri {
     }
 
 
-
     public int getCantTransisiones() {
         return incidencia[0].length;
     }
 
     public void calculoDeVectorEstado(Transicion transicion) {
         vectorDeEstado = marcadoSiguiente(vectorDeEstado, transicion.getPosicion());
+
     }
 
     public int[] getColumna() {
@@ -164,21 +163,39 @@ public class RedDePetri {
         return true;
     }
 
-    public Transicion[] getTransiciones(){
+    public Transicion[] getTransiciones() {
         return transiciones;
     }
 
-    public boolean esTemporizada(int a){
+    public boolean esTemporizada(int a) {
         //return a == 5 || a == 6 || a == 9 || a==11 || a==2 ;
         return false;
     }
 
     public int[] marcadoSiguiente(int[] old, int position) {
+        /*calcularVectorB();
+        Operaciones.printVector(vectorDeEstado);
+        System.out.print("entro>>>>>>>>>>>>>>>>>>>>>>>\n");*/
         int[] temp = new int[old.length];
         for (int i = 0; i < temp.length; i++) {
-            temp[i] = old[i] + incidencia[i][position];
+            temp[i] = old[i] + incidencia[i][position] *vectorB[i];
         }
+        Operaciones.printVector(temp);
+        System.out.print("salio<<<<<<<<<<<<<<<<<<<<<<<<<<<\n");
+        calcularVectorB();
+
         return temp;
     }
 
+    private void calcularVectorB() {
+
+        for (int i = 0; i < vectorQ.length; i++) {
+            if (vectorDeEstado[i] != 0) {
+                vectorQ[i] = 0;
+            } else {
+                vectorQ[i] = 1;
+            }
+        }
+        vectorB = Operaciones.multiplyWithForLoops(inhibidor, vectorQ);
+    }
 }

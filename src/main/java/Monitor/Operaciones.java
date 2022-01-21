@@ -55,6 +55,21 @@ public class Operaciones {
         return c;
     }
 
+    public static int[] multiplyWithForLoops(int[][] matrix, int[] vector) {
+        int rows = matrix.length;
+        int columns = matrix[0].length;
+
+        int[] result = new int[rows];
+
+        for (int row = 0; row < rows; row++) {
+            int sum = 0;
+            for (int column = 0; column < columns; column++) {
+                sum += matrix[row][column] * vector[column];
+            }
+            result[row] = sum;
+        }
+        return result;
+    }
 
     public static int[][] sumaMatrices(int[][] a, int[][] b) throws IllegalArgumentException {
         int[][] c = new int[a.length][a[0].length]; //inicializo c con mismos tamanios
