@@ -11,7 +11,7 @@ public class Monitor {
     private boolean k;
     private RedDePetri redDePetri;
     private Colas[] cola;
-    private Politica politica;
+    private Politica politica = new Politica(false);
 
     public Monitor(RedDePetri rdp) {
         semaforoMonitor = new Semaphore(1, true);
@@ -35,7 +35,9 @@ public class Monitor {
         k = true;
         while (k) {//todo hace falta la k????
             acquireMonitor();
+            System.out.print("Hilo: "+Thread.currentThread().getId()+" entro al monitor con transicion "+transicion.getPosicion()+"\n");
             k = this.redDePetri.disparar(transicion);
+            System.out.println("valor de k:"+k);
             if (k) {
                 boolean[] Vs = this.redDePetri.getSensibilizadas();
                 boolean[] Vc = quienesEstan();
@@ -77,5 +79,4 @@ public class Monitor {
         semaforoMonitor.release();
     }
 }
-
 

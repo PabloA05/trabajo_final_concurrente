@@ -1,11 +1,11 @@
 package RedDePetri;
 
-import Monitor.Monitor;
 import Monitor.Operaciones;
 
 public class RedDePetri {
 
     int[][] incidencia;
+    int [][]inhibidor;
     // private int[][] intervalos_tiempo; //matriz de intervalos de tiempo
     final int[] mki; //marca inicial. columna. NO VARIA
     private int[] vectorDeEstado; //la marca actual
@@ -20,29 +20,39 @@ public class RedDePetri {
     private Transicion[] transiciones;
     ;
 
-    public RedDePetri(String mji, String I) {
+    public RedDePetri(String mji, String I, String h) {
 
 
         //  e_semaphore = new Semaphore(1, true);//no se  si lo voy a usar
 
         this.incidencia = Operaciones.matriz2d(I);
-
         this.vectorDeEstado = Operaciones.vector(mji);
+        this.inhibidor=Operaciones.matriz2d(h);
         this.mki = vectorDeEstado; //marca inicial
+        sensibilizadas = new boolean[getCantTransisiones()];
+        for(int i=0;i<getCantTransisiones();i++){
+            sensibilizadas[i]=false;
+        }
         this.transicionesConTiempo = new SensibilizadasConTiempo[getCantTransisiones()];
         transiciones = new Transicion[getCantTransisiones()];
         for(int i=0;i<getCantTransisiones();i++){
             transiciones[i] = new Transicion((char) (97+i),i,esTemporizada(i));
         }
+
+        actualiceSensibilizadoT();
     }
 
     public boolean[] getSensibilizadas() {
+
         return sensibilizadas;
     }
 
+
+
+
     public boolean disparar(Transicion transicion) {//todo para transiciones inmediatas
-        k = false;
-        if (estaSensibilizado(transicion.getPosicion())) {
+     /*   k = true;
+        *//*if (estaSensibilizado(transicion.getPosicion())) {
 
             transiciones[transicion.getPosicion()].incrementoDisparo();
 
@@ -62,6 +72,18 @@ public class RedDePetri {
                 }
                 Monitor.acquireMonitor();
             }
+        }*//*
+        if (k){
+            calculoDeVectorEstado(transicion);
+            actualiceSensibilizadoT();
+        }
+        return k;*/
+        k = false;
+        if (estaSensibilizado(transicion.getPosicion())){
+            k=true;
+        }
+        else    {
+            k=false;
         }
         if (k){
             calculoDeVectorEstado(transicion);

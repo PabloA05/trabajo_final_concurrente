@@ -14,8 +14,8 @@ public class Politica {
     //tipo = false → Dispara aleatoriamente
     //tipo = true → Dispara la menos disparada
 
-    public Politica(){
-        politica =true;
+    public Politica(boolean politica){
+        this.politica =politica;
     }
 
     public Transicion cualDisparo(boolean[] m, RedDePetri rdp){

@@ -14,7 +14,7 @@ public class Operaciones {
 
         boolean[] resultado = new boolean[lista1.length];
         for(int i = 0; i < lista1.length; i++) {
-            resultado[i] =(lista1[i] == lista2[i]);
+            resultado[i]= lista1[i] && lista2[i];
         }
         return resultado;
 
