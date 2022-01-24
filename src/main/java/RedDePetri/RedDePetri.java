@@ -176,13 +176,19 @@ public class RedDePetri {
         /*calcularVectorB();
         Operaciones.printVector(vectorDeEstado);
         System.out.print("entro>>>>>>>>>>>>>>>>>>>>>>>\n");*/
+        System.out.print("vectorB\n");
+        calcularVectorB();
+
+        Operaciones.printVector(vectorB);
+        int[]ex=Operaciones.multiplyWithForLoops(incidencia,vectorB);
         int[] temp = new int[old.length];
         for (int i = 0; i < temp.length; i++) {
-            temp[i] = old[i] + incidencia[i][position] *vectorB[i];
+            temp[i] = old[i] + ex[i];
         }
+        calcularVectorB();
         Operaciones.printVector(temp);
         System.out.print("salio<<<<<<<<<<<<<<<<<<<<<<<<<<<\n");
-        calcularVectorB();
+
 
         return temp;
     }
