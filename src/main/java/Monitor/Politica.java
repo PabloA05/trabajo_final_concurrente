@@ -18,7 +18,7 @@ public class Politica {
         this.politica =politica;
     }
 
-    public Transicion cualDisparo(boolean[] m, RedDePetri rdp){
+    public Transicion cualDisparo(Boolean[] m, RedDePetri rdp){
 
         Transicion[] transiciones = rdp.getTransiciones();
         Arrays.sort(transiciones, Comparator.comparingInt(Transicion::getCantidadDisparada));

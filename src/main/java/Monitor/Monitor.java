@@ -13,6 +13,7 @@ public class Monitor {
     private Colas[] cola;
     private Politica politica = new Politica(false);
 
+
     public Monitor(RedDePetri rdp) {
         semaforoMonitor = new Semaphore(1, true);
         k = false;
@@ -23,8 +24,8 @@ public class Monitor {
         }
     }
 
-    private boolean[] quienesEstan() {
-        boolean[] Vc = new boolean[cola.length];
+    private Boolean[] quienesEstan() {
+        Boolean[] Vc = new Boolean[cola.length];
         for (int i = 0; i < cola.length; i++) {
             Vc[i] = !cola[i].isEmpty();
         }
@@ -39,11 +40,11 @@ public class Monitor {
             k = this.redDePetri.disparar(transicion);
             System.out.println("valor de k:"+k);
             if (k) {
-                boolean[] Vs = this.redDePetri.getSensibilizadas();
-                boolean[] Vc = quienesEstan();
-                boolean[] m = new boolean[Vs.length];
+                Boolean[] Vs = this.redDePetri.getSensibilizadasExtendido();
+                Boolean[] Vc = quienesEstan();
+                Boolean[] m = new Boolean[Vs.length];
                 m = Operaciones.andVector(Vs, Vc); //todo ver si se puede simplificar
-
+                cantidadDisparada(redDePetri);
                 if (Operaciones.comprobarUnos(m)) {
                     try{
                         Transicion transicionADisparar = politica.cualDisparo(m,redDePetri);
@@ -78,5 +79,14 @@ public class Monitor {
     public static void releaseMonitor() {
         semaforoMonitor.release();
     }
+
+    public void cantidadDisparada (RedDePetri redDePetri){
+        Transicion[] transiciones;
+        transiciones = redDePetri.getTransiciones();
+        for(int i=0;i<redDePetri.getCantTransisiones();i++){
+            System.out.println("La transicion: "+(transiciones[i].getPosicion()+1)+" se disparo: "+transiciones[i].getCantidadDisparada());
+        }
+    }
+
 }
 
