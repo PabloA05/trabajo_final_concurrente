@@ -2,42 +2,48 @@ package Monitor;
 
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 
 public class Colas {
 
     private int hilosEnCola;
-    Lock lock;
+    private final ReentrantReadWriteLock lock;
 
     public Colas() {
         this.hilosEnCola = 0;
-        lock = new ReentrantLock();
+        lock = new ReentrantReadWriteLock(true);
     }
 
     public synchronized void acquire() {
-        lock.lock();
+        lock.writeLock();
         hilosEnCola++;
-        lock.unlock();
+        lock.writeLock().unlock();
         try {
             // System.out.print("Hilo: "+Thread.currentThread().getId()+" entro cola\n");
             wait(); //El hilo entra a la cola, sumando la cantidad de hilos en cola
         } catch (InterruptedException e) {
             e.printStackTrace();
         } finally {
+            lock.writeLock();
             hilosEnCola--; //Cuando sale, resta la cantidad de hilos
+            lock.writeLock().unlock();
         }
     }
 
     public synchronized void release() {
-        System.out.print("sale\n");
+        System.out.print("salio de cola\n");
         notify();
-        lock.lock();
+        lock.writeLock();
         hilosEnCola--;
-        lock.unlock();
+        lock.writeLock().unlock();
     }
 
     public boolean isEmpty() {
-        return hilosEnCola == 0;
+        lock.readLock();
+        boolean temp = hilosEnCola == 0;
+        lock.readLock().unlock();
+        return temp;
     }
 
 
