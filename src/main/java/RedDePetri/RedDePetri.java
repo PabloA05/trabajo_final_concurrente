@@ -2,6 +2,10 @@ package RedDePetri;
 
 import Monitor.Operaciones;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import org.jetbrains.annotations.NotNull;
+
 public class RedDePetri {
 
     int[][] incidencia;
@@ -10,7 +14,7 @@ public class RedDePetri {
     final int[] mki; //marca inicial. columna. NO VARIA
     private int[] vectorDeEstado; //la marca actual
     private SensibilizadasConTiempo[] transicionesConTiempo;
-    private boolean[] sensibilizadas;
+    private Boolean[] sensibilizadas;
     int[] mj_1;// la siguiente
     //private int[] e; //vector de transiciones sensibilizadas
     int[] ex; //vector de sensibilizado extendido
@@ -18,8 +22,8 @@ public class RedDePetri {
     private boolean k = false;
     private boolean[] VectorSensibilazadas;
     private Transicion[] transiciones;
-    private int[] vectorQ;
-    private int[] vectorB;
+    private Boolean[] sensibilizadasEx;
+
 
     public RedDePetri(String mji, String I, String h) {
 
@@ -30,23 +34,26 @@ public class RedDePetri {
         this.vectorDeEstado = Operaciones.vector(mji);
         this.inhibidor = Operaciones.matriz2d(h);
         this.mki = vectorDeEstado; //marca inicial
-        vectorQ = new int[vectorDeEstado.length];
-        sensibilizadas = new boolean[getCantTransisiones()];
+        sensibilizadas = new Boolean[getCantTransisiones()];
         for (int i = 0; i < getCantTransisiones(); i++) {
             sensibilizadas[i] = false;
+        }
+        sensibilizadasEx = new Boolean[getCantTransisiones()];
+        for (int i = 0; i < getCantTransisiones(); i++) {
+            sensibilizadasEx[i] = false;
         }
         this.transicionesConTiempo = new SensibilizadasConTiempo[getCantTransisiones()];
         transiciones = new Transicion[getCantTransisiones()];
         for (int i = 0; i < getCantTransisiones(); i++) {
             transiciones[i] = new Transicion((char) (97 + i), i, esTemporizada(i));
         }
-        calcularVectorB();
+
 
         actualiceSensibilizadoT();
     }
 
-    public boolean[] getSensibilizadas() {
-
+    public Boolean[] getSensibilizadas() {
+        actualiceSensibilizadoT();
         return sensibilizadas;
     }
 
@@ -87,9 +94,21 @@ public class RedDePetri {
         }
         if (k) {
             calculoDeVectorEstado(transicion);
+
+
+            sincronizar(transicion);
+            transicion.incrementoDisparo();
             actualiceSensibilizadoT();
         }
         return k;
+    }
+
+    private void sincronizar(Transicion t) {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        Date date = new Date();
+        System.out.println("La transicion: "+(t.getPosicion()+1)+" en el tiempo: "+System.currentTimeMillis()/1000);
+        Operaciones.printVector(vectorDeEstado);
+
     }
 
     private void setNuevoTimeStamp() {
@@ -99,6 +118,8 @@ public class RedDePetri {
             }
         }
     }
+
+
 
     private void sleepThread(int posicion) { //todo no se si esta bien
         long sleepTime = transicionesConTiempo[posicion].getStartTime() + transicionesConTiempo[posicion].getAlpha() - System.currentTimeMillis();
@@ -129,12 +150,23 @@ public class RedDePetri {
         return sensibilizadas[posicion];
     }
 
+    public int[] getVectorDeEstado(){
+        return vectorDeEstado;
+    }
 
     public int getCantTransisiones() {
         return incidencia[0].length;
     }
 
-    public void calculoDeVectorEstado(Transicion transicion) {
+    public int getCantPlazas(){
+        return incidencia.length;
+    }
+
+    public int[][] getInhibidor(){
+        return inhibidor;
+    }
+
+    public void calculoDeVectorEstado( Transicion transicion) {
         vectorDeEstado = marcadoSiguiente(vectorDeEstado, transicion.getPosicion());
 
     }
@@ -178,24 +210,42 @@ public class RedDePetri {
         System.out.print("entro>>>>>>>>>>>>>>>>>>>>>>>\n");*/
         int[] temp = new int[old.length];
         for (int i = 0; i < temp.length; i++) {
-            temp[i] = old[i] + incidencia[i][position] *vectorB[i];
+            temp[i] = old[i] + incidencia[i][position];
         }
-        Operaciones.printVector(temp);
-        System.out.print("salio<<<<<<<<<<<<<<<<<<<<<<<<<<<\n");
-        calcularVectorB();
+        //Operaciones.printVector(temp);
+        //System.out.print("salio<<<<<<<<<<<<<<<<<<<<<<<<<<<\n");
+
 
         return temp;
     }
 
-    private void calcularVectorB() {
 
-        for (int i = 0; i < vectorQ.length; i++) {
-            if (vectorDeEstado[i] != 0) {
-                vectorQ[i] = 0;
-            } else {
-                vectorQ[i] = 1;
-            }
+    public Boolean[] getVectorQ(){
+        Boolean[] vectorQ = new Boolean[getVectorDeEstado().length];
+
+        for(int i=0; i<getCantPlazas(); i++){
+            vectorQ[i] = vectorDeEstado[i] != 0;
         }
-        vectorB = Operaciones.multiplyWithForLoops(inhibidor, vectorQ);
+        return vectorQ;
     }
+
+    public Boolean[] getVectorB(){
+
+        Boolean[] vectorB = new Boolean[getCantTransisiones()];
+        int[][] inhibidorTranspuesta = Operaciones.transpuesta(inhibidor);
+        vectorB = Operaciones.productoMatrizVectorBoolean(inhibidorTranspuesta,getVectorQ());
+        for(int i=0; i<vectorB.length;i++){
+            vectorB[i]=!vectorB[i];
+        }
+        return vectorB;
+
+    }
+
+    public Boolean[] getSensibilizadasExtendido(){
+        sensibilizadasEx = Operaciones.andVector(getVectorB(),getSensibilizadas());
+        return sensibilizadasEx;
+
+    }
+
+
 }

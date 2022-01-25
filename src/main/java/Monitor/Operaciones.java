@@ -10,9 +10,9 @@ public class Operaciones {
     private static int CANTIDAD; //hilos
     private static Scanner INPUT_STREAM;
 
-    public static boolean[] andVector(boolean[] lista1, boolean[] lista2) {
+    public static Boolean[] andVector(Boolean[] lista1, Boolean[] lista2) {
 
-        boolean[] resultado = new boolean[lista1.length];
+        Boolean[] resultado = new Boolean[lista1.length];
         for(int i = 0; i < lista1.length; i++) {
             resultado[i]= lista1[i] && lista2[i];
         }
@@ -21,7 +21,7 @@ public class Operaciones {
     }
 
 
-    public static boolean comprobarUnos(boolean[] lista){
+    public static Boolean comprobarUnos(Boolean[] lista){
         for (boolean b : lista) {
             if (b) {
                 return true;
@@ -69,6 +69,27 @@ public class Operaciones {
             result[row] = sum;
         }
         return result;
+    }
+
+
+    public static Boolean[] productoMatrizVectorBoolean(int[][] matriz, Boolean[] vector) throws IllegalArgumentException {
+
+        Boolean[] resultado = new Boolean[matriz.length];
+        if(matriz[0].length == vector.length){
+            for(int i=0;i<matriz.length;i++){
+                for(int j=0;j< matriz[0].length;j++){
+                    if(matriz[i][j] != 0 && vector[j]){
+                        resultado[i] = true;
+                        break;
+                    }
+                    else resultado[i]=false;
+                }
+            }
+        }
+        else {
+            throw new IllegalArgumentException("Matrices de diferentes tamanios");
+        }
+        return resultado;
     }
 
     public static int[][] sumaMatrices(int[][] a, int[][] b) throws IllegalArgumentException {
@@ -194,7 +215,7 @@ public class Operaciones {
 
     public static void printVector(int[] vector) {
         for (int value : vector) {
-            System.out.print(value);
+            System.out.print(value+", ");
         }
         System.out.println();
     }
