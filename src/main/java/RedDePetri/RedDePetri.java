@@ -214,7 +214,7 @@ public class RedDePetri {
 //        int[]ex=Operaciones.multiplyWithForLoops(incidencia,vectorB);
         int[] temp = new int[old.length];
         for (int i = 0; i < temp.length; i++) {
-            temp[i] = old[i] + incidencia[i][position] *vectorB[i];
+            temp[i] = old[i] + incidencia[i][position]; //todo esta mal aca
         }
 //        Operaciones.printVector(temp);
 //        System.out.print("salio<<<<<<<<<<<<<<<<<<<<<<<<<<<\n");
@@ -256,7 +256,7 @@ public class RedDePetri {
 
     }
 
-    public Boolean[] getSensibilizadasExtendido(){
+    public Boolean[] getSensibilizadasExtendido(){ //todo sacar esta multiplicacion
         sensibilizadasEx = Operaciones.andVector(getVectorB(),getSensibilizadas());
         return sensibilizadasEx;
 
