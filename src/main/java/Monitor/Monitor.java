@@ -3,6 +3,7 @@ package Monitor;
 import RedDePetri.RedDePetri;
 import RedDePetri.Transicion;
 
+import java.sql.SQLOutput;
 import java.util.concurrent.Semaphore;
 
 public class Monitor {
@@ -35,13 +36,16 @@ public class Monitor {
     public void disparaTransicion(Transicion transicion) {
         k = true;
         while (k) {//todo hace falta la k????
+
             acquireMonitor();
             //System.out.print("Hilo: "+Thread.currentThread().getId()+" entro al monitor con transicion "+transicion.getPosicion()+"\n");
             k = this.redDePetri.disparar(transicion);
             System.out.println("valor de k:"+k);
             if (k) {
                 Boolean[] Vs = this.redDePetri.getSensibilizadasExtendido();
+                Operaciones.printVectorEx(Vs);
                 Boolean[] Vc = quienesEstan();
+                Operaciones.printVectorColas(Vc);
                 Boolean[] m = new Boolean[Vs.length];
                 m = Operaciones.andVector(Vs, Vc); //todo ver si se puede simplificar
                 cantidadDisparada(redDePetri);
@@ -69,6 +73,7 @@ public class Monitor {
     }
 
     public static void acquireMonitor() {
+        System.out.println(Thread.currentThread().getId());
         try {
             semaforoMonitor.acquire();
         } catch (InterruptedException e) {

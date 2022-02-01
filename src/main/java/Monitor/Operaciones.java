@@ -220,4 +220,26 @@ public class Operaciones {
         System.out.println();
     }
 
+    public static void printVectorEx(Boolean[] vector) {
+        for(int i=0;i<vector.length;i++){
+            if(vector[i]){
+                System.out.println("La transición: "+(i+1)+" esta sesibilizada");
+            }
+            else {
+                System.out.println("La transición: "+(i+1)+" no esta sesibilizada");
+            }
+        }
+        System.out.println();
+    }
+    public static void printVectorColas(Boolean[] vector) {
+        for(int i=0;i<vector.length;i++){
+            if(vector[i]){
+                System.out.println("La transición: "+(i+1)+" tiene en Cola");
+            }
+            else {
+                System.out.println("La transición: "+(i+1)+" no tiene en Cola");
+            }
+        }
+        System.out.println();
+    }
 }
