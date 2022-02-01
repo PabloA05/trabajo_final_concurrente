@@ -22,7 +22,7 @@ public class Colas {
 
     }
 
-    public synchronized void acquire(Object obj) { //todo fijarse si hacen falta los locks y synchronized
+    public synchronized void acquire() { //todo fijarse si hacen falta los locks y synchronized
         int a = hilosCola.incrementAndGet();
         System.out.println("cola en hilos:" + a + " " + Thread.currentThread().getName());
         if (a < 0 || a>1) {
@@ -30,6 +30,7 @@ public class Colas {
         }
         try {
             // System.out.print("Hilo: "+Thread.currentThread().getId()+" entro cola\n");
+
             wait(); //El hilo entra a la cola, sumando la cantidad de hilos en cola
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -37,7 +38,7 @@ public class Colas {
         }
     }
 
-    public synchronized void release(Object obj) {
+    public synchronized void release() {
         System.out.printf("entro notify %s\n", Thread.currentThread().getName());
         try {
             notify();

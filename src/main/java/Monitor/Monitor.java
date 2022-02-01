@@ -50,7 +50,7 @@ public class Monitor {
                         Transicion transicionADisparar = politica.cualDisparo(m, redDePetri);
                         System.out.printf("posicion que se quiere liberar en la cola: %d - %s\n", transicionADisparar.getPosicion(), Thread.currentThread().getName());
                         System.out.println("esta vacio: " + cola[transicionADisparar.getPosicion()].isEmpty());
-                        cola[transicionADisparar.getPosicion()].release(token);
+                        cola[transicionADisparar.getPosicion()].release();
                     } catch (IndexOutOfBoundsException e) {
                         e.printStackTrace();
                     }
@@ -63,7 +63,7 @@ public class Monitor {
 
             } else {
                 releaseMonitor();
-                cola[transicion.getPosicion()].acquire(token);
+                cola[transicion.getPosicion()].acquire();
             }
         }
         releaseMonitor();
