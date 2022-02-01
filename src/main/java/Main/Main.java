@@ -40,28 +40,28 @@ public class Main {
         hilo[1] = new Thread(runnable2,"hilo_1");
         hilo[1].start();
         Runnable runnable3 = new Hilo(redDePetri, monitor, arr3);
-        hilo[2] = new Thread(runnable3,"hilo_3");
+        hilo[2] = new Thread(runnable3,"hilo_2");
         hilo[2].start();
         Runnable runnable4 = new Hilo(redDePetri, monitor, arr4);
-        hilo[3] = new Thread(runnable4,"hilo_4");
+        hilo[3] = new Thread(runnable4,"hilo_3");
         hilo[3].start();
         Runnable runnable5 = new Hilo(redDePetri, monitor, arr5);
-        hilo[4] = new Thread(runnable5,"hilo_5");
+        hilo[4] = new Thread(runnable5,"hilo_4");
         hilo[4].start();
         Runnable runnable6 = new Hilo(redDePetri, monitor, arr6);
-        hilo[5] = new Thread(runnable6,"hilo_6");
+        hilo[5] = new Thread(runnable6,"hilo_5");
         hilo[5].start();
         Runnable runnable7 = new Hilo(redDePetri, monitor, arr7);
-        hilo[6] = new Thread(runnable7,"hilo_7");
+        hilo[6] = new Thread(runnable7,"hilo_6");
         hilo[6].start();
         Runnable runnable8 = new Hilo(redDePetri, monitor, arr8);
-        hilo[7] = new Thread(runnable8,"hilo_8");
+        hilo[7] = new Thread(runnable8,"hilo_7");
         hilo[7].start();
         Runnable runnable9 = new Hilo(redDePetri, monitor, arr9);
-        hilo[8] = new Thread(runnable9,"hilo_9");
+        hilo[8] = new Thread(runnable9,"hilo_8");
         hilo[8].start();
         Runnable runnable10 = new Hilo(redDePetri, monitor, arr10);
-        hilo[9] = new Thread(runnable10,"hilo_10");
+        hilo[9] = new Thread(runnable10,"hilo_9");
         hilo[9].start();
 
 

@@ -106,7 +106,7 @@ public class RedDePetri {
     private void sincronizar(Transicion t) {
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         Date date = new Date();
-        System.out.println("La transicion: "+(t.getPosicion()+1)+" en el tiempo: "+System.currentTimeMillis()/1000);
+        System.out.printf("La transicion: %d en el tiempo: %d - %s\n",t.getPosicion()+1,System.currentTimeMillis()/1000, Thread.currentThread().getName());
         Operaciones.printVector(vectorDeEstado);
 
     }

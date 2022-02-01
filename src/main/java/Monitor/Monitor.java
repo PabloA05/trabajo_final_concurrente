@@ -12,7 +12,7 @@ public class Monitor {
     private RedDePetri redDePetri;
     private Colas[] cola;
     private Politica politica = new Politica(true);
-
+    Object token;
 
     public Monitor(RedDePetri rdp) {
         semaforoMonitor = new Semaphore(1, true);
@@ -48,9 +48,9 @@ public class Monitor {
                 if (Operaciones.comprobarUnos(m)) {
                     try {
                         Transicion transicionADisparar = politica.cualDisparo(m, redDePetri);
-                        System.out.println("posicion que se quiere liberar en la cola: " + transicionADisparar.getPosicion());
+                        System.out.printf("posicion que se quiere liberar en la cola: %d - %s\n", transicionADisparar.getPosicion(), Thread.currentThread().getName());
                         System.out.println("esta vacio: " + cola[transicionADisparar.getPosicion()].isEmpty());
-                        cola[transicionADisparar.getPosicion()].release();
+                        cola[transicionADisparar.getPosicion()].release(token);
                     } catch (IndexOutOfBoundsException e) {
                         e.printStackTrace();
                     }
@@ -63,7 +63,7 @@ public class Monitor {
 
             } else {
                 releaseMonitor();
-                cola[transicion.getPosicion()].acquire();
+                cola[transicion.getPosicion()].acquire(token);
             }
         }
         releaseMonitor();
