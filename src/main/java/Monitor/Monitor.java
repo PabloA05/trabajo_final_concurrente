@@ -11,7 +11,7 @@ public class Monitor {
     private boolean k;
     private RedDePetri redDePetri;
     private Colas[] cola;
-    private Politica politica = new Politica(false);
+    private Politica politica = new Politica(true);
 
 
     public Monitor(RedDePetri rdp) {
@@ -38,19 +38,20 @@ public class Monitor {
             acquireMonitor();
             //System.out.print("Hilo: "+Thread.currentThread().getId()+" entro al monitor con transicion "+transicion.getPosicion()+"\n");
             k = this.redDePetri.disparar(transicion);
-            System.out.println("valor de k:"+k);
+            // System.out.println("valor de k:"+k);
             if (k) {
                 Boolean[] Vs = this.redDePetri.getSensibilizadasExtendido();
                 Boolean[] Vc = quienesEstan();
                 Boolean[] m = new Boolean[Vs.length];
                 m = Operaciones.andVector(Vs, Vc); //todo ver si se puede simplificar
-                cantidadDisparada(redDePetri);
+                //cantidadDisparada(redDePetri);
                 if (Operaciones.comprobarUnos(m)) {
-                    try{
-                        Transicion transicionADisparar = politica.cualDisparo(m,redDePetri);
+                    try {
+                        Transicion transicionADisparar = politica.cualDisparo(m, redDePetri);
+                        System.out.println("posicion que se quiere liberar en la cola: " + transicionADisparar.getPosicion());
+                        System.out.println("esta vacio: " + cola[transicionADisparar.getPosicion()].isEmpty());
                         cola[transicionADisparar.getPosicion()].release();
-                    }
-                    catch(IndexOutOfBoundsException e){
+                    } catch (IndexOutOfBoundsException e) {
                         e.printStackTrace();
                     }
                     //releaseMonitor();
@@ -80,11 +81,11 @@ public class Monitor {
         semaforoMonitor.release();
     }
 
-    public void cantidadDisparada (RedDePetri redDePetri){
+    public void cantidadDisparada(RedDePetri redDePetri) {
         Transicion[] transiciones;
         transiciones = redDePetri.getTransiciones();
-        for(int i=0;i<redDePetri.getCantTransisiones();i++){
-            System.out.println("La transicion: "+(transiciones[i].getPosicion()+1)+" se disparo: "+transiciones[i].getCantidadDisparada());
+        for (int i = 0; i < redDePetri.getCantTransisiones(); i++) {
+            System.out.println("La transicion: " + (transiciones[i].getPosicion() + 1) + " se disparo: " + transiciones[i].getCantidadDisparada());
         }
     }
 

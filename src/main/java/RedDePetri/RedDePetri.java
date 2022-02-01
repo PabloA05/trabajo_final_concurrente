@@ -23,8 +23,7 @@ public class RedDePetri {
     private boolean[] VectorSensibilazadas;
     private Transicion[] transiciones;
     private Boolean[] sensibilizadasEx;
-    private int[] vectorQ;
-    private int[] vectorB;
+
 
     public RedDePetri(String mji, String I, String h) {
 
@@ -48,13 +47,13 @@ public class RedDePetri {
         for (int i = 0; i < getCantTransisiones(); i++) {
             transiciones[i] = new Transicion((char) (97 + i), i, esTemporizada(i));
         }
-       // calcularVectorB();
+
 
         actualiceSensibilizadoT();
     }
 
     public Boolean[] getSensibilizadas() {
-        actualiceSensibilizadoT(); //todo esto no creo que lo tienen que hacer aca
+        actualiceSensibilizadoT();
         return sensibilizadas;
     }
 
@@ -119,6 +118,8 @@ public class RedDePetri {
             }
         }
     }
+
+
 
     private void sleepThread(int posicion) { //todo no se si esta bien
         long sleepTime = transicionesConTiempo[posicion].getStartTime() + transicionesConTiempo[posicion].getAlpha() - System.currentTimeMillis();
@@ -207,33 +208,17 @@ public class RedDePetri {
         /*calcularVectorB();
         Operaciones.printVector(vectorDeEstado);
         System.out.print("entro>>>>>>>>>>>>>>>>>>>>>>>\n");*/
-//        System.out.print("vectorB\n");
-//        calcularVectorB();
-//
-//        Operaciones.printVector(vectorB);
-//        int[]ex=Operaciones.multiplyWithForLoops(incidencia,vectorB);
         int[] temp = new int[old.length];
         for (int i = 0; i < temp.length; i++) {
-            temp[i] = old[i] + incidencia[i][position]; //todo esta mal aca
+            temp[i] = old[i] + incidencia[i][position];
         }
-//        Operaciones.printVector(temp);
-//        System.out.print("salio<<<<<<<<<<<<<<<<<<<<<<<<<<<\n");
-//        calcularVectorB();
+        //Operaciones.printVector(temp);
+        //System.out.print("salio<<<<<<<<<<<<<<<<<<<<<<<<<<<\n");
+
 
         return temp;
     }
 
-    private void calcularVectorB() {
-
-        for (int i = 0; i < vectorQ.length; i++) {
-            if (vectorDeEstado[i] != 0) {
-                vectorQ[i] = 0;
-            } else {
-                vectorQ[i] = 1;
-            }
-        }
-        vectorB = Operaciones.multiplyWithForLoops(inhibidor, vectorQ);
-    }
 
     public Boolean[] getVectorQ(){
         Boolean[] vectorQ = new Boolean[getVectorDeEstado().length];
@@ -256,9 +241,11 @@ public class RedDePetri {
 
     }
 
-    public Boolean[] getSensibilizadasExtendido(){ //todo sacar esta multiplicacion
+    public Boolean[] getSensibilizadasExtendido(){
         sensibilizadasEx = Operaciones.andVector(getVectorB(),getSensibilizadas());
         return sensibilizadasEx;
 
     }
+
+
 }
