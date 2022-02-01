@@ -4,6 +4,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 
+
 public class Colas {
 
     private int hilosEnCola;
@@ -15,25 +16,18 @@ public class Colas {
     }
 
     public synchronized void acquire() {
-        lock.lock();
-        hilosEnCola++;
-        lock.unlock();
-        try {
-            // System.out.print("Hilo: "+Thread.currentThread().getId()+" entro cola\n");
-            wait(); //El hilo entra a la cola, sumando la cantidad de hilos en cola
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } finally {
-            hilosEnCola--; //Cuando sale, resta la cantidad de hilos
+        this.hilosEnCola++;
+        try{
+//			System.out.println("Llgueeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
+            super.wait(); //El hilo entra a la cola, sumando la cantidad de hilos en cola
+        }catch(InterruptedException e){
+            //e.printStackTrace();
         }
+        this.hilosEnCola--; //Cuando sale, resta la cantidad de hilos
     }
 
     public synchronized void release() {
-        System.out.print("sale\n");
-        notify();
-        lock.lock();
-        hilosEnCola--;
-        lock.unlock();
+        super.notify();
     }
 
     public boolean isEmpty() {

@@ -12,7 +12,7 @@ public class Monitor {
     private boolean k;
     private RedDePetri redDePetri;
     private Colas[] cola;
-    private Politica politica = new Politica(false);
+    private Politica politica = new Politica(true);
 
 
     public Monitor(RedDePetri rdp) {
@@ -37,7 +37,13 @@ public class Monitor {
         k = true;
         while (k) {//todo hace falta la k????
 
-            acquireMonitor();
+            try{
+                semaforoMonitor.acquire(); //Adquiero acceso al monitor.
+            }
+            catch(InterruptedException e){
+                e.printStackTrace();
+                return;
+            }
             //System.out.print("Hilo: "+Thread.currentThread().getId()+" entro al monitor con transicion "+transicion.getPosicion()+"\n");
             k = this.redDePetri.disparar(transicion);
             System.out.println("valor de k:"+k);
@@ -57,22 +63,27 @@ public class Monitor {
                     catch(IndexOutOfBoundsException e){
                         e.printStackTrace();
                     }
-                    //releaseMonitor();
-                } else {
-                    k = false;
-                    //releaseMonitor();
+                    semaforoMonitor.release();
+                    return;
+
                 }
-                break;
+                else {
+                    k = false;
+                    semaforoMonitor.release();
+                    return;
+
+                }
+
 
             } else {
-                releaseMonitor();
+                semaforoMonitor.release();
                 cola[transicion.getPosicion()].acquire();
             }
         }
-        releaseMonitor();
+        semaforoMonitor.release();
     }
 
-    public static void acquireMonitor() {
+    public static synchronized void acquireMonitor() {
         System.out.println(Thread.currentThread().getId());
         try {
             semaforoMonitor.acquire();
@@ -81,7 +92,7 @@ public class Monitor {
         }
     }
 
-    public static void releaseMonitor() {
+    public static synchronized void releaseMonitor() {
         semaforoMonitor.release();
     }
 

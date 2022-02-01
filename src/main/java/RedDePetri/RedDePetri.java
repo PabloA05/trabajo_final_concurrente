@@ -4,7 +4,6 @@ import Monitor.Operaciones;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import org.jetbrains.annotations.NotNull;
 
 public class RedDePetri {
 
@@ -49,11 +48,18 @@ public class RedDePetri {
         }
 
 
-        actualiceSensibilizadoT();
+        //actualiceSensibilizadoT();
     }
 
-    public Boolean[] getSensibilizadas() {
-        actualiceSensibilizadoT();
+    public Boolean[] getVectorE() {
+        for (int i = 0; i < getCantTransisiones(); i++) {
+            try {
+                sensibilizadas[i] = esDisparoValido(marcadoSiguiente(vectorDeEstado, i));
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.out.println("Error en getSensibilizadas()");
+            }
+        }
         return sensibilizadas;
     }
 
@@ -98,7 +104,7 @@ public class RedDePetri {
 
             sincronizar(transicion);
             transicion.incrementoDisparo();
-            actualiceSensibilizadoT();
+            //actualiceSensibilizadoT();
         }
         return k;
     }
@@ -135,19 +141,10 @@ public class RedDePetri {
         return (transicionesConTiempo[posicion].getStartTime() + transicionesConTiempo[posicion].getAlpha() - System.currentTimeMillis() < 0);
     }
 
-    public void actualiceSensibilizadoT() {
-        for (int i = 0; i < getCantTransisiones(); i++) {
-            try {
-                sensibilizadas[i] = esDisparoValido(marcadoSiguiente(vectorDeEstado, i));
-            } catch (Exception e) {
-                e.printStackTrace();
-                System.out.println("Error en getSensibilizadas()");
-            }
-        }
-    }
+
 
     public boolean estaSensibilizado(int posicion) {
-        return sensibilizadas[posicion];
+        return sensibilizadasEx[posicion];
     }
 
     public int[] getVectorDeEstado(){
@@ -242,7 +239,7 @@ public class RedDePetri {
     }
 
     public Boolean[] getSensibilizadasExtendido(){
-        sensibilizadasEx = Operaciones.andVector(getVectorB(),getSensibilizadas());
+        sensibilizadasEx = Operaciones.andVector(getVectorB(), getVectorE());
         return sensibilizadasEx;
 
     }
