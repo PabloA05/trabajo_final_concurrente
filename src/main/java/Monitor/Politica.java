@@ -14,37 +14,44 @@ public class Politica {
     //tipo = false → Dispara aleatoriamente
     //tipo = true → Dispara la menos disparada
 
-    public Politica(boolean politica){
-        this.politica =politica;
+    public Politica(boolean politica) {
+        this.politica = politica;
     }
 
-    public Transicion cualDisparo(Boolean[] m, RedDePetri rdp){
+    public Transicion cualDisparo(Boolean[] m, RedDePetri rdp) {
 
         Transicion[] transiciones = rdp.getTransiciones();
         Arrays.sort(transiciones, Comparator.comparingInt(Transicion::getCantidadDisparada));
+        for (int i = 0; i < transiciones.length; i++) {
+            System.out.printf("::::::::::::::::::::::::::::::::::::::::: posicion %d %b %s\n", transiciones[i].getPosicion(), m[i], Thread.currentThread().getName());
+        }
+        if (politica) {
 
-        if(politica){
-            for (Transicion transicion : transiciones) {
-                if (m[transicion.getPosicion()]) {
-                    return transicion;
+            for (int i = 0; i < rdp.getCantTransisiones(); i++) {
+                if (m[transiciones[i].getPosicion()]) {
+                    System.out.printf("*******************************retorna %d\n", transiciones[i].getPosicion());
+                    return transiciones[i];
                 }
             }
+            
+
         }
 
         int random;
         ArrayList<Integer> list = new ArrayList<Integer>();
-        for(int i=0;i< m.length;i++){
-            if(m[i]){
+        for (int i = 0; i < m.length; i++) {
+            if (m[i]) {
                 list.add(i);
             }
         }
-        random =(int) (Math.random() * (list.size()));
+        random = (int) (Math.random() * (list.size()));
+
         return transiciones[list.get(random)];
 
     }
 
-    public void cambiarPolitica(boolean politica){
-        this.politica =politica;
+    public void cambiarPolitica(boolean politica) {
+        this.politica = politica;
     }
 
 }

@@ -24,7 +24,7 @@ public class Colas {
 
     public synchronized void acquire() { //todo fijarse si hacen falta los locks y synchronized
         int a = hilosCola.incrementAndGet();
-        System.out.println("cola en hilos:" + a + " " + Thread.currentThread().getName());
+        System.out.println("elementos en cola :" + a + " " + Thread.currentThread().getName());
         if (a < 0 || a>1) {
             System.out.printf("%d -- Valor de INT mal!>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n" ,a);
         }
@@ -39,7 +39,7 @@ public class Colas {
     }
 
     public synchronized void release() {
-        System.out.printf("entro notify %s\n", Thread.currentThread().getName());
+     //   System.out.printf("entro notify %s\n", Thread.currentThread().getName());
         try {
             notify();
         } catch (Exception e) {
@@ -47,7 +47,7 @@ public class Colas {
             System.exit(1);
         }
         int a = hilosCola.decrementAndGet();
-        System.out.printf("salio %d - %s\n", a, Thread.currentThread().getName());
+        //System.out.printf("salio %d - %s\n", a, Thread.currentThread().getName());
     }
 
 

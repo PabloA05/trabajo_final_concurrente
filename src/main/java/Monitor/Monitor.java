@@ -11,7 +11,7 @@ public class Monitor {
     private boolean k;
     private RedDePetri redDePetri;
     private Colas[] cola;
-    private Politica politica = new Politica(true);
+    private Politica politica = new Politica(false);
     Object token;
 
     public Monitor(RedDePetri rdp) {
@@ -45,11 +45,16 @@ public class Monitor {
                 Boolean[] m = new Boolean[Vs.length];
                 m = Operaciones.andVector(Vs, Vc); //todo ver si se puede simplificar
                 //cantidadDisparada(redDePetri);
+                for (int i = 0; i < m.length; i++) {
+
+                }
                 if (Operaciones.comprobarUnos(m)) {
                     try {
                         Transicion transicionADisparar = politica.cualDisparo(m, redDePetri);
                         System.out.printf("posicion que se quiere liberar en la cola: %d - %s\n", transicionADisparar.getPosicion(), Thread.currentThread().getName());
-                        System.out.println("esta vacio: " + cola[transicionADisparar.getPosicion()].isEmpty());
+                        if(cola[transicionADisparar.getPosicion()].isEmpty()){
+                            //System.out.println("esta vacio >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" + cola[transicionADisparar.getPosicion()].isEmpty());
+                        }
                         cola[transicionADisparar.getPosicion()].release();
                     } catch (IndexOutOfBoundsException e) {
                         e.printStackTrace();
@@ -63,7 +68,9 @@ public class Monitor {
 
             } else {
                 releaseMonitor();
+               // System.out.printf("\n>>>>>>>>>>> posicion a meter %d - %s\n",transicion.getPosicion(), Thread.currentThread().getName());
                 cola[transicion.getPosicion()].acquire();
+                System.out.printf(">>>>>>>>>>>>>>>>>>>>>>>>>>> sale transion %d - %s\n",transicion.getPosicion(), Thread.currentThread().getName());
             }
         }
         releaseMonitor();
