@@ -21,21 +21,32 @@ public class Politica {
     public Transicion cualDisparo(Boolean[] m, RedDePetri rdp) {
 
         Transicion[] transiciones = rdp.getTransiciones();
+        for(int i=0;i< transiciones.length;i++){
+            //System.out.println("La transicion: "+transiciones[i].getPosicion()+" tiene: "+transiciones[i].getCantidadDisparada()+" disparos "+Thread.currentThread().getName() );
+        }
+        System.out.println("\n");
         Arrays.sort(transiciones, Comparator.comparingInt(Transicion::getCantidadDisparada));
-        for (int i = 0; i < transiciones.length; i++) {
-            System.out.printf("::::::::::::::::::::::::::::::::::::::::: posicion %d %b %s\n", transiciones[i].getPosicion(), m[i], Thread.currentThread().getName());
+        for(int i=0;i< transiciones.length;i++){
+       //     System.out.println("La transicion: "+transiciones[i].getPosicion()+" tiene: "+transiciones[i].getCantidadDisparada()+" disparos "+Thread.currentThread().getName() );
+        }
+        System.out.println("\n");
+
+        for (int i = 0; i < m.length; i++) {
+          //  System.out.printf("%b\n",m[i]);
+
         }
         if (politica) {
 
             for (int i = 0; i < rdp.getCantTransisiones(); i++) {
                 if (m[transiciones[i].getPosicion()]) {
-                    System.out.printf("*******************************retorna %d\n", transiciones[i].getPosicion());
+                 //   System.out.printf("*******************************retorna %d\n", transiciones[i].getPosicion());
                     return transiciones[i];
                 }
             }
-            
 
         }
+
+
 
         int random;
         ArrayList<Integer> list = new ArrayList<Integer>();

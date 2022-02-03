@@ -3,6 +3,7 @@ package Monitor;
 import RedDePetri.RedDePetri;
 import RedDePetri.Transicion;
 
+import java.util.Objects;
 import java.util.concurrent.Semaphore;
 
 public class Monitor {
@@ -11,7 +12,7 @@ public class Monitor {
     private boolean k;
     private RedDePetri redDePetri;
     private Colas[] cola;
-    private Politica politica = new Politica(false);
+    private Politica politica = new Politica(true);
     Object token;
 
     public Monitor(RedDePetri rdp) {
@@ -22,7 +23,14 @@ public class Monitor {
         for (int i = 0; i < redDePetri.getCantTransisiones(); i++) {
             cola[i] = new Colas(); //Inicialización de colas.
         }
+        Transicion temp[] = rdp.getTransiciones();
+        for (int i = 0; i < temp.length; i++) {
+            cola[i].transicion = temp[i];
+        }
+
+
     }
+
 
     private Boolean[] quienesEstan() {
         Boolean[] Vc = new Boolean[cola.length];
@@ -36,7 +44,9 @@ public class Monitor {
         k = true;
         while (k) {//todo hace falta la k????
             acquireMonitor();
-            //System.out.print("Hilo: "+Thread.currentThread().getId()+" entro al monitor con transicion "+transicion.getPosicion()+"\n");
+
+            System.out.print(">>>>>>>>>>>>>>>>>>>>> Hilo: " + Thread.currentThread().getName() + " entro al monitor con transicion " + transicion.getPosicion() + "\n");
+
             k = this.redDePetri.disparar(transicion);
             // System.out.println("valor de k:"+k);
             if (k) {
@@ -50,27 +60,31 @@ public class Monitor {
                 }
                 if (Operaciones.comprobarUnos(m)) {
                     try {
-                        Transicion transicionADisparar = politica.cualDisparo(m, redDePetri);
-                        System.out.printf("posicion que se quiere liberar en la cola: %d - %s\n", transicionADisparar.getPosicion(), Thread.currentThread().getName());
-                        if(cola[transicionADisparar.getPosicion()].isEmpty()){
-                            //System.out.println("esta vacio >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" + cola[transicionADisparar.getPosicion()].isEmpty());
+                        int transicionaDisparar = 0;
+//                        transicion= politica.cualDisparo(m, redDePetri);
+                        for (int i = 0; i < m.length; i++) {
+                            if (m[i]) {
+                                transicionaDisparar = i;
+                            }
+
                         }
-                        cola[transicionADisparar.getPosicion()].release();
+                        cola[transicion.getPosicion()].release();
                     } catch (IndexOutOfBoundsException e) {
                         e.printStackTrace();
                     }
-                    //releaseMonitor();
+                    releaseMonitor();
+                    return;
                 } else {
                     k = false;
-                    //releaseMonitor();
                 }
+
                 break;
 
             } else {
                 releaseMonitor();
-               // System.out.printf("\n>>>>>>>>>>> posicion a meter %d - %s\n",transicion.getPosicion(), Thread.currentThread().getName());
-                cola[transicion.getPosicion()].acquire();
-                System.out.printf(">>>>>>>>>>>>>>>>>>>>>>>>>>> sale transion %d - %s\n",transicion.getPosicion(), Thread.currentThread().getName());
+                System.out.printf("\n>>>>>>>>>>> posicion a meter colas %d - %s\n", transicion.getPosicion(), Thread.currentThread().getName());
+                transicion = cola[transicion.getPosicion()].acquire();
+                System.out.printf("<<<<<<<<<<<<<<< sale transion  colas %d - %s\n", transicion.getPosicion(), Thread.currentThread().getName());
             }
         }
         releaseMonitor();

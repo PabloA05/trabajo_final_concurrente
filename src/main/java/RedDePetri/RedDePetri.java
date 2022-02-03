@@ -102,16 +102,17 @@ public class RedDePetri {
             calculoDeVectorEstado(transicion);
 
 
-            sincronizar(transicion);
+           // sincronizar(transicion);
             transicion.incrementoDisparo();
             //actualiceSensibilizadoT();
+            System.out.printf("Disparo ******* %s\n",Thread.currentThread().getName());
         }
+
         return k;
     }
 
     private void sincronizar(Transicion t) {
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-        Date date = new Date();
+
         System.out.println("La transicion: "+(t.getPosicion()+1)+" en el tiempo: "+System.currentTimeMillis()/1000);
         Operaciones.printVector(vectorDeEstado);
 

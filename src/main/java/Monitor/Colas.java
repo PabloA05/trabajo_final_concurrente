@@ -1,5 +1,7 @@
 package Monitor;
 
+import RedDePetri.Transicion;
+
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -13,20 +15,20 @@ public class Colas {
     Lock writeLock;
     Lock readLock;
 
+    public Transicion transicion;
     public Colas() {
         this.hilosEnCola = 0;
         this.rwLock = new ReentrantReadWriteLock(true);
         this.writeLock = rwLock.writeLock();
         this.readLock = rwLock.readLock();
         hilosCola = new AtomicInteger(0);
-
     }
 
-    public synchronized void acquire() { //todo fijarse si hacen falta los locks y synchronized
+    public synchronized Transicion acquire() { //todo fijarse si hacen falta los locks y synchronized
         int a = hilosCola.incrementAndGet();
-        System.out.println("elementos en cola :" + a + " " + Thread.currentThread().getName());
+      //  System.out.println("elementos en cola :" + a + " " + Thread.currentThread().getName() );
         if (a < 0 || a>1) {
-            System.out.printf("%d -- Valor de INT mal!>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n" ,a);
+            System.out.printf("%d -- Valor de INT mal! %s >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n" ,a , Thread.currentThread().getName());
         }
         try {
             // System.out.print("Hilo: "+Thread.currentThread().getId()+" entro cola\n");
@@ -36,6 +38,7 @@ public class Colas {
             e.printStackTrace();
             System.exit(1);
         }
+        return transicion;
     }
 
     public synchronized void release() {
