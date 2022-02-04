@@ -20,7 +20,7 @@ public class Politica {
 
     public Transicion cualDisparo(Boolean[] m, RedDePetri rdp) {
 
-        Transicion[] transiciones = rdp.getTransiciones();
+        Transicion[] transiciones = rdp.getTransiciones().clone();
         for(int i=0;i< transiciones.length;i++){
             //System.out.println("La transicion: "+transiciones[i].getPosicion()+" tiene: "+transiciones[i].getCantidadDisparada()+" disparos "+Thread.currentThread().getName() );
         }

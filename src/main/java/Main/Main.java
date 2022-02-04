@@ -15,8 +15,9 @@ public class Main {
         Monitor monitor = new Monitor(redDePetri);
 
 
-//        final Boolean[] arr0 = {true, true, true, true, true, true, false, false, false, false};
+//        final Boolean[] arr0 = {true, true, true, true, true, true, true, true, true, true};
 //        final Boolean[] arr1 = {true, false, false, false, false, false, true, true, true, true};
+
         Boolean[] arr0 = {true, false, false, false, false, false, false, false, false, false};
         Boolean[] arr1 = {false, true, false, false, false, false, false, false, false, false};
         Boolean[] arr2 = {false, false, true, false, false, false, false, false, false, false};

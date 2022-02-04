@@ -14,21 +14,29 @@ public class Colas {
     private ReadWriteLock rwLock;
     Lock writeLock;
     Lock readLock;
-
-    public Transicion transicion;
+    public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_BLACK = "\u001B[30m";
+    public static final String ANSI_RED = "\u001B[31m";
+    public static final String ANSI_GREEN = "\u001B[32m";
+    public static final String ANSI_YELLOW = "\u001B[33m";
+    public static final String ANSI_BLUE = "\u001B[34m";
+    public static final String ANSI_PURPLE = "\u001B[35m";
+    public static final String ANSI_CYAN = "\u001B[36m";
+    public static final String ANSI_WHITE = "\u001B[37m";
     public Colas() {
         this.hilosEnCola = 0;
         this.rwLock = new ReentrantReadWriteLock(true);
         this.writeLock = rwLock.writeLock();
         this.readLock = rwLock.readLock();
+
         hilosCola = new AtomicInteger(0);
     }
 
-    public synchronized Transicion acquire() { //todo fijarse si hacen falta los locks y synchronized
+    public synchronized void   acquire() { //todo fijarse si hacen falta los locks y synchronized
         int a = hilosCola.incrementAndGet();
-      //  System.out.println("elementos en cola :" + a + " " + Thread.currentThread().getName() );
+       System.out.println(ANSI_CYAN+"elementos en cola :" + a + " " + Thread.currentThread().getName()+ ANSI_RESET );
         if (a < 0 || a>1) {
-            System.out.printf("%d -- Valor de INT mal! %s >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n" ,a , Thread.currentThread().getName());
+            System.out.printf(ANSI_CYAN+"Valor > %d < de INT mal! %s >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n"+ANSI_RESET ,a , Thread.currentThread().getName());
         }
         try {
             // System.out.print("Hilo: "+Thread.currentThread().getId()+" entro cola\n");
@@ -38,7 +46,6 @@ public class Colas {
             e.printStackTrace();
             System.exit(1);
         }
-        return transicion;
     }
 
     public synchronized void release() {

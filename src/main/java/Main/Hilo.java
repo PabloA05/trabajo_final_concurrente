@@ -14,7 +14,7 @@ public class Hilo implements Runnable {
     public Hilo(RedDePetri rdp, Monitor monitor, Boolean[] secuencia) {
         this.rdp = rdp;
         this.monitor = monitor;
-        transiciones = rdp.getTransiciones();
+        transiciones = rdp.getTransiciones().clone();
         this.secuencia = secuencia;
     }
 
