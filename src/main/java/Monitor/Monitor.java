@@ -9,7 +9,8 @@ import java.util.concurrent.Semaphore;
 public class Monitor {
 
     private static Semaphore semaforoMonitor;
-    private boolean k;
+    private static int disparos = 0;
+    //  private boolean k;
     private RedDePetri redDePetri;
     private Colas[] cola;
     private Politica politica = new Politica(true);
@@ -28,7 +29,7 @@ public class Monitor {
 
     public Monitor(RedDePetri rdp) {
         semaforoMonitor = new Semaphore(1, true);
-        k = false;
+        // k = false;
         redDePetri = rdp;
         cola = new Colas[redDePetri.getCantTransisiones()];
         for (int i = 0; i < redDePetri.getCantTransisiones(); i++) {
@@ -47,9 +48,6 @@ public class Monitor {
         public int veces;
     }
 
-    ;
-
-
     private Boolean[] quienesEstan() {
         Boolean[] Vc = new Boolean[cola.length];
         for (int i = 0; i < cola.length; i++) {
@@ -59,7 +57,8 @@ public class Monitor {
     }
 
     public void disparaTransicion(Transicion transicion) {
-        k = true;
+        //   k = true;
+        boolean k = true;
         flag_colas log = new flag_colas();
         while (k) {//todo hace falta la k????
             acquireMonitor();
@@ -76,7 +75,7 @@ public class Monitor {
 
             k = this.redDePetri.disparar(transicion);
             if (k) {
-                System.out.print(ANSI_RED + "Monitor disparo " + Thread.currentThread().getName() +
+                System.out.print(ANSI_RED + "Monitor disparo " +disparos++ +" "+ Thread.currentThread().getName() +
                         " entro al monitor con transicion " + transicion.getPosicion() + ANSI_RESET);
                 if (log.flag) {
                     System.out.printf(ANSI_RED + "^^^^^^^^^^^^ habia entrado %d veces" + ANSI_RESET, log.veces);
@@ -93,23 +92,25 @@ public class Monitor {
                 //cantidadDisparada(redDePetri);
 
                 if (Operaciones.comprobarUnos(m)) {
+//                    int a = 0;
                     try {
+//                        for (int i = m.length - 1; i >= 0; i--) {
+//                            if (m[i]) {
+//                                a = i;
+//                                break;
+//                            }
+//                        }
 
                         Transicion ttemp = politica.cualDisparo(m, redDePetri);
-                        System.out.printf(ANSI_GREEN + "transision %d metida por %s [politica]\n" + ANSI_RESET, ttemp.getPosicion(), Thread.currentThread().getName());
+                        System.out.printf(ANSI_GREEN + "transision %d liberada por %s [politica]\n" + ANSI_RESET, ttemp.getPosicion(), Thread.currentThread().getName());
 
                         cola[ttemp.getPosicion()].release();
                     } catch (IndexOutOfBoundsException e) {
                         e.printStackTrace();
                     }
-                    releaseMonitor();
-                    return;
                 } else {
                     k = false;
                 }
-
-                break;
-
             } else {
                 releaseMonitor();
                 System.out.printf(ANSI_PURPLE + "\n>>>>>>>>>>> posicion a meter colas %d - %s\n" + ANSI_RESET, transicion.getPosicion(), Thread.currentThread().getName());

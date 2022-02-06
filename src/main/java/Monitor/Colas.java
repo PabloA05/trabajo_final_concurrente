@@ -32,7 +32,7 @@ public class Colas {
         hilosCola = new AtomicInteger(0);
     }
 
-    public synchronized void   acquire() { //todo fijarse si hacen falta los locks y synchronized
+    public synchronized void acquire() { //todo fijarse si hacen falta los locks y synchronized
         int a = hilosCola.incrementAndGet();
        System.out.println(ANSI_CYAN+"elementos en cola :" + a + " " + Thread.currentThread().getName()+ ANSI_RESET );
         if (a < 0 || a>1) {
