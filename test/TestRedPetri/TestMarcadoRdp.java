@@ -30,7 +30,7 @@ public class TestMarcadoRdp {
     public static void setRedDePetri() {
         redDePetri = new RedDePetri(mji, I, H, B);
         arrTransiciones = new Transicion[10];
-        stateMarks = Operaciones.matriz2d(S);
+
         char alp = 'a';
         for (int i = 0; i < arrTransiciones.length; i++) {
             arrTransiciones[i] = new Transicion(alp++, i, false);
@@ -58,7 +58,7 @@ public class TestMarcadoRdp {
 //            }
 //            assertTrue(mark);
         for (int i = 0; i < fire.length; i++) {
-            redDePetri.calculoDeVectorEstado(arrTransiciones[fire[i]]);
+            redDePetri.calculoVectorEstado(arrTransiciones[fire[i]]);
             transiciones = redDePetri.getVectorDeEstado();
         }
         Assert.assertArrayEquals(transiciones, state3);
