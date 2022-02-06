@@ -20,7 +20,7 @@ public class Politica {
 
     public Transicion cualDisparo(Boolean[] m, RedDePetri rdp){
 
-        Transicion[] transiciones = rdp.getTransiciones();
+        Transicion[] transiciones = rdp.getTransiciones().clone();
         Arrays.sort(transiciones, Comparator.comparingInt(Transicion::getCantidadDisparada));
 
         if(politica){

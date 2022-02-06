@@ -18,52 +18,34 @@ public class Main {
 
 
 
-        Boolean[] arr1 = {true, false, false, false, false, false, false, false, false, false};
-        Boolean[] arr2 = {false, true, false, false, false, false, false, false, false, false};
-        Boolean[] arr3 = {false, false, true, false, false, false, false, false, false, false};
-        Boolean[] arr4 = {false, false, false, true, false, false, false, false, false, false};
-        Boolean[] arr5 = {false, false, false, false, true, false, false, false, false, false};
-        Boolean[] arr6 = {false, false, false, false, false, true, false, false, false, false};
-        Boolean[] arr7 = {false, false, false, false, false, false, true, false, false, false};
-        Boolean[] arr8 = {false, false, false, false, false, false, false, true, false, false};
-        Boolean[] arr9 = {false, false, false, false, false, false, false, false, true, false};
-        Boolean[] arr10 = {false, false, false, false, false, false, false, false, false, true};
+        Boolean[] arr1 = {true, false, false, false, false, false, false, false, false, false};//T1
+        Boolean[] arr2 = {false, true, false, true, false, false, false, false, false, false};//T2-T4
+        Boolean[] arr3 = {false, false, true, false, true, false, false, false, false, false};//T3-T5
+        Boolean[] arr4 = {false, false, false, false, false, true, false, false, false, false};//T6
+        Boolean[] arr5 = {false, false, false, false, false, false, true, true, true, true};//T7-T8-T9-T10
 
 
-        Thread[] hilo = new Thread[10];
+        Thread[] hilo = new Thread[6];
 
 
         Runnable runnable1 = new Hilo(redDePetri, monitor, arr1);
-        hilo[0] = new Thread(runnable1);
+        hilo[0] = new Thread(runnable1,"hilo_1");
         hilo[0].start();
         Runnable runnable2 = new Hilo(redDePetri, monitor, arr2);
-        hilo[1] = new Thread(runnable2);
+        hilo[1] = new Thread(runnable2,"hilo_2");
         hilo[1].start();
         Runnable runnable3 = new Hilo(redDePetri, monitor, arr3);
-        hilo[2] = new Thread(runnable3);
+        hilo[2] = new Thread(runnable3,"hilo_3");
         hilo[2].start();
         Runnable runnable4 = new Hilo(redDePetri, monitor, arr4);
-        hilo[3] = new Thread(runnable4);
+        hilo[3] = new Thread(runnable4,"hilo_4");
         hilo[3].start();
         Runnable runnable5 = new Hilo(redDePetri, monitor, arr5);
-        hilo[4] = new Thread(runnable5);
+        hilo[4] = new Thread(runnable5,"hilo_5");
         hilo[4].start();
-        Runnable runnable6 = new Hilo(redDePetri, monitor, arr6);
-        hilo[5] = new Thread(runnable6);
+        Runnable runnable6 = new Hilo(redDePetri, monitor, arr5);
+        hilo[5] = new Thread(runnable5,"hilo_6");
         hilo[5].start();
-        Runnable runnable7 = new Hilo(redDePetri, monitor, arr7);
-        hilo[6] = new Thread(runnable7);
-        hilo[6].start();
-        Runnable runnable8 = new Hilo(redDePetri, monitor, arr8);
-        hilo[7] = new Thread(runnable8);
-        hilo[7].start();
-        Runnable runnable9 = new Hilo(redDePetri, monitor, arr9);
-        hilo[8] = new Thread(runnable9);
-        hilo[8].start();
-        Runnable runnable10 = new Hilo(redDePetri, monitor, arr10);
-        hilo[9] = new Thread(runnable10);
-        hilo[9].start();
-
 
     }
 }

@@ -8,8 +8,8 @@ import java.util.concurrent.Semaphore;
 
 public class Monitor {
 
-    private static Semaphore semaforoMonitor;
-    private boolean k;
+    private Semaphore semaforoMonitor;
+    //private boolean k;
     private RedDePetri redDePetri;
     private Colas[] cola;
     private Politica politica = new Politica(true);
@@ -17,7 +17,7 @@ public class Monitor {
 
     public Monitor(RedDePetri rdp) {
         semaforoMonitor = new Semaphore(1, true);
-        k = false;
+        //k = false;
         redDePetri = rdp;
         cola = new Colas[redDePetri.getCantTransisiones()];
         for (int i = 0; i < redDePetri.getCantTransisiones(); i++) {
@@ -34,8 +34,8 @@ public class Monitor {
     }
 
     public void disparaTransicion(Transicion transicion) {
-        k = true;
-        while (k) {//todo hace falta la k????
+       // k = true;
+        while (true) {//todo hace falta la k????
 
             try{
                 semaforoMonitor.acquire(); //Adquiero acceso al monitor.
@@ -44,14 +44,15 @@ public class Monitor {
                 e.printStackTrace();
                 return;
             }
+            boolean k= true;
             //System.out.print("Hilo: "+Thread.currentThread().getId()+" entro al monitor con transicion "+transicion.getPosicion()+"\n");
             k = this.redDePetri.disparar(transicion);
             System.out.println("valor de k:"+k);
             if (k) {
                 Boolean[] Vs = this.redDePetri.getSensibilizadasExtendido();
-                Operaciones.printVectorEx(Vs);
+                //Operaciones.printVectorEx(Vs);
                 Boolean[] Vc = quienesEstan();
-                Operaciones.printVectorColas(Vc);
+                //Operaciones.printVectorColas(Vc);
                 Boolean[] m = new Boolean[Vs.length];
                 m = Operaciones.andVector(Vs, Vc); //todo ver si se puede simplificar
                 cantidadDisparada(redDePetri);
@@ -80,21 +81,21 @@ public class Monitor {
                 cola[transicion.getPosicion()].acquire();
             }
         }
-        semaforoMonitor.release();
+
     }
 
-    public static synchronized void acquireMonitor() {
+    /*public static synchronized void acquireMonitor() {
         System.out.println(Thread.currentThread().getId());
         try {
             semaforoMonitor.acquire();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
-    public static synchronized void releaseMonitor() {
+    /*public static synchronized void releaseMonitor() {
         semaforoMonitor.release();
-    }
+    }*/
 
     public void cantidadDisparada (RedDePetri redDePetri){
         Transicion[] transiciones;

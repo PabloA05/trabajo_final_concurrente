@@ -13,7 +13,10 @@ public class RedDePetri {
     final int[] mki; //marca inicial. columna. NO VARIA
     private int[] vectorDeEstado; //la marca actual
     private SensibilizadasConTiempo[] transicionesConTiempo;
-    private Boolean[] sensibilizadas;
+    //private Boolean[] sensibilizadas;
+    private Boolean[] Q;
+    private Boolean[] Z;
+    private Boolean[] B;
     int[] mj_1;// la siguiente
     //private int[] e; //vector de transiciones sensibilizadas
     int[] ex; //vector de sensibilizado extendido
@@ -21,7 +24,7 @@ public class RedDePetri {
     private boolean k = false;
     private boolean[] VectorSensibilazadas;
     private Transicion[] transiciones;
-    private Boolean[] sensibilizadasEx;
+    //private Boolean[] sensibilizadasEx;
 
 
     public RedDePetri(String mji, String I, String h) {
@@ -32,15 +35,15 @@ public class RedDePetri {
         this.incidencia = Operaciones.matriz2d(I);
         this.vectorDeEstado = Operaciones.vector(mji);
         this.inhibidor = Operaciones.matriz2d(h);
-        this.mki = vectorDeEstado; //marca inicial
-        sensibilizadas = new Boolean[getCantTransisiones()];
+        this.mki = vectorDeEstado.clone(); //marca inicial
+        /*sensibilizadas = new Boolean[getCantTransisiones()];
         for (int i = 0; i < getCantTransisiones(); i++) {
             sensibilizadas[i] = false;
-        }
-        sensibilizadasEx = new Boolean[getCantTransisiones()];
+        }*/
+        /*sensibilizadasEx = new Boolean[getCantTransisiones()];
         for (int i = 0; i < getCantTransisiones(); i++) {
             sensibilizadasEx[i] = false;
-        }
+        }*/
         this.transicionesConTiempo = new SensibilizadasConTiempo[getCantTransisiones()];
         transiciones = new Transicion[getCantTransisiones()];
         for (int i = 0; i < getCantTransisiones(); i++) {
@@ -52,6 +55,7 @@ public class RedDePetri {
     }
 
     public Boolean[] getVectorE() {
+        Boolean[] sensibilizadas = new Boolean[getCantTransisiones()];
         for (int i = 0; i < getCantTransisiones(); i++) {
             try {
                 sensibilizadas[i] = esDisparoValido(marcadoSiguiente(vectorDeEstado, i));
@@ -92,21 +96,15 @@ public class RedDePetri {
             actualiceSensibilizadoT();
         }
         return k;*/
-        k = false;
-        if (estaSensibilizado(transicion.getPosicion())) {
-            k = true;
-        } else {
-            k = false;
-        }
-        if (k) {
-            calculoDeVectorEstado(transicion);
-
-
-            sincronizar(transicion);
+        //k = false;
+        if(this.getSensibilizadasExtendido()[transicion.getPosicion()]){
+            vectorDeEstado = marcadoSiguiente(vectorDeEstado,transicion.getPosicion());
             transicion.incrementoDisparo();
-            //actualiceSensibilizadoT();
+            return true;
         }
-        return k;
+        else {
+            return false;
+        }
     }
 
     private void sincronizar(Transicion t) {
@@ -117,13 +115,13 @@ public class RedDePetri {
 
     }
 
-    private void setNuevoTimeStamp() {
+    /*private void setNuevoTimeStamp() {
         for (int i = 0; i < transicionesConTiempo.length; i++) {
             if (sensibilizadas[i]) {
                 transicionesConTiempo[i].nuevoTimeStamp();
             }
         }
-    }
+    }*/
 
 
 
@@ -141,11 +139,6 @@ public class RedDePetri {
         return (transicionesConTiempo[posicion].getStartTime() + transicionesConTiempo[posicion].getAlpha() - System.currentTimeMillis() < 0);
     }
 
-
-
-    public boolean estaSensibilizado(int posicion) {
-        return sensibilizadasEx[posicion];
-    }
 
     public int[] getVectorDeEstado(){
         return vectorDeEstado;
@@ -229,18 +222,32 @@ public class RedDePetri {
     public Boolean[] getVectorB(){
 
         Boolean[] vectorB = new Boolean[getCantTransisiones()];
-        int[][] inhibidorTranspuesta = Operaciones.transpuesta(inhibidor);
-        vectorB = Operaciones.productoMatrizVectorBoolean(inhibidorTranspuesta,getVectorQ());
+        int[][] inhibidorTranspuesta = Operaciones.transpuesta(this.inhibidor);
+        vectorB = Operaciones.productoMatrizVectorBoolean(inhibidorTranspuesta,this.getVectorQ());
         for(int i=0; i<vectorB.length;i++){
             vectorB[i]=!vectorB[i];
         }
-        return vectorB;
+
+        B = vectorB;
+
+        return this.B.clone();
 
     }
 
+    public Boolean[] getConjuncionEAndBandLandC(){
+        Boolean[] E= this.getVectorE();
+
+        return Operaciones.andVector(B,E);
+    }
+
     public Boolean[] getSensibilizadasExtendido(){
-        sensibilizadasEx = Operaciones.andVector(getVectorB(), getVectorE());
-        return sensibilizadasEx;
+        Boolean Ex[];
+        Boolean E[] = this.getVectorE();
+
+        this.getVectorB();
+
+
+        return this.getConjuncionEAndBandLandC();
 
     }
 
