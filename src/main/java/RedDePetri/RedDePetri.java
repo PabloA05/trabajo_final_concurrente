@@ -97,12 +97,12 @@ public class RedDePetri {
         }
         return k;*/
         //k = false;
-        if(this.getSensibilizadasExtendido()[transicion.getPosicion()]){
-            vectorDeEstado = marcadoSiguiente(vectorDeEstado,transicion.getPosicion());
+        if (this.getSensibilizadasExtendido()[transicion.getPosicion()]) {
+            vectorDeEstado = marcadoSiguiente(vectorDeEstado, transicion.getPosicion());
             transicion.incrementoDisparo();
+            System.out.printf("Red de petri Transicion %d %s\n", transicion.getPosicion() + 1, Thread.currentThread().getName());
             return true;
-        }
-        else {
+        } else {
             return false;
         }
     }
@@ -110,7 +110,7 @@ public class RedDePetri {
     private void sincronizar(Transicion t) {
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         Date date = new Date();
-        System.out.println("La transicion: "+(t.getPosicion()+1)+" en el tiempo: "+System.currentTimeMillis()/1000);
+        System.out.println("La transicion: " + (t.getPosicion() + 1) + " en el tiempo: " + System.currentTimeMillis() / 1000);
         Operaciones.printVector(vectorDeEstado);
 
     }
@@ -122,7 +122,6 @@ public class RedDePetri {
             }
         }
     }*/
-
 
 
     private void sleepThread(int posicion) { //todo no se si esta bien
@@ -140,7 +139,7 @@ public class RedDePetri {
     }
 
 
-    public int[] getVectorDeEstado(){
+    public int[] getVectorDeEstado() {
         return vectorDeEstado;
     }
 
@@ -148,15 +147,15 @@ public class RedDePetri {
         return incidencia[0].length;
     }
 
-    public int getCantPlazas(){
+    public int getCantPlazas() {
         return incidencia.length;
     }
 
-    public int[][] getInhibidor(){
+    public int[][] getInhibidor() {
         return inhibidor;
     }
 
-    public void calculoDeVectorEstado( Transicion transicion) {
+    public void calculoDeVectorEstado(Transicion transicion) {
         vectorDeEstado = marcadoSiguiente(vectorDeEstado, transicion.getPosicion());
 
     }
@@ -174,9 +173,6 @@ public class RedDePetri {
 
     public boolean esDisparoValido(int[] marcado_siguiente) throws NullPointerException {
 
-        if (marcado_siguiente == null) {
-            throw new NullPointerException("Marcado null.");
-        }
         for (int j : marcado_siguiente) {
             if (j < 0) {
                 return false;
@@ -210,22 +206,22 @@ public class RedDePetri {
     }
 
 
-    public Boolean[] getVectorQ(){
+    public Boolean[] getVectorQ() {
         Boolean[] vectorQ = new Boolean[getVectorDeEstado().length];
 
-        for(int i=0; i<getCantPlazas(); i++){
+        for (int i = 0; i < getCantPlazas(); i++) {
             vectorQ[i] = vectorDeEstado[i] != 0;
         }
         return vectorQ;
     }
 
-    public Boolean[] getVectorB(){
+    public Boolean[] getVectorB() {
 
         Boolean[] vectorB = new Boolean[getCantTransisiones()];
         int[][] inhibidorTranspuesta = Operaciones.transpuesta(this.inhibidor);
-        vectorB = Operaciones.productoMatrizVectorBoolean(inhibidorTranspuesta,this.getVectorQ());
-        for(int i=0; i<vectorB.length;i++){
-            vectorB[i]=!vectorB[i];
+        vectorB = Operaciones.productoMatrizVectorBoolean(inhibidorTranspuesta, this.getVectorQ());
+        for (int i = 0; i < vectorB.length; i++) {
+            vectorB[i] = !vectorB[i];
         }
 
         B = vectorB;
@@ -234,13 +230,13 @@ public class RedDePetri {
 
     }
 
-    public Boolean[] getConjuncionEAndBandLandC(){
-        Boolean[] E= this.getVectorE();
+    public Boolean[] getConjuncionEAndBandLandC() {
+        Boolean[] E = this.getVectorE();
 
-        return Operaciones.andVector(B,E);
+        return Operaciones.andVector(B, E);
     }
 
-    public Boolean[] getSensibilizadasExtendido(){
+    public Boolean[] getSensibilizadasExtendido() {
         Boolean Ex[];
         Boolean E[] = this.getVectorE();
 
@@ -250,6 +246,4 @@ public class RedDePetri {
         return this.getConjuncionEAndBandLandC();
 
     }
-
-
 }
