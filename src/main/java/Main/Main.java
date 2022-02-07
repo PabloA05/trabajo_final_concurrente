@@ -11,6 +11,8 @@ public class Main {
         String mji = "src/main/resources/inicial.csv";
         String I = "src/main/resources/incidencia.csv";
         String H = "src/main/resources/inhibidor.csv";
+        String T = "src/main/resources/tInvariantes.csv";
+
         RedDePetri redDePetri = new RedDePetri(mji, I, H);
         Monitor monitor = new Monitor(redDePetri);
 
