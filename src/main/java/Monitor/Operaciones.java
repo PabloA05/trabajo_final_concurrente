@@ -148,6 +148,46 @@ public class Operaciones {
         return output;
     }
 
+    public static ArrayList<ArrayList<Integer>> setPinvariantes(String fileName){
+
+        ArrayList<ArrayList<Integer>> pInvariantes = new ArrayList<ArrayList<Integer>>();
+        String numero;
+        try {
+            File file = new File(fileName);
+            INPUT_STREAM = new Scanner(file);
+            int i = 0;
+            boolean flag = false;
+            pInvariantes.add(new ArrayList<Integer>());
+            while (INPUT_STREAM.hasNext()) {
+                String line = INPUT_STREAM.next();
+                if(line.contains("M")){
+                    numero = line.substring(line.indexOf("P")+1, line.indexOf(")"));
+                    pInvariantes.get(i).add(Integer.valueOf(numero));
+                    //System.out.println(numero);
+                }
+                if(line.matches("[+-]?\\d*(\\.\\d+)?") && !line.equals("+")){
+                    pInvariantes.get(i).add(Integer.valueOf(line));
+                }
+                if(flag){
+                    i++;
+                    pInvariantes.add(new ArrayList<Integer>());
+                    flag = false;
+                }
+                if(line.equals("=")){
+                    flag = true;
+                }
+
+            }
+            INPUT_STREAM.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        pInvariantes.remove(pInvariantes.size()-1);
+
+        return pInvariantes;
+    }
+
     public static int[][] matriz2d(String fileName) {
         ArrayList<ArrayList<Integer>> a = new ArrayList<ArrayList<Integer>>();
         try {

@@ -24,7 +24,7 @@ public class Politica {
         Arrays.sort(transiciones, Comparator.comparingInt(Transicion::getCantidadDisparada));
 
         if(politica){
-            System.out.println("Entro a polica true");
+            System.out.println("Entro a politica");
             for (Transicion transicion : transiciones) {
                 if (m[transicion.getPosicion()]) {
                     System.out.println("La politica decide por: T"+(transicion.getPosicion()+1));
