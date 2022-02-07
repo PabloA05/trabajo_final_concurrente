@@ -11,10 +11,10 @@ public class Hilo implements Runnable{
     Transicion[] transiciones;
     Boolean[] secuencia = new Boolean[10];
 
-    public Hilo (RedDePetri rdp, Monitor monitor, Boolean[] secuencia){
-        this.rdp=rdp;
-        this.monitor=monitor;
-        transiciones = rdp.getTransiciones();
+    public Hilo(RedDePetri rdp, Monitor monitor, Boolean[] secuencia) {
+        this.rdp = rdp;
+        this.monitor = monitor;
+        transiciones = rdp.getTransiciones().clone();
         this.secuencia = secuencia;
     }
 
@@ -34,6 +34,6 @@ public class Hilo implements Runnable{
             }
             k--;
         }
-      //  System.out.println("Salio: "+Thread.currentThread().getName());
+       // System.out.println("Salio: "+Thread.currentThread().getName());
     }
 }
