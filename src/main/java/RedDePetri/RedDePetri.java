@@ -3,6 +3,7 @@ package RedDePetri;
 import Monitor.Operaciones;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class RedDePetri {
@@ -24,18 +25,19 @@ public class RedDePetri {
     private boolean k = false;
     private boolean[] VectorSensibilazadas;
     private Transicion[] transiciones;
+    private ArrayList<ArrayList<Integer>> pInvariantes;
     //private Boolean[] sensibilizadasEx;
 
 
     public RedDePetri(String mji, String I, String h) {
 
 
-        //  e_semaphore = new Semaphore(1, true);//no se  si lo voy a usar
-
         this.incidencia = Operaciones.matriz2d(I);
         this.vectorDeEstado = Operaciones.vector(mji);
         this.inhibidor = Operaciones.matriz2d(h);
+        pInvariantes = Operaciones.setPinvariantes("src/main/resources/pInvariantes.csv");
         this.mki = vectorDeEstado.clone(); //marca inicial
+
         /*sensibilizadas = new Boolean[getCantTransisiones()];
         for (int i = 0; i < getCantTransisiones(); i++) {
             sensibilizadas[i] = false;
@@ -98,8 +100,11 @@ public class RedDePetri {
         return k;*/
         //k = false;
         if(this.getSensibilizadasExtendido()[transicion.getPosicion()]){
+            System.out.println("Disparo transicion: "+ (transicion.getPosicion()+1));
             vectorDeEstado = marcadoSiguiente(vectorDeEstado,transicion.getPosicion());
+            Operaciones.printVector(vectorDeEstado);
             transicion.incrementoDisparo();
+            verificarPInvariantes();
             return true;
         }
         else {
@@ -122,6 +127,9 @@ public class RedDePetri {
             }
         }
     }*/
+
+
+
 
 
 
@@ -171,6 +179,23 @@ public class RedDePetri {
         return incidencia;
     }
 
+    public void verificarPInvariantes() {
+        int suma = 0;
+
+        for (int i = 0; i < pInvariantes.size(); i++) {
+            ArrayList<Integer> a = new ArrayList<>();
+            a = pInvariantes.get(i);
+            suma=0;
+            for (int j = 0; j < a.size()-1; j++) {
+                int aux = a.get(j)-1;
+                suma+= vectorDeEstado[a.get(j)-1];
+            }
+            if(suma != a.get(a.size()-1)){
+                System.out.println("No se cumple el invariante "+i+" de plaza");
+                System.exit(1);
+            }
+        }
+    }
 
     public boolean esDisparoValido(int[] marcado_siguiente) throws NullPointerException {
 

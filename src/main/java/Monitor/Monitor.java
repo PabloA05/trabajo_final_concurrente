@@ -35,19 +35,21 @@ public class Monitor {
 
     public void disparaTransicion(Transicion transicion) {
        // k = true;
+        try{
+            semaforoMonitor.acquire(); //Adquiero acceso al monitor.
+        }
+        catch(InterruptedException e){
+            e.printStackTrace();
+            return;
+        }
         while (true) {//todo hace falta la k????
 
-            try{
-                semaforoMonitor.acquire(); //Adquiero acceso al monitor.
-            }
-            catch(InterruptedException e){
-                e.printStackTrace();
-                return;
-            }
+
             boolean k= true;
+
             //System.out.print("Hilo: "+Thread.currentThread().getId()+" entro al monitor con transicion "+transicion.getPosicion()+"\n");
             k = this.redDePetri.disparar(transicion);
-            System.out.println("valor de k:"+k);
+            //System.out.println("valor de k:"+k);
             if (k) {
                 Boolean[] Vs = this.redDePetri.getSensibilizadasExtendido();
                 //Operaciones.printVectorEx(Vs);
@@ -55,7 +57,7 @@ public class Monitor {
                 //Operaciones.printVectorColas(Vc);
                 Boolean[] m = new Boolean[Vs.length];
                 m = Operaciones.andVector(Vs, Vc); //todo ver si se puede simplificar
-                cantidadDisparada(redDePetri);
+                //cantidadDisparada(redDePetri);
                 if (Operaciones.comprobarUnos(m)) {
                     try{
                         Transicion transicionADisparar = politica.cualDisparo(m,redDePetri);
