@@ -21,33 +21,25 @@ public class Politica {
     public Transicion cualDisparo(Boolean[] m, RedDePetri rdp) {
 
         Transicion[] transiciones = rdp.getTransiciones().clone();
-        for(int i=0;i< transiciones.length;i++){
-            //System.out.println("La transicion: "+transiciones[i].getPosicion()+" tiene: "+transiciones[i].getCantidadDisparada()+" disparos "+Thread.currentThread().getName() );
-        }
-        System.out.println("\n");
         Arrays.sort(transiciones, Comparator.comparingInt(Transicion::getCantidadDisparada));
-        for(int i=0;i< transiciones.length;i++){
-       //     System.out.println("La transicion: "+transiciones[i].getPosicion()+" tiene: "+transiciones[i].getCantidadDisparada()+" disparos "+Thread.currentThread().getName() );
-        }
-        System.out.println("\n");
+//        for (int i = 0; i < m.length; i++) {
+//            System.out.printf(" vector m %d %b | ", i, m[i]);
+//        }
+//        System.out.println();
 
-        for (int i = 0; i < m.length; i++) {
-          //  System.out.printf("%b\n",m[i]);
-
-        }
+//        for (int i = 0; i < transiciones.length; i++) {
+//            System.out.printf("transisiones %d %d \n",transiciones[i].getPosicion(), transiciones[i].getCantidadDisparada());
+//        }
         if (politica) {
-
-            for (int i = 0; i < rdp.getCantTransisiones(); i++) {
-                if (m[transiciones[i].getPosicion()]) {
-                 //   System.out.printf("*******************************retorna %d\n", transiciones[i].getPosicion());
-                    return transiciones[i];
+            // System.out.println("Entro a polica true");
+            for (Transicion transicion : transiciones) {
+                if (m[transicion.getPosicion()]) {
+           //         System.out.println("La politica decide por: T"+(transicion.getPosicion()+1));
+                    return transicion;
                 }
             }
-
         }
-
-
-
+        // System.out.println("Entro a polica false");
         int random;
         ArrayList<Integer> list = new ArrayList<Integer>();
         for (int i = 0; i < m.length; i++) {
@@ -56,7 +48,6 @@ public class Politica {
             }
         }
         random = (int) (Math.random() * (list.size()));
-
         return transiciones[list.get(random)];
 
     }
