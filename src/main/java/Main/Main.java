@@ -2,6 +2,7 @@ package Main;
 
 import Monitor.*;
 import RedDePetri.RedDePetri;
+import Util.Log;
 
 public class Main {
     public static void main(String[] args) {
@@ -12,6 +13,8 @@ public class Main {
         String I = "src/main/resources/incidencia.csv";
         String H = "src/main/resources/inhibidor.csv";
         String T = "src/main/resources/tInvariantes.csv";
+        String filepathLog = "src/main/resources/log";
+        new Log(filepathLog);
 
         RedDePetri redDePetri = new RedDePetri(mji, I, H);
         Monitor monitor = new Monitor(redDePetri);
@@ -58,5 +61,6 @@ public class Main {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        Log.close();
     }
 }

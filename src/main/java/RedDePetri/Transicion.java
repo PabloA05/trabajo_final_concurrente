@@ -1,12 +1,12 @@
 package RedDePetri;
 
 public class Transicion {
-    private char id;
+    private char id;//todo pasar a string?
     private boolean temporizada;
     private int posicion;
     private int cantidadDisparada;
 
-    public Transicion(char id, int posicion, boolean temporizada){ //todo controlar que no sea nulo
+    public Transicion(char id, int posicion, boolean temporizada){
         this.id = id;
         this.posicion = posicion;
         this.temporizada = temporizada;

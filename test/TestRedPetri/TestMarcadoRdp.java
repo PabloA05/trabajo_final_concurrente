@@ -3,6 +3,7 @@ package TestRedPetri;
 import Monitor.Operaciones;
 import RedDePetri.Transicion;
 import RedDePetri.RedDePetri;
+import Util.Log;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -41,6 +42,7 @@ public class TestMarcadoRdp {
     public void setVector() {
         redDePetri.setVectorDeEstado(new int[]{0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 3, 3});
         transiciones = redDePetri.getVectorDeEstado();
+        new Log("src/main/resources/log");
     }
 
     @Test
@@ -102,7 +104,16 @@ public class TestMarcadoRdp {
             System.out.printf("%b ", temp[i]);
         }
         System.out.println();
+    }
 
+    @Test
+    public void testWrite(){
+        test('a');
+        test('n');
+        Log.close();
+    }
 
+    public void test(char str){
+        Log.write(str);
     }
 }

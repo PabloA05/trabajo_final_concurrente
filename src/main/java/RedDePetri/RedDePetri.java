@@ -1,6 +1,7 @@
 package RedDePetri;
 
 import Monitor.Operaciones;
+import Util.Log;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -100,12 +101,12 @@ public class RedDePetri {
         }
         return k;*/
         //k = false;
-        if(this.getSensibilizadasExtendido()[transicion.getPosicion()]){
-            vectorDeEstado = marcadoSiguiente(vectorDeEstado,transicion.getPosicion());
+        if (this.getSensibilizadasExtendido()[transicion.getPosicion()]) {
+            vectorDeEstado = marcadoSiguiente(vectorDeEstado, transicion.getPosicion());
             transicion.incrementoDisparo();
+            Log.write(transicion.getId());
             return true;
-        }
-        else {
+        } else {
             return false;
         }
     }
@@ -128,26 +129,27 @@ public class RedDePetri {
     public void setTransiciones(Transicion[] trans) {
         this.transiciones = trans;
     }
-/*
-    private void sleepThread(int posicion) { //todo no se si esta bien
-        long sleepTime = transicionesConTiempo[posicion].getStartTime() + transicionesConTiempo[posicion].getAlpha() - System.currentTimeMillis();
-        try {
-            Thread.sleep(sleepTime);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+
+    /*
+        private void sleepThread(int posicion) { //todo no se si esta bien
+            long sleepTime = transicionesConTiempo[posicion].getStartTime() + transicionesConTiempo[posicion].getAlpha() - System.currentTimeMillis();
+            try {
+                Thread.sleep(sleepTime);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
-    }
 
 
-    private boolean antesDeLaVentana(int posicion) {
-        return (transicionesConTiempo[posicion].getStartTime() + transicionesConTiempo[posicion].getAlpha() - System.currentTimeMillis() < 0);
-    }
+        private boolean antesDeLaVentana(int posicion) {
+            return (transicionesConTiempo[posicion].getStartTime() + transicionesConTiempo[posicion].getAlpha() - System.currentTimeMillis() < 0);
+        }
 
 
-    public boolean estaSensibilizado(int posicion) {
-        return sensibilizadasEx[posicion];
-    }
-*/
+        public boolean estaSensibilizado(int posicion) {
+            return sensibilizadasEx[posicion];
+        }
+    */
     public int[] getVectorDeEstado() {
         return vectorDeEstado;
     }
@@ -185,13 +187,13 @@ public class RedDePetri {
         for (int i = 0; i < pInvariantes.size(); i++) {
             ArrayList<Integer> a = new ArrayList<>();
             a = pInvariantes.get(i);
-            suma=0;
-            for (int j = 0; j < a.size()-1; j++) {
-                int aux = a.get(j)-1;
-                suma+= vectorDeEstado[a.get(j)-1];
+            suma = 0;
+            for (int j = 0; j < a.size() - 1; j++) {
+                int aux = a.get(j) - 1;
+                suma += vectorDeEstado[a.get(j) - 1];
             }
-            if(suma != a.get(a.size()-1)){
-                System.out.println("No se cumple el invariante "+i+" de plaza");
+            if (suma != a.get(a.size() - 1)) {
+                System.out.println("No se cumple el invariante " + i + " de plaza");
                 System.exit(1);
             }
         }
@@ -245,9 +247,9 @@ public class RedDePetri {
 
         Boolean[] vectorB = new Boolean[getCantTransisiones()];
         int[][] inhibidorTranspuesta = Operaciones.transpuesta(this.inhibidor);
-        vectorB = Operaciones.productoMatrizVectorBoolean(inhibidorTranspuesta,this.getVectorQ());
-        for(int i=0; i<vectorB.length;i++){
-            vectorB[i]=!vectorB[i];
+        vectorB = Operaciones.productoMatrizVectorBoolean(inhibidorTranspuesta, this.getVectorQ());
+        for (int i = 0; i < vectorB.length; i++) {
+            vectorB[i] = !vectorB[i];
         }
 
         B = vectorB;
@@ -256,13 +258,13 @@ public class RedDePetri {
 
     }
 
-    public Boolean[] getConjuncionEAndBandLandC(){
-        Boolean[] E= this.getVectorE();
+    public Boolean[] getConjuncionEAndBandLandC() {
+        Boolean[] E = this.getVectorE();
 
-        return Operaciones.andVector(B,E);
+        return Operaciones.andVector(B, E);
     }
 
-    public Boolean[] getSensibilizadasExtendido(){
+    public Boolean[] getSensibilizadasExtendido() {
         Boolean Ex[];
         Boolean E[] = this.getVectorE();
 
