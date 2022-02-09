@@ -13,7 +13,7 @@ public class Main {
         String H = "src/main/resources/inhibidor.csv";
         String T = "src/main/resources/tInvariantes.csv";
 
-        RedDePetri redDePetri = new RedDePetri(mji, I, H);
+        RedDePetri redDePetri = new RedDePetri(mji, I, H, T);
         Monitor monitor = new Monitor(redDePetri);
 
 
