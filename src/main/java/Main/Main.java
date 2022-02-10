@@ -4,9 +4,11 @@ import Monitor.*;
 import RedDePetri.RedDePetri;
 import Util.Log;
 
+import java.io.IOException;
+
 public class Main {
     public static void main(String[] args) {
-
+   
         //todo implementar el numero de hilos
         Operaciones.setCantidadHilos(1);
         String mji = "src/main/resources/inicial.csv";
