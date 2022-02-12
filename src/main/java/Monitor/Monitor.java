@@ -38,7 +38,7 @@ public class Monitor {
         // k = true;
         while (true) {//todo hace falta la k????
 
-           acquireMonitor();
+            acquireMonitor();
             boolean k = true;
             //System.out.print("Hilo: "+Thread.currentThread().getId()+" entro al monitor con transicion "+transicion.getPosicion()+"\n");
             k = this.redDePetri.disparar(transicion);
@@ -72,17 +72,19 @@ public class Monitor {
                     break;
                 }
             } else {
-                semaforoMonitor.release();
+                releaseMonitor();
+                //  semaforoMonitor.release();
                 cola[transicion.getPosicion()].acquire();
             }
 
         }
         //cantidadDisparada(redDePetri);
 
-        semaforoMonitor.release();
+        releaseMonitor();
+        //semaforoMonitor.release();
     }
 
-    public static synchronized void acquireMonitor() {
+    public static void acquireMonitor() {
         try {
             semaforoMonitor.acquire();
         } catch (InterruptedException e) {
@@ -90,7 +92,7 @@ public class Monitor {
         }
     }
 
-    public static synchronized void releaseMonitor() {
+    public static void releaseMonitor() {
         semaforoMonitor.release();
     }
 
