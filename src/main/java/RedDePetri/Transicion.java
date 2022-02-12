@@ -12,12 +12,12 @@ public class Transicion {
         this.temporizada = temporizada;
         cantidadDisparada = 0;
     }
-
+//return (!(a == 0 || a == 6)) ;
     public char getId (){
         return id;
     }
 
-    public boolean getTemportizada(){
+    public boolean isTemportizada(){
         return temporizada;
     }
 

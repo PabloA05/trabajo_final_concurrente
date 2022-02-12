@@ -9,8 +9,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.util.Arrays;
-
 import static org.junit.Assert.assertTrue;
 
 public class TestMarcadoRdp {
@@ -23,13 +21,14 @@ public class TestMarcadoRdp {
     static String B = "src/main/resources/bincidencia.csv";
     static String F = "src/main/resources/fincidencia.csv";
     static String S = "src/main/resources/estadosPosibles.csv"; //no sirve
+    static String tiempos = "src/main/resources/tiempos.csv";
     int[] fire = {0, 1, 6, 0, 7, 3, 5, 1, 6, 8, 7, 6, 9, 8, 9, 0, 7, 3, 1, 8, 9, 0, 5, 3, 2, 0, 5, 4, 5, 2, 0, 4, 1, 0, 5, 3, 5, 1, 0, 3}; //termina en S03
     int[] state3 = {1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 1, 3};
     int[] transiciones;
 
     @BeforeClass
     public static void setRedDePetri() {
-        redDePetri = new RedDePetri(mji, I, H);
+        redDePetri = new RedDePetri(mji, I, H, tiempos);
         arrTransiciones = new Transicion[10];
 
         char alp = 'a';
@@ -76,14 +75,14 @@ public class TestMarcadoRdp {
         Assert.assertArrayEquals(redDePetri.getVectorDeEstado(), new int[]{1, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 2});
         //  Assert.assertArrayEquals(redDePetri.getVectorDeEstado(), new int[]{1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 1, 2});
 
-      //  redDePetri.actualiceSensibilizadoT();
+        //  redDePetri.actualiceSensibilizadoT();
 
         System.out.println("sensiblizadas");
         for (int i = 0; i < 10; i++) {
-         //   System.out.printf("%b ", redDePetri.getSensibilizada()[i]);
+            //   System.out.printf("%b ", redDePetri.getSensibilizada()[i]);
         }
         System.out.println();
-     //   Assert.assertEquals(sensi_S5.length, redDePetri.getSensibilizada().length);
+        //   Assert.assertEquals(sensi_S5.length, redDePetri.getSensibilizada().length);
 
         //Assert.assertArrayEquals(redDePetri.getSensibilizada(), sensi_S5); //todo descomentar
     }
@@ -107,13 +106,13 @@ public class TestMarcadoRdp {
     }
 
     @Test
-    public void testWrite(){
+    public void testWrite() {
         test('a');
         test('n');
         Log.close();
     }
 
-    public void test(char str){
+    public void test(char str) {
         Log.write(str);
     }
 }

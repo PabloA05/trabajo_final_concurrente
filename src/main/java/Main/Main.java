@@ -15,10 +15,11 @@ public class Main {
         String I = "src/main/resources/incidencia.csv";
         String H = "src/main/resources/inhibidor.csv";
         String T = "src/main/resources/tInvariantes.csv";
+        String tiempos = "src/main/resources/tiempos.csv";
         String filepathLog = "src/main/resources/log";
         new Log(filepathLog);
 
-        RedDePetri redDePetri = new RedDePetri(mji, I, H);
+        RedDePetri redDePetri = new RedDePetri(mji, I, H,tiempos);
         Monitor monitor = new Monitor(redDePetri);
 
 

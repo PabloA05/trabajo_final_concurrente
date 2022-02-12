@@ -2,13 +2,14 @@ package Monitor;
 
 import RedDePetri.RedDePetri;
 import RedDePetri.Transicion;
+import Util.Log;
 
 import java.sql.SQLOutput;
 import java.util.concurrent.Semaphore;
 
 public class Monitor {
 
-    private Semaphore semaforoMonitor;
+    private static Semaphore semaforoMonitor;
     //private boolean k;
     private RedDePetri redDePetri;
     private Colas[] cola;
@@ -38,19 +39,16 @@ public class Monitor {
         // k = true;
         while (true) {//todo hace falta la k????
 
-            try {
-                semaforoMonitor.acquire(); //Adquiero acceso al monitor.
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-                return;
-            }
+
+            acquireMonitor();
+
             boolean k = true;
             //System.out.print("Hilo: "+Thread.currentThread().getId()+" entro al monitor con transicion "+transicion.getPosicion()+"\n");
             k = this.redDePetri.disparar(transicion);
 
 
             if (k) {
-               // System.out.printf("disparo ->%d %s\n", disparos++, Thread.currentThread().getName());
+                System.out.printf("disparo ->%d %s\n", disparos++, Thread.currentThread().getName());
                 Boolean[] Vs = this.redDePetri.getSensibilizadasExtendido();
                 //Operaciones.printVectorEx(Vs);
                 Boolean[] Vc = quienesEstan();
@@ -77,28 +75,28 @@ public class Monitor {
                     break;
                 }
             } else {
-                semaforoMonitor.release();
+                releaseMonitor();
                 cola[transicion.getPosicion()].acquire();
             }
 
         }
         //cantidadDisparada(redDePetri);
 
-        semaforoMonitor.release();
+        releaseMonitor();
+        Log.write(transicion.getId());
     }
 
-    /*public static synchronized void acquireMonitor() {
-        System.out.println(Thread.currentThread().getId());
+    public static synchronized void acquireMonitor() {
         try {
             semaforoMonitor.acquire();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-    }*/
+    }
 
-    /*public static synchronized void releaseMonitor() {
+    public static synchronized void releaseMonitor() {
         semaforoMonitor.release();
-    }*/
+    }
 
     public void cantidadDisparada(RedDePetri redDePetri) {
         Transicion[] transiciones;
