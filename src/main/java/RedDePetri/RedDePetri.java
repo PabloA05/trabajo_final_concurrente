@@ -82,7 +82,6 @@ public class RedDePetri {
         if (getSensibilizadasExtendido()[transicion.getPosicion()]) {
 
             boolean ventana = transicionesConTiempo[transicion.getPosicion()].testVentanaTiempo();
-            System.out.println("ventsna: " + ventana);
             if (ventana) {
                 if (!transicionesConTiempo[transicion.getPosicion()].isEsperando() ||
                         (transicionesConTiempo[transicion.getPosicion()].isEsperando()
@@ -107,7 +106,7 @@ public class RedDePetri {
             transicion.incrementoDisparo();
         }
         return k;
-        //k = false;
+//        k = false;
 //        if (this.getSensibilizadasExtendido()[transicion.getPosicion()]) {
 //            vectorDeEstado = marcadoSiguiente(vectorDeEstado, transicion.getPosicion());
 //            transicion.incrementoDisparo();

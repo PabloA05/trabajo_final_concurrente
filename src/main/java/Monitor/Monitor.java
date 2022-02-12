@@ -2,7 +2,6 @@ package Monitor;
 
 import RedDePetri.RedDePetri;
 import RedDePetri.Transicion;
-import Util.Log;
 
 import java.sql.SQLOutput;
 import java.util.concurrent.Semaphore;
@@ -39,9 +38,7 @@ public class Monitor {
         // k = true;
         while (true) {//todo hace falta la k????
 
-
-            acquireMonitor();
-
+           acquireMonitor();
             boolean k = true;
             //System.out.print("Hilo: "+Thread.currentThread().getId()+" entro al monitor con transicion "+transicion.getPosicion()+"\n");
             k = this.redDePetri.disparar(transicion);
@@ -75,15 +72,14 @@ public class Monitor {
                     break;
                 }
             } else {
-                releaseMonitor();
+                semaforoMonitor.release();
                 cola[transicion.getPosicion()].acquire();
             }
 
         }
         //cantidadDisparada(redDePetri);
 
-        releaseMonitor();
-        Log.write(transicion.getId());
+        semaforoMonitor.release();
     }
 
     public static synchronized void acquireMonitor() {
