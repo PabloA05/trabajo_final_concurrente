@@ -38,14 +38,19 @@ public class Monitor {
         // k = true;
         while (true) {//todo hace falta la k????
 
-            acquireMonitor();
+            try {
+                semaforoMonitor.acquire(); //Adquiero acceso al monitor.
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                return;
+            }
             boolean k = true;
             //System.out.print("Hilo: "+Thread.currentThread().getId()+" entro al monitor con transicion "+transicion.getPosicion()+"\n");
             k = this.redDePetri.disparar(transicion);
 
 
             if (k) {
-                System.out.printf("disparo ->%d %s\n", disparos++, Thread.currentThread().getName());
+                 System.out.printf("transicion>%d %s\n", transicion.getPosicion() , Thread.currentThread().getName());
                 Boolean[] Vs = this.redDePetri.getSensibilizadasExtendido();
                 //Operaciones.printVectorEx(Vs);
                 Boolean[] Vc = quienesEstan();
@@ -72,16 +77,14 @@ public class Monitor {
                     break;
                 }
             } else {
-                releaseMonitor();
-                //  semaforoMonitor.release();
+                semaforoMonitor.release();
                 cola[transicion.getPosicion()].acquire();
             }
 
         }
         //cantidadDisparada(redDePetri);
 
-        releaseMonitor();
-        //semaforoMonitor.release();
+        semaforoMonitor.release();
     }
 
     public static void acquireMonitor() {

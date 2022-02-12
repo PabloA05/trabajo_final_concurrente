@@ -21,7 +21,7 @@ public class RedDePetri {
     //private int[] e; //vector de transiciones sensibilizadas
     int[] ex; //vector de sensibilizado extendido
     //private int[] z; //Vector de transiciones des-sensibilizadas por tiempo
-    private boolean k = false;
+    //  private boolean k = false;
     private boolean[] VectorSensibilazadas;
     private Transicion[] transiciones;
     private ArrayList<ArrayList<Integer>> pInvariantes;
@@ -77,7 +77,7 @@ public class RedDePetri {
 //todo completar
 
     public boolean disparar(Transicion transicion) {//todo para transiciones inmediatas
-        k = true;
+        boolean k = false;
         // if (estaSensibilizado(transicion.getPosicion())) {
         if (getSensibilizadasExtendido()[transicion.getPosicion()]) {
 
@@ -89,25 +89,31 @@ public class RedDePetri {
                     k = true;
                 }
             } else {
+                System.out.println("entro >>>>>>>>>>>>>>>>>>");
                 Monitor.releaseMonitor();
+                //Monitor.semaforoMonitor.release();
+
                 if (antesDeLaVentana(transicion.getPosicion())) {
                     transicionesConTiempo[transicion.getPosicion()].setEsperando();
                     sleepThread(transicion.getPosicion());
                 }
+
                 Monitor.acquireMonitor();
             }
         }
         if (k) {
             transicionesConTiempo[transicion.getPosicion()].resetTimestamp();
-            calculoDeVectorEstado(transicion);
+            Operaciones.printVector(vectorDeEstado);
+            verificarPInvariantes();
             vectorDeEstado = marcadoSiguiente(vectorDeEstado, transicion.getPosicion());
             setNuevoTimeStamp();
-
             transicion.incrementoDisparo();
         }
         return k;
-//        k = false;
+//        boolean k = false;
 //        if (this.getSensibilizadasExtendido()[transicion.getPosicion()]) {
+//            Operaciones.printVector(vectorDeEstado);
+//
 //            vectorDeEstado = marcadoSiguiente(vectorDeEstado, transicion.getPosicion());
 //            transicion.incrementoDisparo();
 //
