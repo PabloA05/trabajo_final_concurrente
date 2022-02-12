@@ -4,11 +4,11 @@ import Monitor.Monitor;
 import RedDePetri.RedDePetri;
 import RedDePetri.Transicion;
 
-public class Hilo implements Runnable {
+public class Hilo implements Runnable{
 
     RedDePetri rdp;
     Monitor monitor;
-    final Transicion[] transiciones;
+    Transicion[] transiciones;
     Boolean[] secuencia = new Boolean[10];
 
     public Hilo(RedDePetri rdp, Monitor monitor, Boolean[] secuencia) {
@@ -20,16 +20,20 @@ public class Hilo implements Runnable {
 
     @Override
     public void run() {
-        int k = 10000;
-        while (true) {
-            for (int i = 0; i < transiciones.length; i++) {
-                if (secuencia[i]) {
-                    System.out.printf("transiocon %d %s\n", i,Thread.currentThread().getName());
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        int k=1000;
+        while(true){
+            for(int i=0;i<transiciones.length;i++){
+                if(secuencia[i]){
                     monitor.disparaTransicion(transiciones[i]);
                 }
             }
-            //k--;
+            k--;
         }
-        //System.out.println("Salio: " + Thread.currentThread().getId());
+       // System.out.println("Salio: "+Thread.currentThread().getName());
     }
 }

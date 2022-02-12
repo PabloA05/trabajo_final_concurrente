@@ -1,10 +1,9 @@
 package RedDePetri;
 
+import Monitor.Monitor;
 import Monitor.Operaciones;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class RedDePetri {
 
@@ -29,28 +28,35 @@ public class RedDePetri {
     //private Boolean[] sensibilizadasEx;
 
 
-    public RedDePetri(String mji, String I, String h) {
+    public RedDePetri(String mji, String I, String h, String t) {
 
+
+        //  e_semaphore = new Semaphore(1, true);//no se  si lo voy a usar
 
         this.incidencia = Operaciones.matriz2d(I);
         this.vectorDeEstado = Operaciones.vector(mji);
         this.inhibidor = Operaciones.matriz2d(h);
         pInvariantes = Operaciones.setPinvariantes("src/main/resources/pInvariantes.csv");
         this.mki = vectorDeEstado.clone(); //marca inicial
-
         /*sensibilizadas = new Boolean[getCantTransisiones()];
         for (int i = 0; i < getCantTransisiones(); i++) {
             sensibilizadas[i] = false;
-        }*/
-        /*sensibilizadasEx = new Boolean[getCantTransisiones()];
+        }
+        sensibilizadasEx = new Boolean[getCantTransisiones()];
         for (int i = 0; i < getCantTransisiones(); i++) {
             sensibilizadasEx[i] = false;
         }*/
+        int[][] tiempos = Operaciones.matriz2d(t);
         this.transicionesConTiempo = new SensibilizadasConTiempo[getCantTransisiones()];
+        for (int i = 0; i < transicionesConTiempo.length; i++) {
+            transicionesConTiempo[i] = new SensibilizadasConTiempo(tiempos[0][i], tiempos[1][i]);
+        }
         transiciones = new Transicion[getCantTransisiones()];
         for (int i = 0; i < getCantTransisiones(); i++) {
-            transiciones[i] = new Transicion((char) (97 + i), i, esTemporizada(i));
+            transiciones[i] = new Transicion((char) (97 + i), i, transicionesConTiempo[i].esInmediata());
         }
+
+        setNuevoTimeStamp();
 
 
         //actualiceSensibilizadoT();
@@ -68,69 +74,64 @@ public class RedDePetri {
         }
         return sensibilizadas;
     }
-
+//todo completar
 
     public boolean disparar(Transicion transicion) {//todo para transiciones inmediatas
-        /*   k = true;
-         *//*if (estaSensibilizado(transicion.getPosicion())) {
-
-            transiciones[transicion.getPosicion()].incrementoDisparo();
+        k = true;
+        // if (estaSensibilizado(transicion.getPosicion())) {
+        if (getSensibilizadasExtendido()[transicion.getPosicion()]) {
 
             boolean ventana = transicionesConTiempo[transicion.getPosicion()].testVentanaTiempo();
+            System.out.println("ventsna: " + ventana);
             if (ventana) {
                 if (!transicionesConTiempo[transicion.getPosicion()].isEsperando() ||
-                        ( transicionesConTiempo[transicion.getPosicion()].isEsperando()
-                                && (transicionesConTiempo[transicion.getPosicion()].getId()==Thread.currentThread().getId()))) {
-                    setNuevoTimeStamp(); //todo no esta bien
+                        (transicionesConTiempo[transicion.getPosicion()].isEsperando()
+                                && (transicionesConTiempo[transicion.getPosicion()].getId() == Thread.currentThread().getId()))) {
                     k = true;
                 }
             } else {
-                Monitor.releaseMonitor();
                 if (antesDeLaVentana(transicion.getPosicion())) {
                     transicionesConTiempo[transicion.getPosicion()].setEsperando();
                     sleepThread(transicion.getPosicion());
                 }
-                Monitor.acquireMonitor();
             }
-        }*//*
-        if (k){
+        }
+        if (k) {
             calculoDeVectorEstado(transicion);
-            actualiceSensibilizadoT();
-        }
-        return k;*/
-        //k = false;
-        if(this.getSensibilizadasExtendido()[transicion.getPosicion()]){
-            System.out.println("Disparo transicion: "+ (transicion.getPosicion()+1));
-            vectorDeEstado = marcadoSiguiente(vectorDeEstado,transicion.getPosicion());
-            Operaciones.printVector(vectorDeEstado);
+
+            vectorDeEstado = marcadoSiguiente(vectorDeEstado, transicion.getPosicion());
             transicion.incrementoDisparo();
-            verificarPInvariantes();
-            return true;
         }
-        else {
-            return false;
-        }
+        return k;
+        //k = false;
+//        if (this.getSensibilizadasExtendido()[transicion.getPosicion()]) {
+//            vectorDeEstado = marcadoSiguiente(vectorDeEstado, transicion.getPosicion());
+//            transicion.incrementoDisparo();
+//
+//            return true;
+//        } else {
+//            return false;
+//        }
     }
 
     private void sincronizar(Transicion t) {
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-        Date date = new Date();
-        System.out.println("La transicion: "+(t.getPosicion()+1)+" en el tiempo: "+System.currentTimeMillis()/1000);
+
+        System.out.println("La transicion: " + (t.getPosicion() + 1) + " en el tiempo: " + System.currentTimeMillis() / 1000);
         Operaciones.printVector(vectorDeEstado);
 
     }
 
-    /*private void setNuevoTimeStamp() {
+    private void setNuevoTimeStamp() {
         for (int i = 0; i < transicionesConTiempo.length; i++) {
-            if (sensibilizadas[i]) {
+            if (getSensibilizadasExtendido()[i] && transiciones[i].isTemportizada()) {///
                 transicionesConTiempo[i].nuevoTimeStamp();
             }
         }
-    }*/
+    }
 
-
-
-
+    public void setTransiciones(Transicion[] trans) {
+        this.transiciones = trans;
+    }
 
 
     private void sleepThread(int posicion) { //todo no se si esta bien
@@ -148,7 +149,11 @@ public class RedDePetri {
     }
 
 
-    public int[] getVectorDeEstado(){
+    /*    public boolean estaSensibilizado(int posicion) {
+            return sensibilizadasEx[posicion];
+        }
+   */
+    public int[] getVectorDeEstado() {
         return vectorDeEstado;
     }
 
@@ -156,15 +161,15 @@ public class RedDePetri {
         return incidencia[0].length;
     }
 
-    public int getCantPlazas(){
+    public int getCantPlazas() {
         return incidencia.length;
     }
 
-    public int[][] getInhibidor(){
+    public int[][] getInhibidor() {
         return inhibidor;
     }
 
-    public void calculoDeVectorEstado( Transicion transicion) {
+    public void calculoDeVectorEstado(Transicion transicion) {
         vectorDeEstado = marcadoSiguiente(vectorDeEstado, transicion.getPosicion());
 
     }
@@ -185,13 +190,13 @@ public class RedDePetri {
         for (int i = 0; i < pInvariantes.size(); i++) {
             ArrayList<Integer> a = new ArrayList<>();
             a = pInvariantes.get(i);
-            suma=0;
-            for (int j = 0; j < a.size()-1; j++) {
-                int aux = a.get(j)-1;
-                suma+= vectorDeEstado[a.get(j)-1];
+            suma = 0;
+            for (int j = 0; j < a.size() - 1; j++) {
+                int aux = a.get(j) - 1;
+                suma += vectorDeEstado[a.get(j) - 1];
             }
-            if(suma != a.get(a.size()-1)){
-                System.out.println("No se cumple el invariante "+i+" de plaza");
+            if (suma != a.get(a.size() - 1)) {
+                System.out.println("No se cumple el invariante " + i + " de plaza");
                 System.exit(1);
             }
         }
@@ -199,9 +204,6 @@ public class RedDePetri {
 
     public boolean esDisparoValido(int[] marcado_siguiente) throws NullPointerException {
 
-        if (marcado_siguiente == null) {
-            throw new NullPointerException("Marcado null.");
-        }
         for (int j : marcado_siguiente) {
             if (j < 0) {
                 return false;
@@ -235,22 +237,22 @@ public class RedDePetri {
     }
 
 
-    public Boolean[] getVectorQ(){
+    public Boolean[] getVectorQ() {
         Boolean[] vectorQ = new Boolean[getVectorDeEstado().length];
 
-        for(int i=0; i<getCantPlazas(); i++){
+        for (int i = 0; i < getCantPlazas(); i++) {
             vectorQ[i] = vectorDeEstado[i] != 0;
         }
         return vectorQ;
     }
 
-    public Boolean[] getVectorB(){
+    public Boolean[] getVectorB() {
 
         Boolean[] vectorB = new Boolean[getCantTransisiones()];
         int[][] inhibidorTranspuesta = Operaciones.transpuesta(this.inhibidor);
-        vectorB = Operaciones.productoMatrizVectorBoolean(inhibidorTranspuesta,this.getVectorQ());
-        for(int i=0; i<vectorB.length;i++){
-            vectorB[i]=!vectorB[i];
+        vectorB = Operaciones.productoMatrizVectorBoolean(inhibidorTranspuesta, this.getVectorQ());
+        for (int i = 0; i < vectorB.length; i++) {
+            vectorB[i] = !vectorB[i];
         }
 
         B = vectorB;
@@ -259,13 +261,13 @@ public class RedDePetri {
 
     }
 
-    public Boolean[] getConjuncionEAndBandLandC(){
-        Boolean[] E= this.getVectorE();
+    public Boolean[] getConjuncionEAndBandLandC() {
+        Boolean[] E = this.getVectorE();
 
-        return Operaciones.andVector(B,E);
+        return Operaciones.andVector(B, E);
     }
 
-    public Boolean[] getSensibilizadasExtendido(){
+    public Boolean[] getSensibilizadasExtendido() {
         Boolean Ex[];
         Boolean E[] = this.getVectorE();
 
@@ -276,5 +278,8 @@ public class RedDePetri {
 
     }
 
+    public void setVectorDeEstado(int[] vector) {
+        this.vectorDeEstado = vector;
+    }
 
 }

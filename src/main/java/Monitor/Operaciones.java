@@ -13,15 +13,15 @@ public class Operaciones {
     public static Boolean[] andVector(Boolean[] lista1, Boolean[] lista2) {
 
         Boolean[] resultado = new Boolean[lista1.length];
-        for(int i = 0; i < lista1.length; i++) {
-            resultado[i]= lista1[i] && lista2[i];
+        for (int i = 0; i < lista1.length; i++) {
+            resultado[i] = lista1[i] && lista2[i];
         }
         return resultado;
 
     }
 
 
-    public static Boolean comprobarUnos(Boolean[] lista){
+    public static Boolean comprobarUnos(Boolean[] lista) {
         for (boolean b : lista) {
             if (b) {
                 return true;
@@ -71,6 +71,13 @@ public class Operaciones {
         return result;
     }
 
+    public static void printBoolean(boolean[] boo) {
+        for (int i = 0; i < boo.length; i++) {
+            System.out.printf("%b ", boo[i]);
+        }
+        System.out.println();
+    }
+
 
     public static Boolean[] productoMatrizVectorBoolean(int[][] matriz, Boolean[] vector) throws IllegalArgumentException {
 
@@ -81,12 +88,10 @@ public class Operaciones {
                     if(matriz[i][j] != 0 && vector[j]){
                         resultado[i] = true;
                         break;
-                    }
-                    else resultado[i]=false;
+                    } else resultado[i] = false;
                 }
             }
-        }
-        else {
+        } else {
             throw new IllegalArgumentException("Matrices de diferentes tamanios");
         }
         return resultado;
@@ -254,8 +259,18 @@ public class Operaciones {
     }
 
     public static void printVector(int[] vector) {
-        for (int value : vector) {
-            System.out.print(value+", ");
+        for (int i = 0; i < vector.length; i++) {
+            System.out.printf("%d", vector[i]);
+            if (i + 1 != vector.length) {
+                System.out.print(" ,");
+            }
+        }
+        System.out.println();
+    }
+
+    public static void printB(Boolean[] boo) {
+        for (int i = 0; i < boo.length; i++) {
+            System.out.printf("%b ", boo[i]);
         }
         System.out.println();
     }
