@@ -2,14 +2,14 @@ package RedDePetri;
 
 
 public class SensibilizadasConTiempo {
-    final private long alpha;
-    final private long beta;
+     private long alpha;
+     private long beta;
     private long id;
     //   private boolean flag;// todo id y flag hay que implementarlo
     private long startTime;
     private boolean esperando;
 
-    SensibilizadasConTiempo(int alpha, int beta) {
+    SensibilizadasConTiempo(long alpha, long beta) {
         this.alpha = alpha;
         this.beta = beta;
         //  this.flag = false;

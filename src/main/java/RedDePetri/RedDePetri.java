@@ -49,7 +49,7 @@ public class RedDePetri {
         int[][] tiempos = Operaciones.matriz2d(t);
         this.transicionesConTiempo = new SensibilizadasConTiempo[getCantTransisiones()];
         for (int i = 0; i < transicionesConTiempo.length; i++) {
-            transicionesConTiempo[i] = new SensibilizadasConTiempo(tiempos[0][i], tiempos[1][i]);
+            transicionesConTiempo[i] = new SensibilizadasConTiempo((long) tiempos[0][i], (long) tiempos[1][i]);
         }
         transiciones = new Transicion[getCantTransisiones()];
         for (int i = 0; i < getCantTransisiones(); i++) {
@@ -89,7 +89,8 @@ public class RedDePetri {
                     k = true;
                 }
             } else {
-                System.out.println("entro >>>>>>>>>>>>>>>>>>");
+                System.out.printf("> entro sleep transicion:%d %s\n", transicion.getPosicion(), Thread.currentThread().getName());
+
                 Monitor.releaseMonitor();
                 //Monitor.semaforoMonitor.release();
 
@@ -99,11 +100,13 @@ public class RedDePetri {
                 }
 
                 Monitor.acquireMonitor();
+                System.out.printf("< salio sleep transicion:%d %s\n", transicion.getPosicion(), Thread.currentThread().getName());
+
             }
         }
         if (k) {
             transicionesConTiempo[transicion.getPosicion()].resetTimestamp();
-            Operaciones.printVector(vectorDeEstado);
+            // Operaciones.printVector(vectorDeEstado);
             verificarPInvariantes();
             vectorDeEstado = marcadoSiguiente(vectorDeEstado, transicion.getPosicion());
             setNuevoTimeStamp();
@@ -145,6 +148,10 @@ public class RedDePetri {
 
     private void sleepThread(int posicion) { //todo no se si esta bien
         long sleepTime = transicionesConTiempo[posicion].getStartTime() + transicionesConTiempo[posicion].getAlpha() - System.currentTimeMillis();
+        if (sleepTime < 0) {
+            System.out.println("sleep time negative " + sleepTime);
+            System.exit(1);
+        }
         try {
             Thread.sleep(sleepTime);
         } catch (InterruptedException e) {

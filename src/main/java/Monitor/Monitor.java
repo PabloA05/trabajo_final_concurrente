@@ -2,6 +2,7 @@ package Monitor;
 
 import RedDePetri.RedDePetri;
 import RedDePetri.Transicion;
+import Util.Log;
 
 import java.sql.SQLOutput;
 import java.util.concurrent.Semaphore;
@@ -50,7 +51,7 @@ public class Monitor {
 
 
             if (k) {
-                 System.out.printf("transicion>%d %s\n", transicion.getPosicion() , Thread.currentThread().getName());
+                System.out.printf("Disparo transicion: %d %s\n", transicion.getPosicion(), Thread.currentThread().getName());
                 Boolean[] Vs = this.redDePetri.getSensibilizadasExtendido();
                 //Operaciones.printVectorEx(Vs);
                 Boolean[] Vc = quienesEstan();
@@ -84,6 +85,7 @@ public class Monitor {
         }
         //cantidadDisparada(redDePetri);
 
+        Log.write(transicion.getId());
         semaforoMonitor.release();
     }
 

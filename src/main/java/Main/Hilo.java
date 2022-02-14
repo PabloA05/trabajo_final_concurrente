@@ -25,7 +25,7 @@ public class Hilo implements Runnable {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        int k = 5;
+        int k = 1000;
         while (k > 0) {
             for (int i = 0; i < transiciones.length; i++) {
                 if (secuencia[i]) {
