@@ -34,8 +34,12 @@ public class SensibilizadasConTiempo {
     }
 
     public void setEsperando() {
+        if(this.esperando){
+            System.out.println("esperando error");
+            System.exit(1);
+        }
         this.esperando = true;
-        id = Thread.currentThread().getId();
+        this.id = Thread.currentThread().getId();
     }
 
     public long getAlpha() {

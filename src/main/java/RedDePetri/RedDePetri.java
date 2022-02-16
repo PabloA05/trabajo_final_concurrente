@@ -90,14 +90,13 @@ public class RedDePetri {
             } else {
 
                 Monitor.releaseMonitor();
-                if (antesDeLaVentana(transicion.getPosicion()) && !transicionesConTiempo[transicion.getPosicion()].isEsperando())
-                {
+                if (antesDeLaVentana(transicion.getPosicion()) && !transicionesConTiempo[transicion.getPosicion()].isEsperando()) {
                     System.out.printf("> entro sleep transicion:%d %s\n", transicion.getPosicion(), Thread.currentThread().getName());
 
                     transicionesConTiempo[transicion.getPosicion()].setEsperando();
                     sleepThread(transicion.getPosicion());
-                } else{
-                    System.out.println("mayor que beta");
+                } else {
+                    System.out.printf("mayor que beta %s %d\n", Thread.currentThread().getName(), transicion.getPosicion());
                     System.exit(1);
                 }
                 Monitor.acquireMonitor();
@@ -149,6 +148,8 @@ public class RedDePetri {
         for (int i = 0; i < transicionesConTiempo.length; i++) {
             if (getSensibilizadasExtendido()[i] && transiciones[i].isTemportizada()) {///
                 transicionesConTiempo[i].nuevoTimeStamp();
+            } else {
+                transicionesConTiempo[i].resetTimestamp();
             }
         }
     }
@@ -173,7 +174,7 @@ public class RedDePetri {
 
 
     private boolean antesDeLaVentana(int posicion) {
-        return (transicionesConTiempo[posicion].getStartTime() + transicionesConTiempo[posicion].getAlpha() - System.currentTimeMillis() < 0);
+        return (transicionesConTiempo[posicion].getStartTime() + transicionesConTiempo[posicion].getAlpha() > System.currentTimeMillis());
     }
 
 
