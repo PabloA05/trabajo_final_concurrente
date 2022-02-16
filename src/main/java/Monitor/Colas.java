@@ -34,7 +34,7 @@ public class Colas {
 
     public synchronized void acquire() { //todo fijarse si hacen falta los locks y synchronized
         int a = hilosCola.incrementAndGet();
-      //  System.out.println(ANSI_CYAN+"elementos en cola :" + a + " " + Thread.currentThread().getName()+ ANSI_RESET );
+       System.out.println(ANSI_CYAN+"elementos en cola :" + a + " " + Thread.currentThread().getName()+ ANSI_RESET );
         if (a < 0 || a>4) {
             System.out.printf(ANSI_CYAN+"Valor > %d < de INT mal! %s >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n"+ANSI_RESET ,a , Thread.currentThread().getName());
             System.exit(1);
