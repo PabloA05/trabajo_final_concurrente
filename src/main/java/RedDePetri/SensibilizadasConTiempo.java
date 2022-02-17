@@ -4,12 +4,10 @@ package RedDePetri;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class SensibilizadasConTiempo {
-    private long alpha;
-    private long beta;
+    final private long alpha;
+    final private long beta;
     private long id;
-    //   private boolean flag;// todo id y flag hay que implementarlo
     private long startTime;
-    //  private boolean esperando;
     private AtomicBoolean esperando;
 
     public long getBeta() {
@@ -19,7 +17,6 @@ public class SensibilizadasConTiempo {
     SensibilizadasConTiempo(long alpha, long beta) {
         this.alpha = alpha;
         this.beta = beta;
-        //  this.flag = false;
         this.startTime = -1;
         this.id = -999999;
         this.esperando = new AtomicBoolean(false);
@@ -35,7 +32,6 @@ public class SensibilizadasConTiempo {
     public boolean testVentanaTiempo() {
         long ahora = System.currentTimeMillis();
         return ((ahora - startTime) >= alpha) && ((ahora - startTime) < beta);
-
     }
 
     public void nuevoTimeStamp() {
@@ -75,5 +71,6 @@ public class SensibilizadasConTiempo {
     public void resetTimestamp() {
         this.startTime = -1;
         this.id = -999999;
+        this.esperando.set(false);
     }
 }
