@@ -14,6 +14,10 @@ public class SensibilizadasConTiempo {
         return beta;
     }
 
+    public void setId(long id) {
+        this.id = id;
+    }
+
     SensibilizadasConTiempo(long alpha, long beta) {
         this.alpha = alpha;
         this.beta = beta;
@@ -36,12 +40,12 @@ public class SensibilizadasConTiempo {
 
     public void nuevoTimeStamp() {
         this.startTime = System.currentTimeMillis();
-        this.id = Thread.currentThread().getId();
     }
 
     public boolean isEsperando() {
         return esperando.get();
     }
+
 
     public void setEsperando() {
         if (this.esperando.get()) {

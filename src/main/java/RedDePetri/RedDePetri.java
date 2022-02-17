@@ -90,8 +90,8 @@ public class RedDePetri {
 
             if (transicionesConTiempo[transicion.getPosicion()].testVentanaTiempo()) {
                 if (!transicionesConTiempo[transicion.getPosicion()].isEsperando() ||
-                        (transicionesConTiempo[transicion.getPosicion()].isEsperando()
-                                && (transicionesConTiempo[transicion.getPosicion()].getId() == Thread.currentThread().getId()))) {
+                        (transicionesConTiempo[transicion.getPosicion()].isEsperando() &&
+                                (transicionesConTiempo[transicion.getPosicion()].getId() == Thread.currentThread().getId()))) {
                     k = true;
                 }
             } else {
@@ -99,6 +99,7 @@ public class RedDePetri {
                 if (antesDeLaVentana(transicion.getPosicion()) && !transicionesConTiempo[transicion.getPosicion()].isEsperando()) {
                     System.out.printf("> entro sleep transicion:%d %s\n", transicion.getPosicion(), Thread.currentThread().getName());
                     transicionesConTiempo[transicion.getPosicion()].setEsperando();
+                    transicionesConTiempo[transicion.getPosicion()].setId(Thread.currentThread().getId());
                     sleepThread(transicion.getPosicion());
                 } else if (!transicionesConTiempo[transicion.getPosicion()].isEsperando()) {
                     System.out.printf("mayor que beta %s t:%d esp:%b\n",
@@ -106,18 +107,20 @@ public class RedDePetri {
                     System.exit(1);
                 }
                 Monitor.acquireMonitor();
+
+                if (getSensibilizadasExtendido()[transicion.getPosicion()]) {
+                    if (transicionesConTiempo[transicion.getPosicion()].testVentanaTiempo()) {
+                        if ((transicionesConTiempo[transicion.getPosicion()].isEsperando()
+                                && (transicionesConTiempo[transicion.getPosicion()].getId() == Thread.currentThread().getId()))) {
+                            k = true;
+                        }
+                    }
+//                    System.out.printf("%s test:%b esp:%b t_id:%d");
+                }
+                System.out.printf("< salio else transicion:%d %s k:%b\n",
+                        transicion.getPosicion(), Thread.currentThread().getName(), k);
             }
 
-            if (getSensibilizadasExtendido()[transicion.getPosicion()]) {
-                if (transicionesConTiempo[transicion.getPosicion()].testVentanaTiempo()) {
-                    if ((transicionesConTiempo[transicion.getPosicion()].isEsperando()
-                            && (transicionesConTiempo[transicion.getPosicion()].getId() == Thread.currentThread().getId()))) {
-                        k = true;
-                    }
-                }
-            }
-            System.out.printf("< salio sleep transicion:%d %s k:%b\n",
-                    transicion.getPosicion(), Thread.currentThread().getName(), k);
         }
 
         if (k) {
