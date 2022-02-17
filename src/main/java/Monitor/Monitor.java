@@ -23,7 +23,7 @@ public class Monitor {
     //private boolean k;
     private RedDePetri redDePetri;
     private Colas[] cola;
-    private Politica politica = new Politica(true);
+    private Politica politica = new Politica(2);
     private static int disparos = 0;
 
 
@@ -67,7 +67,7 @@ public class Monitor {
                 //Operaciones.printVectorColas(Vc);
                 Boolean[] m = new Boolean[Vs.length];
                 m = Operaciones.andVector(Vs, Vc); //todo ver si se puede simplificar
-                // cantidadDisparada(redDePetri);
+                cantidadDisparada(redDePetri);
                 if (Operaciones.comprobarUnos(m)) {
                     try {
                         if (semaforoMonitor.availablePermits() != 0) {
@@ -115,9 +115,10 @@ public class Monitor {
     public void cantidadDisparada(RedDePetri redDePetri) {
         Transicion[] transiciones;
         transiciones = redDePetri.getTransiciones().clone();
-        for (int i = 0; i < redDePetri.getCantTransisiones(); i++) {
-            System.out.println("La transicion: " + (transiciones[i].getPosicion() + 1) + " se disparo: " + transiciones[i].getCantidadDisparada());
-        }
+        System.out.println("Invariante 1: " + (transiciones[3].getPosicion()) + " se disparo: " + transiciones[3].getCantidadDisparada());
+        System.out.println("Invariante 2: " + (transiciones[4].getPosicion()) + " se disparo: " + transiciones[4].getCantidadDisparada());
+        System.out.println("Invariante 3: " + (transiciones[6].getPosicion()) + " se disparo: " + transiciones[6].getCantidadDisparada());
+        System.out.println("Invariante 4: " + (transiciones[9].getPosicion()) + " se disparo: " + transiciones[9].getCantidadDisparada());
     }
 
 }

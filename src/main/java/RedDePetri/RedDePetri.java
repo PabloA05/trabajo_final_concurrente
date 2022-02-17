@@ -3,11 +3,14 @@ package RedDePetri;
 import Monitor.Monitor;
 import Monitor.Operaciones;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class RedDePetri {
 
     int[][] incidencia;
+    int[][] tInvariantes;
     final int[][] inhibidor;
     // private int[][] intervalos_tiempo; //matriz de intervalos de tiempo
     final int[] mki; //marca inicial. columna. NO VARIA
@@ -27,8 +30,7 @@ public class RedDePetri {
     private ArrayList<ArrayList<Integer>> pInvariantes;
     //private Boolean[] sensibilizadasEx;
 
-
-    public RedDePetri(String mji, String I, String h, String t) {
+    public RedDePetri(String mji, String I, String h,String t, String T) {
 
 
         //  e_semaphore = new Semaphore(1, true);//no se  si lo voy a usar
@@ -36,6 +38,7 @@ public class RedDePetri {
         this.incidencia = Operaciones.matriz2d(I);
         this.vectorDeEstado = Operaciones.vector(mji);
         this.inhibidor = Operaciones.matriz2d(h);
+        this.tInvariantes = Operaciones.matriz2d(T);
         pInvariantes = Operaciones.setPinvariantes("src/main/resources/pInvariantes.csv");
         this.mki = vectorDeEstado.clone(); //marca inicial
         /*sensibilizadas = new Boolean[getCantTransisiones()];
@@ -60,6 +63,10 @@ public class RedDePetri {
 
 
         //actualiceSensibilizadoT();
+    }
+
+    public int[][] gettInvariantes() {
+        return tInvariantes;
     }
 
     public Boolean[] getVectorE() {

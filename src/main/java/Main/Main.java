@@ -8,7 +8,7 @@ import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) {
-   
+
         //todo implementar el numero de hilos
         Operaciones.setCantidadHilos(1);
         String mji = "src/main/resources/inicial.csv";
@@ -17,9 +17,10 @@ public class Main {
         String T = "src/main/resources/tInvariantes.csv";
         String tiempos = "src/main/resources/tiempos.csv";
         String filepathLog = "src/main/resources/log";
+
         new Log(filepathLog);
 
-        RedDePetri redDePetri = new RedDePetri(mji, I, H,tiempos);
+        RedDePetri redDePetri = new RedDePetri(mji, I, H, tiempos, T);
         Monitor monitor = new Monitor(redDePetri);
 
 
