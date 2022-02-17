@@ -1,13 +1,20 @@
 package RedDePetri;
 
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 public class SensibilizadasConTiempo {
-     private long alpha;
-     private long beta;
+    private long alpha;
+    private long beta;
     private long id;
     //   private boolean flag;// todo id y flag hay que implementarlo
     private long startTime;
-    private boolean esperando;
+    //  private boolean esperando;
+    private AtomicBoolean esperando;
+
+    public long getBeta() {
+        return beta;
+    }
 
     SensibilizadasConTiempo(long alpha, long beta) {
         this.alpha = alpha;
@@ -15,8 +22,15 @@ public class SensibilizadasConTiempo {
         //  this.flag = false;
         this.startTime = -1;
         this.id = -999999;
-        this.esperando = false;
+        this.esperando = new AtomicBoolean(false);
     }
+
+//    public boolean testVentanaTiempo() {
+//        long ahora = System.currentTimeMillis();
+//        return ((ahora - this.startTime) >= this.alpha) && ((ahora - this.startTime) < this.beta &&
+//                !this.esperando.get() || this.esperando.get() && Thread.currentThread().getId() == this.id);
+//
+//    }
 
     public boolean testVentanaTiempo() {
         long ahora = System.currentTimeMillis();
@@ -30,15 +44,15 @@ public class SensibilizadasConTiempo {
     }
 
     public boolean isEsperando() {
-        return esperando;
+        return esperando.get();
     }
 
     public void setEsperando() {
-        if(this.esperando){
+        if (this.esperando.get()) {
             System.out.println("esperando error");
             System.exit(1);
         }
-        this.esperando = true;
+        this.esperando.set(true);
         this.id = Thread.currentThread().getId();
     }
 

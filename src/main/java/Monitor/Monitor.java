@@ -9,6 +9,16 @@ import java.util.concurrent.Semaphore;
 
 public class Monitor {
 
+    public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_BLACK = "\u001B[30m";
+    public static final String ANSI_RED = "\u001B[31m";
+    public static final String ANSI_GREEN = "\u001B[32m";
+    public static final String ANSI_YELLOW = "\u001B[33m";
+    public static final String ANSI_BLUE = "\u001B[34m";
+    public static final String ANSI_PURPLE = "\u001B[35m";
+    public static final String ANSI_CYAN = "\u001B[36m";
+    public static final String ANSI_WHITE = "\u001B[37m";
+
     private static Semaphore semaforoMonitor;
     //private boolean k;
     private RedDePetri redDePetri;
@@ -40,10 +50,9 @@ public class Monitor {
         while (true) {//todo hace falta la k????
 
             try {
-                semaforoMonitor.acquire(); //Adquiero acceso al monitor.
+                semaforoMonitor.acquire();
             } catch (InterruptedException e) {
                 e.printStackTrace();
-                return;
             }
             boolean k = true;
             //System.out.print("Hilo: "+Thread.currentThread().getId()+" entro al monitor con transicion "+transicion.getPosicion()+"\n");
@@ -51,7 +60,7 @@ public class Monitor {
 
 
             if (k) {
-                System.out.printf("Disparo transicion: %d %s\n", transicion.getPosicion(), Thread.currentThread().getName());
+                System.out.printf(ANSI_BLUE + "Disparo transicion: %d %s\n" + ANSI_RESET, transicion.getPosicion(), Thread.currentThread().getName());
                 Boolean[] Vs = this.redDePetri.getSensibilizadasExtendido();
                 //Operaciones.printVectorEx(Vs);
                 Boolean[] Vc = quienesEstan();
@@ -79,7 +88,9 @@ public class Monitor {
                 }
             } else {
                 semaforoMonitor.release();
+                System.out.printf(ANSI_RED + "entro en cola t:%d %s\n" + ANSI_RESET, transicion.getPosicion(), Thread.currentThread().getName());
                 cola[transicion.getPosicion()].acquire();
+                System.out.printf(ANSI_GREEN + "salio de cola t:%d %s\n" + ANSI_RESET, transicion.getPosicion(), Thread.currentThread().getName());
             }
 
         }
