@@ -30,7 +30,7 @@ public class RedDePetri {
     private ArrayList<ArrayList<Integer>> pInvariantes;
     //private Boolean[] sensibilizadasEx;
 
-    public RedDePetri(String mji, String I, String h,String t, String T) {
+    public RedDePetri(String mji, String I, String h, String t, String T) {
 
 
         //  e_semaphore = new Semaphore(1, true);//no se  si lo voy a usar
@@ -110,9 +110,8 @@ public class RedDePetri {
 
             if (getSensibilizadasExtendido()[transicion.getPosicion()]) {
                 if (transicionesConTiempo[transicion.getPosicion()].testVentanaTiempo()) {
-                    if (!transicionesConTiempo[transicion.getPosicion()].isEsperando() ||
-                            (transicionesConTiempo[transicion.getPosicion()].isEsperando()
-                                    && (transicionesConTiempo[transicion.getPosicion()].getId() == Thread.currentThread().getId()))) {
+                    if ((transicionesConTiempo[transicion.getPosicion()].isEsperando()
+                            && (transicionesConTiempo[transicion.getPosicion()].getId() == Thread.currentThread().getId()))) {
                         k = true;
                     }
                 }

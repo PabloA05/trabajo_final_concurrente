@@ -67,7 +67,7 @@ public class Monitor {
                 //Operaciones.printVectorColas(Vc);
                 Boolean[] m = new Boolean[Vs.length];
                 m = Operaciones.andVector(Vs, Vc); //todo ver si se puede simplificar
-                cantidadDisparada(redDePetri);
+              //  cantidadDisparada(redDePetri);
                 if (Operaciones.comprobarUnos(m)) {
                     try {
                         if (semaforoMonitor.availablePermits() != 0) {
