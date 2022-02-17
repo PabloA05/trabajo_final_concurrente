@@ -35,6 +35,7 @@ public class SensibilizadasConTiempo {
 
     public boolean testVentanaTiempo() {
         long ahora = System.currentTimeMillis();
+        System.out.printf("test de ventana:%b %s\n", ((ahora - startTime) >= alpha) && ((ahora - startTime) < beta), Thread.currentThread().getName());
         return ((ahora - startTime) >= alpha) && ((ahora - startTime) < beta);
     }
 
@@ -53,7 +54,6 @@ public class SensibilizadasConTiempo {
             System.exit(1);
         }
         this.esperando.set(true);
-        this.id = Thread.currentThread().getId();
     }
 
     public long getAlpha() {

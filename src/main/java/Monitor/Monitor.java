@@ -55,7 +55,7 @@ public class Monitor {
                 e.printStackTrace();
             }
             boolean k = true;
-            //System.out.print("Hilo: "+Thread.currentThread().getId()+" entro al monitor con transicion "+transicion.getPosicion()+"\n");
+            System.out.print(ANSI_YELLOW + "Hilo: " + Thread.currentThread().getId() + " entro al monitor con transicion " + transicion.getPosicion() +" "+Thread.currentThread().getName()+ ANSI_RESET + "\n");
             k = this.redDePetri.disparar(transicion);
 
 
@@ -67,7 +67,7 @@ public class Monitor {
                 //Operaciones.printVectorColas(Vc);
                 Boolean[] m = new Boolean[Vs.length];
                 m = Operaciones.andVector(Vs, Vc); //todo ver si se puede simplificar
-              //  cantidadDisparada(redDePetri);
+                //  cantidadDisparada(redDePetri);
                 if (Operaciones.comprobarUnos(m)) {
                     try {
                         if (semaforoMonitor.availablePermits() != 0) {

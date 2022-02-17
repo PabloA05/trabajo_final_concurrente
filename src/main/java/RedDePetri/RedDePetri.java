@@ -89,36 +89,57 @@ public class RedDePetri {
         if (getSensibilizadasExtendido()[transicion.getPosicion()]) {
 
             if (transicionesConTiempo[transicion.getPosicion()].testVentanaTiempo()) {
-                if (!transicionesConTiempo[transicion.getPosicion()].isEsperando() ||
-                        (transicionesConTiempo[transicion.getPosicion()].isEsperando() &&
-                                (transicionesConTiempo[transicion.getPosicion()].getId() == Thread.currentThread().getId()))) {
+                if (!transicionesConTiempo[transicion.getPosicion()].isEsperando()) {
                     k = true;
                 }
             } else {
                 Monitor.releaseMonitor();
+                long id = 0;
+                if (transicionesConTiempo[transicion.getPosicion()].isEsperando()) {
+                    id = transicionesConTiempo[transicion.getPosicion()].getId();
+                }
+                System.out.printf("esperando %b %s t:%d \n", transicionesConTiempo[transicion.getPosicion()].isEsperando(), Thread.currentThread().getName(), transicion.getPosicion());
+                if (transicionesConTiempo[transicion.getPosicion()].isEsperando()) {
+                    System.out.printf("?? %s esp_id:%d hilo_id:%d\n", Thread.currentThread().getName(), id, Thread.currentThread().getId());
+                }
+
                 if (antesDeLaVentana(transicion.getPosicion()) && !transicionesConTiempo[transicion.getPosicion()].isEsperando()) {
-                    System.out.printf("> entro sleep transicion:%d %s\n", transicion.getPosicion(), Thread.currentThread().getName());
+//                    if (transicionesConTiempo[transicion.getPosicion()].isEsperando()) {
+//                        System.out.printf("fallo %s t:%d esp:%b esp_id:%d hilo_id:%d\n", Thread.currentThread().getName(), transicion.getPosicion(),
+//                                transicionesConTiempo[transicion.getPosicion()].isEsperando(),
+//                                transicionesConTiempo[transicion.getPosicion()].getId(),
+//                                Thread.currentThread().getId());
+//                        System.exit(1);
+//                    }
+                    System.out.printf(">>> entro sleep transicion:%d %s\n", transicion.getPosicion(), Thread.currentThread().getName());
                     transicionesConTiempo[transicion.getPosicion()].setEsperando();
                     transicionesConTiempo[transicion.getPosicion()].setId(Thread.currentThread().getId());
                     sleepThread(transicion.getPosicion());
+                    System.out.printf("<<< salio del sleep %s\n", Thread.currentThread().getName());
+
                 } else if (!transicionesConTiempo[transicion.getPosicion()].isEsperando()) {
                     System.out.printf("mayor que beta %s t:%d esp:%b\n",
                             Thread.currentThread().getName(), transicion.getPosicion(), transicionesConTiempo[transicion.getPosicion()].isEsperando());
                     System.exit(1);
                 }
                 Monitor.acquireMonitor();
-
+                boolean a;
                 if (getSensibilizadasExtendido()[transicion.getPosicion()]) {
-                    if (transicionesConTiempo[transicion.getPosicion()].testVentanaTiempo()) {
+                    a = transicionesConTiempo[transicion.getPosicion()].testVentanaTiempo();
+                    if (a) {
                         if ((transicionesConTiempo[transicion.getPosicion()].isEsperando()
                                 && (transicionesConTiempo[transicion.getPosicion()].getId() == Thread.currentThread().getId()))) {
                             k = true;
                         }
                     }
-//                    System.out.printf("%s test:%b esp:%b t_id:%d");
+                    System.out.printf("****%s t:%d test:%b esp:%b esp_id:%d hilo_id:%d\n", Thread.currentThread().getName(), transicion.getPosicion(), a,
+                            transicionesConTiempo[transicion.getPosicion()].isEsperando(),
+                            transicionesConTiempo[transicion.getPosicion()].getId(),
+                            Thread.currentThread().getId());
                 }
-                System.out.printf("< salio else transicion:%d %s k:%b\n",
-                        transicion.getPosicion(), Thread.currentThread().getName(), k);
+                System.out.printf("salio else transicion:%d %s k:%b t:%d\n",
+                        transicion.getPosicion(), Thread.currentThread().getName(), k, transicion.getPosicion());
+
             }
 
         }
