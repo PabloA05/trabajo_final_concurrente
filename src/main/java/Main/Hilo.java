@@ -34,6 +34,6 @@ public class Hilo implements Runnable {
             }
             k--;
         }
-        // System.out.println("Salio: "+Thread.currentThread().getName());
+         System.out.println("Salio: "+Thread.currentThread().getName());
     }
 }

@@ -93,7 +93,7 @@ public class Monitor {
             }
 
         }
-        //cantidadDisparada(redDePetri);
+        cantidadDisparada(redDePetri);
 
         Log.write(transicion.getId());
         semaforoMonitor.release();
@@ -116,8 +116,7 @@ public class Monitor {
         transiciones = redDePetri.getTransiciones().clone();
         System.out.println("Invariante 1: " + (transiciones[3].getPosicion()) + " se disparo: " + transiciones[3].getCantidadDisparada());
         System.out.println("Invariante 2: " + (transiciones[4].getPosicion()) + " se disparo: " + transiciones[4].getCantidadDisparada());
-        System.out.println("Invariante 3: " + (transiciones[6].getPosicion()) + " se disparo: " + transiciones[6].getCantidadDisparada());
-        System.out.println("Invariante 4: " + (transiciones[9].getPosicion()) + " se disparo: " + transiciones[9].getCantidadDisparada());
+        System.out.println("Invariante 3: " + (transiciones[9].getPosicion()) + " se disparo: " + transiciones[9].getCantidadDisparada());
     }
 
 }
