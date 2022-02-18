@@ -6,6 +6,7 @@ import Monitor.Operaciones;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class RedDePetri {
 
@@ -85,6 +86,7 @@ public class RedDePetri {
 
     public boolean disparar(Transicion transicion) {//todo para transiciones inmediatas
         boolean k = false;
+
         // if (estaSensibilizado(transicion.getPosicion())) {
         if (getSensibilizadasExtendido()[transicion.getPosicion()]) {
 
@@ -143,6 +145,7 @@ public class RedDePetri {
             }
 
         }
+
 
         if (k) {
             transicionesConTiempo[transicion.getPosicion()].resetTimestamp();

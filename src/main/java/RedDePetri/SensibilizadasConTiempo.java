@@ -41,6 +41,8 @@ public class SensibilizadasConTiempo {
 
     public void nuevoTimeStamp() {
         this.startTime = System.currentTimeMillis();
+        this.id = -999999;
+        this.esperando.set(false);
     }
 
     public boolean isEsperando() {
