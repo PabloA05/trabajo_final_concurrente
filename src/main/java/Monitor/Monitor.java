@@ -4,7 +4,6 @@ import RedDePetri.RedDePetri;
 import RedDePetri.Transicion;
 import Util.Log;
 
-import java.sql.SQLOutput;
 import java.util.concurrent.Semaphore;
 
 public class Monitor {
@@ -31,8 +30,8 @@ public class Monitor {
         semaforoMonitor = new Semaphore(1, true);
         //k = false;
         redDePetri = rdp;
-        cola = new Colas[redDePetri.getCantTransisiones()];
-        for (int i = 0; i < redDePetri.getCantTransisiones(); i++) {
+        cola = new Colas[redDePetri.getCantTransiciones()];
+        for (int i = 0; i < redDePetri.getCantTransiciones(); i++) {
             cola[i] = new Colas(); //Inicialización de colas.
         }
     }
@@ -55,7 +54,7 @@ public class Monitor {
                 e.printStackTrace();
             }
             boolean k = true;
-            System.out.print(ANSI_YELLOW + "Hilo: " + Thread.currentThread().getId() + " entro al monitor con transicion " + transicion.getPosicion() +" "+Thread.currentThread().getName()+ ANSI_RESET + "\n");
+         //   System.out.print(ANSI_YELLOW + "Hilo: " + Thread.currentThread().getId() + " entro al monitor con transicion " + transicion.getPosicion() +" "+Thread.currentThread().getName()+ ANSI_RESET + "\n");
             k = this.redDePetri.disparar(transicion);
 
 

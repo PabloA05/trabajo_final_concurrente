@@ -7,7 +7,7 @@ public class SensibilizadasConTiempo {
     final private long alpha;
     final private long beta;
     private long id;
-    private long startTime;
+    private long timeStamp;
     private AtomicBoolean esperando;
 
     public long getBeta() {
@@ -21,7 +21,7 @@ public class SensibilizadasConTiempo {
     SensibilizadasConTiempo(long alpha, long beta) {
         this.alpha = alpha;
         this.beta = beta;
-        this.startTime = -1;
+        this.timeStamp = -1;
         this.id = -999999;
         this.esperando = new AtomicBoolean(false);
     }
@@ -35,12 +35,12 @@ public class SensibilizadasConTiempo {
 
     public boolean testVentanaTiempo() {
         long ahora = System.currentTimeMillis();
-        System.out.printf("test de ventana:%b %s\n", ((ahora - startTime) >= alpha) && ((ahora - startTime) < beta), Thread.currentThread().getName());
-        return ((ahora - startTime) >= alpha) && ((ahora - startTime) < beta);
+       // System.out.printf("test de ventana:%b %s\n", ((ahora - timeStamp) >= alpha) && ((ahora - timeStamp) < beta), Thread.currentThread().getName());
+        return ((ahora - timeStamp) >= alpha) && ((ahora - timeStamp) < beta);
     }
 
     public void nuevoTimeStamp() {
-        this.startTime = System.currentTimeMillis();
+        this.timeStamp = System.currentTimeMillis();
         this.id = -999999;
         this.esperando.set(false);
     }
@@ -62,8 +62,8 @@ public class SensibilizadasConTiempo {
         return alpha;
     }
 
-    public long getStartTime() {
-        return startTime;
+    public long getTimeStamp() {
+        return timeStamp;
     }
 
     public long getId() {
@@ -75,7 +75,7 @@ public class SensibilizadasConTiempo {
     }
 
     public void resetTimestamp() {
-        this.startTime = -1;
+        this.timeStamp = -1;
         this.id = -999999;
         this.esperando.set(false);
     }
