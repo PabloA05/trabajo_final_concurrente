@@ -54,7 +54,7 @@ public class Monitor {
                 e.printStackTrace();
             }
             boolean k = true;
-         //   System.out.print(ANSI_YELLOW + "Hilo: " + Thread.currentThread().getId() + " entro al monitor con transicion " + transicion.getPosicion() +" "+Thread.currentThread().getName()+ ANSI_RESET + "\n");
+            System.out.print(ANSI_YELLOW + "Hilo: " + Thread.currentThread().getId() + " entro al monitor con transicion " + transicion.getPosicion() + " " + Thread.currentThread().getName() + ANSI_RESET + "\n");
             k = this.redDePetri.disparar(transicion);
 
 
@@ -76,6 +76,7 @@ public class Monitor {
                         }
                         Transicion transicionADisparar = politica.cualDisparo(m, redDePetri);
 
+                        System.out.printf("%s t:%d despertar:%d\n", Thread.currentThread().getName(), transicion.getPosicion(), transicionADisparar.getPosicion());
                         cola[transicionADisparar.getPosicion()].release();
                     } catch (IndexOutOfBoundsException e) {
                         e.printStackTrace();
@@ -86,14 +87,15 @@ public class Monitor {
                     break;
                 }
             } else {
-                semaforoMonitor.release();
                 System.out.printf(ANSI_RED + "entro en cola t:%d %s\n" + ANSI_RESET, transicion.getPosicion(), Thread.currentThread().getName());
+
+                semaforoMonitor.release();
                 cola[transicion.getPosicion()].acquire();
                 System.out.printf(ANSI_GREEN + "salio de cola t:%d %s\n" + ANSI_RESET, transicion.getPosicion(), Thread.currentThread().getName());
             }
 
         }
-        cantidadDisparada(redDePetri);
+        //cantidadDisparada(redDePetri);
 
         Log.write(transicion.getId());
         semaforoMonitor.release();

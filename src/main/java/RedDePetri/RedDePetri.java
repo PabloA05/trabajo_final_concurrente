@@ -113,11 +113,11 @@ public class RedDePetri {
 //                                Thread.currentThread().getId());
 //                        System.exit(1);
 //                    }
-                   // System.out.printf(">>> entro sleep transicion:%d %s\n", transicion.getPosicion(), Thread.currentThread().getName());
+                    // System.out.printf(">>> entro sleep transicion:%d %s\n", transicion.getPosicion(), Thread.currentThread().getName());
                     transicionesConTiempo[transicion.getPosicion()].setEsperando();
                     transicionesConTiempo[transicion.getPosicion()].setId(Thread.currentThread().getId());
                     sleepThread(transicion.getPosicion());
-                 //   System.out.printf("<<< salio del sleep %s\n", Thread.currentThread().getName());
+                    //   System.out.printf("<<< salio del sleep %s\n", Thread.currentThread().getName());
 
                 } else if (!transicionesConTiempo[transicion.getPosicion()].isEsperando()) {
                     System.out.printf("mayor que beta %s t:%d esp:%b\n",
@@ -144,6 +144,7 @@ public class RedDePetri {
 //                        transicion.getPosicion(), Thread.currentThread().getName(), k, transicion.getPosicion());
 
             }
+            System.out.printf("salio transicion:%d %s k:%b t:%d\n", transicion.getPosicion(), Thread.currentThread().getName(), k, transicion.getPosicion());
 
         }
 

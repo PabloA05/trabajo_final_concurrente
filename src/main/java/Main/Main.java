@@ -20,6 +20,7 @@ public class Main {
 
         new Log(filepathLog);
 
+
         RedDePetri redDePetri = new RedDePetri(mji, I, H, tiempos, T);
         Monitor monitor = new Monitor(redDePetri);
 
@@ -30,7 +31,7 @@ public class Main {
         Boolean[] arr4 = {false, false, false, false, false, true, false, false, false, false};//T6
         Boolean[] arr5 = {false, false, false, false, false, false, true, true, true, true};//T7-T8-T9-T
 
-        Thread[] hilo = new Thread[7];
+        Thread[] hilo = new Thread[8];
 
 
         Runnable runnable1 = new Hilo(redDePetri, monitor, arr1);
@@ -53,6 +54,9 @@ public class Main {
 
         Runnable runnable7 = new Hilo(redDePetri, monitor, arr5);
         hilo[6] = new Thread(runnable7, "hilo_6");
+
+        Runnable runnable8 = new Hilo(redDePetri, monitor, arr1);
+        hilo[6] = new Thread(runnable8, "hilo_0.1");
 
         for (int i = 0; i < hilo.length; i++) {
             hilo[i].start();

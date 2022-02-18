@@ -20,11 +20,7 @@ public class Hilo implements Runnable {
 
     @Override
     public void run() {
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+
         int k = 1000;
         while (k > 0) {
             for (int i = 0; i < transiciones.length; i++) {
