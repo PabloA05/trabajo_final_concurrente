@@ -61,9 +61,15 @@ public class Monitor {
             if (k) {
                 System.out.printf(ANSI_BLUE + "Disparo transicion: %d %s\n" + ANSI_RESET, transicion.getPosicion(), Thread.currentThread().getName());
                 Boolean[] Vs = this.redDePetri.getSensibilizadasExtendido();
-                //Operaciones.printVectorEx(Vs);
+                System.out.println("-----vs ----");
+                Operaciones.printB(Vs);
+                System.out.println("---------");
+
+                System.out.println("-----vc ----");
                 Boolean[] Vc = quienesEstan();
-                //Operaciones.printVectorColas(Vc);
+                Operaciones.printB(Vc);
+                System.out.println("---------");
+
                 Boolean[] m = new Boolean[Vs.length];
                 m = Operaciones.andVector(Vs, Vc); //todo ver si se puede simplificar
                 //  cantidadDisparada(redDePetri);

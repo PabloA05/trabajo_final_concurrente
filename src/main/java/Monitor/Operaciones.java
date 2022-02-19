@@ -27,7 +27,7 @@ public class Operaciones {
                 return true;
             }
         }
-        System.out.printf("-------- > Retorna falso %s < ------------\n",Thread.currentThread().getName());
+        System.out.printf("-------- > Retorna falso %s < ------------\n", Thread.currentThread().getName());
         return false;
     }
 
@@ -282,9 +282,9 @@ public class Operaciones {
     public static void printVectorEx(Boolean[] vector) {
         for (int i = 0; i < vector.length; i++) {
             if (vector[i]) {
-                System.out.println("La transición: " + (i + 1) + " esta sesibilizada");
+                System.out.println("La transición: " + (i) + " esta sesibilizada");
             } else {
-                System.out.println("La transición: " + (i + 1) + " no esta sesibilizada");
+                System.out.println("La transición: " + (i) + " no esta sesibilizada");
             }
         }
         System.out.println();
