@@ -31,7 +31,6 @@ public class Operaciones {
     }
 
 
-
     public static int[][] productoMatrices(int[][] a, int[][] b) throws IllegalArgumentException {
 
         int[][] c = new int[a.length][b[0].length]; //inicializo c
@@ -82,10 +81,10 @@ public class Operaciones {
     public static Boolean[] productoMatrizVectorBoolean(int[][] matriz, Boolean[] vector) throws IllegalArgumentException {
 
         Boolean[] resultado = new Boolean[matriz.length];
-        if(matriz[0].length == vector.length){
-            for(int i=0;i<matriz.length;i++){
-                for(int j=0;j< matriz[0].length;j++){
-                    if(matriz[i][j] != 0 && vector[j]){
+        if (matriz[0].length == vector.length) {
+            for (int i = 0; i < matriz.length; i++) {
+                for (int j = 0; j < matriz[0].length; j++) {
+                    if (matriz[i][j] != 0 && vector[j]) {
                         resultado[i] = true;
                         break;
                     } else resultado[i] = false;
@@ -153,7 +152,7 @@ public class Operaciones {
         return output;
     }
 
-    public static ArrayList<ArrayList<Integer>> setPinvariantes(String fileName){
+    public static ArrayList<ArrayList<Integer>> setPinvariantes(String fileName) {
 
         ArrayList<ArrayList<Integer>> pInvariantes = new ArrayList<ArrayList<Integer>>();
         String numero;
@@ -165,20 +164,20 @@ public class Operaciones {
             pInvariantes.add(new ArrayList<Integer>());
             while (INPUT_STREAM.hasNext()) {
                 String line = INPUT_STREAM.next();
-                if(line.contains("M")){
-                    numero = line.substring(line.indexOf("P")+1, line.indexOf(")"));
+                if (line.contains("M")) {
+                    numero = line.substring(line.indexOf("P") + 1, line.indexOf(")"));
                     pInvariantes.get(i).add(Integer.valueOf(numero));
                     //System.out.println(numero);
                 }
-                if(line.matches("[+-]?\\d*(\\.\\d+)?") && !line.equals("+")){
+                if (line.matches("[+-]?\\d*(\\.\\d+)?") && !line.equals("+")) {
                     pInvariantes.get(i).add(Integer.valueOf(line));
                 }
-                if(flag){
+                if (flag) {
                     i++;
                     pInvariantes.add(new ArrayList<Integer>());
                     flag = false;
                 }
-                if(line.equals("=")){
+                if (line.equals("=")) {
                     flag = true;
                 }
 
@@ -188,7 +187,7 @@ public class Operaciones {
             e.printStackTrace();
         }
 
-        pInvariantes.remove(pInvariantes.size()-1);
+        pInvariantes.remove(pInvariantes.size() - 1);
 
         return pInvariantes;
     }
@@ -270,29 +269,32 @@ public class Operaciones {
 
     public static void printB(Boolean[] boo) {
         for (int i = 0; i < boo.length; i++) {
-            System.out.printf("%b ", boo[i]);
+            if (boo[i]) {
+                System.out.printf("%d ", i);
+            } else {
+                System.out.print("0 ");
+            }
         }
         System.out.println();
     }
 
     public static void printVectorEx(Boolean[] vector) {
-        for(int i=0;i<vector.length;i++){
-            if(vector[i]){
-                System.out.println("La transición: "+(i+1)+" esta sesibilizada");
-            }
-            else {
-                System.out.println("La transición: "+(i+1)+" no esta sesibilizada");
+        for (int i = 0; i < vector.length; i++) {
+            if (vector[i]) {
+                System.out.println("La transición: " + (i) + " esta sesibilizada");
+            } else {
+                System.out.println("La transición: " + (i) + " no esta sesibilizada");
             }
         }
         System.out.println();
     }
+
     public static void printVectorColas(Boolean[] vector) {
-        for(int i=0;i<vector.length;i++){
-            if(vector[i]){
-                System.out.println("La transición: "+(i+1)+" tiene en Cola");
-            }
-            else {
-                System.out.println("La transición: "+(i+1)+" no tiene en Cola");
+        for (int i = 0; i < vector.length; i++) {
+            if (vector[i]) {
+                System.out.println("La transición: " + (i + 1) + " tiene en Cola");
+            } else {
+                System.out.println("La transición: " + (i + 1) + " no tiene en Cola");
             }
         }
         System.out.println();

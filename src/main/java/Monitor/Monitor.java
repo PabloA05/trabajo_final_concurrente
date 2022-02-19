@@ -3,7 +3,6 @@ package Monitor;
 import RedDePetri.RedDePetri;
 import RedDePetri.Transicion;
 import Util.Log;
-import org.jfree.ui.RefineryUtilities;
 
 import java.util.concurrent.Semaphore;
 
@@ -20,13 +19,13 @@ public class Monitor {
     public static final String ANSI_WHITE = "\u001B[37m";
 
     private static Semaphore semaforoMonitor;
-    public boolean condicion;
     //private boolean k;
     private RedDePetri redDePetri;
     private Colas[] cola;
     private Politica politica = new Politica(2);
     private static int disparos = 0;
     private Grafico grafico;
+    private boolean condicion;
 
     public Monitor(RedDePetri rdp) {
         semaforoMonitor = new Semaphore(1, true);
@@ -54,12 +53,7 @@ public class Monitor {
     public void disparaTransicion(Transicion transicion) {
         // k = true;
         while (true) {//todo hace falta la k????
-
-            try {
-                semaforoMonitor.acquire();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            acquireMonitor();
             boolean k = true;
             System.out.print(ANSI_YELLOW + "Hilo: " + Thread.currentThread().getId() + " entro al monitor con transicion " + transicion.getPosicion() + " " + Thread.currentThread().getName() + ANSI_RESET + "\n");
             k = this.redDePetri.disparar(transicion);
@@ -68,12 +62,18 @@ public class Monitor {
             if (k) {
                 System.out.printf(ANSI_BLUE + "Disparo transicion: %d %s\n" + ANSI_RESET, transicion.getPosicion(), Thread.currentThread().getName());
                 Boolean[] Vs = this.redDePetri.getSensibilizadasExtendido();
-                //Operaciones.printVectorEx(Vs);
+                System.out.println("-----vs ----");
+                Operaciones.printB(Vs);
+                System.out.println("---------");
+
+                System.out.println("-----vc ----");
                 Boolean[] Vc = quienesEstan();
-                //Operaciones.printVectorColas(Vc);
+                Operaciones.printB(Vc);
+                System.out.println("---------");
+
                 Boolean[] m = new Boolean[Vs.length];
                 m = Operaciones.andVector(Vs, Vc); //todo ver si se puede simplificar
-                agregarDato(redDePetri.getTransiciones()[3].getCantidadDisparada(),redDePetri.getTransiciones()[4].getCantidadDisparada(),redDePetri.getTransiciones()[9].getCantidadDisparada());
+                //agregarDato(redDePetri.getTransiciones()[3].getCantidadDisparada(),redDePetri.getTransiciones()[4].getCantidadDisparada(),redDePetri.getTransiciones()[9].getCantidadDisparada());
                 if (Operaciones.comprobarUnos(m)) {
                     try {
                         if (semaforoMonitor.availablePermits() != 0) {
@@ -95,17 +95,15 @@ public class Monitor {
                 }
             } else {
                 System.out.printf(ANSI_RED + "entro en cola t:%d %s\n" + ANSI_RESET, transicion.getPosicion(), Thread.currentThread().getName());
-
-                semaforoMonitor.release();
                 cola[transicion.getPosicion()].acquire();
                 System.out.printf(ANSI_GREEN + "salio de cola t:%d %s\n" + ANSI_RESET, transicion.getPosicion(), Thread.currentThread().getName());
             }
 
         }
-        //cantidadDisparada(redDePetri);
+        cantidadDisparada(redDePetri);
 
         Log.write(transicion.getId());
-        semaforoMonitor.release();
+        releaseMonitor();
         setCondicion();
         if(!condicion){
             for(int i=0;i<redDePetri.getCantTransiciones();i++){
