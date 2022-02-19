@@ -67,16 +67,16 @@ public class Main {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
+        System.out.println("Invariante 1: " + (redDePetri.getTransiciones()[3].getPosicion()) + " se disparo: " + redDePetri.getTransiciones()[3].getCantidadDisparada());
+        System.out.println("Invariante 2: " + (redDePetri.getTransiciones()[4].getPosicion()) + " se disparo: " + redDePetri.getTransiciones()[4].getCantidadDisparada());
+        System.out.println("Invariante 3: " + (redDePetri.getTransiciones()[9].getPosicion()) + " se disparo: " + redDePetri.getTransiciones()[9].getCantidadDisparada());
+        System.out.println("TERMINA EL PROGRAMA");
         Grafico grafico = new Grafico(
                 "Cantidad de disparos por Invariante");
         grafico.pack();
         RefineryUtilities.centerFrameOnScreen(grafico);
         grafico.setVisible(true);
-        System.out.println("Invariante 1: " + (redDePetri.getTransiciones()[3].getPosicion()) + " se disparo: " + redDePetri.getTransiciones()[3].getCantidadDisparada());
-        System.out.println("Invariante 2: " + (redDePetri.getTransiciones()[4].getPosicion()) + " se disparo: " + redDePetri.getTransiciones()[4].getCantidadDisparada());
-        System.out.println("Invariante 3: " + (redDePetri.getTransiciones()[9].getPosicion()) + " se disparo: " + redDePetri.getTransiciones()[9].getCantidadDisparada());
-        System.out.println("TERMINA EL PROGRAMA");
+
 
         Log.close();
     }

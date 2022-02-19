@@ -107,7 +107,6 @@ public class Grafico extends ApplicationFrame {
 
         for(int i=0;i<datos.size();i++){
             aux= datos.get(i);
-            System.out.println(aux[3]);
             s1.addOrUpdate(new Millisecond(aux[3],s),aux[0]);
             s2.addOrUpdate(new Millisecond(aux[3],s),aux[1]);
             s3.addOrUpdate(new Millisecond(aux[3],s),aux[2]);
