@@ -95,7 +95,7 @@ public class Monitor {
             }
 
         }
-        //cantidadDisparada(redDePetri);
+        cantidadDisparada(redDePetri);
 
         Log.write(transicion.getId());
         semaforoMonitor.release();

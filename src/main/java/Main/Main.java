@@ -56,7 +56,7 @@ public class Main {
         hilo[6] = new Thread(runnable7, "hilo_6");
 
         Runnable runnable8 = new Hilo(redDePetri, monitor, arr1);
-        hilo[6] = new Thread(runnable8, "hilo_0.1");
+        hilo[7] = new Thread(runnable8, "hilo_0.1");
 
         for (int i = 0; i < hilo.length; i++) {
             hilo[i].start();

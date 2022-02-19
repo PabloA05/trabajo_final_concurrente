@@ -155,8 +155,8 @@ public class RedDePetri {
             // Operaciones.printVector(vectorDeEstado);
             verificarPInvariantes();
             vectorDeEstado = marcadoSiguiente(vectorDeEstado, transicion.getPosicion());
-            Operaciones.printVector(vectorDeEstado);
             setNuevoTimeStamp(transicionesAnteriores);
+            Operaciones.printB(getSensibilizadasExtendido());
             transicion.incrementoDisparo();
         }
         return k;
