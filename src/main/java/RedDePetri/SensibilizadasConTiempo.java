@@ -1,52 +1,69 @@
 package RedDePetri;
 
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 public class SensibilizadasConTiempo {
     final private long alpha;
     final private long beta;
     private long id;
-    //   private boolean flag;// todo id y flag hay que implementarlo
-    private long startTime;
-    private boolean esperando;
+    private long timeStamp;
+    private AtomicBoolean esperando;
 
-    SensibilizadasConTiempo(int alpha, int beta) {
+    public long getBeta() {
+        return beta;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    SensibilizadasConTiempo(long alpha, long beta) {
         this.alpha = alpha;
         this.beta = beta;
-        //  this.flag = false;
-        this.startTime = -1;
+        this.timeStamp = -1;
         this.id = -999999;
-        this.esperando = false;
+        this.esperando = new AtomicBoolean(false);
     }
+
+//    public boolean testVentanaTiempo() {
+//        long ahora = System.currentTimeMillis();
+//        return ((ahora - this.startTime) >= this.alpha) && ((ahora - this.startTime) < this.beta &&
+//                !this.esperando.get() || this.esperando.get() && Thread.currentThread().getId() == this.id);
+//
+//    }
 
     public boolean testVentanaTiempo() {
         long ahora = System.currentTimeMillis();
-        return ((ahora - startTime) >= alpha) && ((ahora - startTime) < beta);
-
+        // System.out.printf("test de ventana:%b %s\n", ((ahora - timeStamp) >= alpha) && ((ahora - timeStamp) < beta), Thread.currentThread().getName());
+        return ((ahora - timeStamp) >= alpha) && ((ahora - timeStamp) < beta);
     }
 
     public void nuevoTimeStamp() {
-
-
-
-        this.startTime = System.currentTimeMillis();
-        this.id = Thread.currentThread().getId();
+        this.timeStamp = System.currentTimeMillis();
+        this.id = -999999;
+        this.esperando.set(false);
     }
 
     public boolean isEsperando() {
-        return esperando;
+        return esperando.get();
     }
 
+
     public void setEsperando() {
-        this.esperando = true;
-        id = Thread.currentThread().getId();
+        if (this.esperando.get()) {
+            System.out.println("esperando error");
+            System.exit(1);
+        }
+        this.esperando.set(true);
     }
 
     public long getAlpha() {
         return alpha;
     }
 
-    public long getStartTime() {
-        return startTime;
+    public long getTimeStamp() {
+        return timeStamp;
     }
 
     public long getId() {
@@ -58,13 +75,8 @@ public class SensibilizadasConTiempo {
     }
 
     public void resetTimestamp() {
-        this.startTime = -1;
+        this.timeStamp = -1;
         this.id = -999999;
-    }
-
-    public void setNuevoTimeStamp() {
-
-
-
+        this.esperando.set(false);
     }
 }

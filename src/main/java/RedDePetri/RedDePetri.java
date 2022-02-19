@@ -4,10 +4,12 @@ import Monitor.Monitor;
 import Monitor.Operaciones;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class RedDePetri {
 
     int[][] incidencia;
+    int[][] tInvariantes;
     final int[][] inhibidor;
     // private int[][] intervalos_tiempo; //matriz de intervalos de tiempo
     final int[] mki; //marca inicial. columna. NO VARIA
@@ -21,14 +23,13 @@ public class RedDePetri {
     //private int[] e; //vector de transiciones sensibilizadas
     int[] ex; //vector de sensibilizado extendido
     //private int[] z; //Vector de transiciones des-sensibilizadas por tiempo
-    private boolean k = false;
+    //  private boolean k = false;
     private boolean[] VectorSensibilazadas;
     private Transicion[] transiciones;
     private ArrayList<ArrayList<Integer>> pInvariantes;
     //private Boolean[] sensibilizadasEx;
 
-
-    public RedDePetri(String mji, String I, String h, String t) {
+    public RedDePetri(String mji, String I, String h, String t, String T) {
 
 
         //  e_semaphore = new Semaphore(1, true);//no se  si lo voy a usar
@@ -36,6 +37,7 @@ public class RedDePetri {
         this.incidencia = Operaciones.matriz2d(I);
         this.vectorDeEstado = Operaciones.vector(mji);
         this.inhibidor = Operaciones.matriz2d(h);
+        this.tInvariantes = Operaciones.matriz2d(T);
         pInvariantes = Operaciones.setPinvariantes("src/main/resources/pInvariantes.csv");
         this.mki = vectorDeEstado.clone(); //marca inicial
         /*sensibilizadas = new Boolean[getCantTransisiones()];
@@ -47,24 +49,30 @@ public class RedDePetri {
             sensibilizadasEx[i] = false;
         }*/
         int[][] tiempos = Operaciones.matriz2d(t);
-        this.transicionesConTiempo = new SensibilizadasConTiempo[getCantTransisiones()];
+        this.transicionesConTiempo = new SensibilizadasConTiempo[getCantTransiciones()];
         for (int i = 0; i < transicionesConTiempo.length; i++) {
-            transicionesConTiempo[i] = new SensibilizadasConTiempo(tiempos[0][i], tiempos[1][i]);
+            transicionesConTiempo[i] = new SensibilizadasConTiempo((long) tiempos[0][i], (long) tiempos[1][i]);
         }
-        transiciones = new Transicion[getCantTransisiones()];
-        for (int i = 0; i < getCantTransisiones(); i++) {
+        transiciones = new Transicion[getCantTransiciones()];
+        for (int i = 0; i < getCantTransiciones(); i++) {
             transiciones[i] = new Transicion((char) (97 + i), i, transicionesConTiempo[i].esInmediata());
         }
 
-        setNuevoTimeStamp();
+        Boolean[] temp = new Boolean[transiciones.length];
+        Arrays.fill(temp, false);
+        setNuevoTimeStamp(temp);
 
 
         //actualiceSensibilizadoT();
     }
 
+    public int[][] gettInvariantes() {
+        return tInvariantes;
+    }
+
     public Boolean[] getVectorE() {
-        Boolean[] sensibilizadas = new Boolean[getCantTransisiones()];
-        for (int i = 0; i < getCantTransisiones(); i++) {
+        Boolean[] sensibilizadas = new Boolean[getCantTransiciones()];
+        for (int i = 0; i < getCantTransiciones(); i++) {
             try {
                 sensibilizadas[i] = esDisparoValido(marcadoSiguiente(vectorDeEstado, i));
             } catch (Exception e) {
@@ -77,34 +85,85 @@ public class RedDePetri {
 //todo completar
 
     public boolean disparar(Transicion transicion) {//todo para transiciones inmediatas
-        k = true;
+        boolean k = false;
+
         // if (estaSensibilizado(transicion.getPosicion())) {
         if (getSensibilizadasExtendido()[transicion.getPosicion()]) {
 
-            boolean ventana = transicionesConTiempo[transicion.getPosicion()].testVentanaTiempo();
-            System.out.println("ventsna: " + ventana);
-            if (ventana) {
-                if (!transicionesConTiempo[transicion.getPosicion()].isEsperando() ||
-                        (transicionesConTiempo[transicion.getPosicion()].isEsperando()
-                                && (transicionesConTiempo[transicion.getPosicion()].getId() == Thread.currentThread().getId()))) {
+            if (transicionesConTiempo[transicion.getPosicion()].testVentanaTiempo()) {
+                if (!transicionesConTiempo[transicion.getPosicion()].isEsperando()) {
                     k = true;
                 }
             } else {
-                if (antesDeLaVentana(transicion.getPosicion())) {
-                    transicionesConTiempo[transicion.getPosicion()].setEsperando();
-                    sleepThread(transicion.getPosicion());
+                Monitor.releaseMonitor();
+                long id = 0;
+                if (transicionesConTiempo[transicion.getPosicion()].isEsperando()) {
+                    id = transicionesConTiempo[transicion.getPosicion()].getId();
                 }
-            }
-        }
-        if (k) {
-            calculoDeVectorEstado(transicion);
+//                System.out.printf("esperando %b %s t:%d \n", transicionesConTiempo[transicion.getPosicion()].isEsperando(), Thread.currentThread().getName(), transicion.getPosicion());
+//                if (transicionesConTiempo[transicion.getPosicion()].isEsperando()) {
+//                    System.out.printf("?? %s esp_id:%d hilo_id:%d\n", Thread.currentThread().getName(), id, Thread.currentThread().getId());
+//                }
 
+                if (antesDeLaVentana(transicion.getPosicion()) && !transicionesConTiempo[transicion.getPosicion()].isEsperando()) {
+//                    if (transicionesConTiempo[transicion.getPosicion()].isEsperando()) {
+//                        System.out.printf("fallo %s t:%d esp:%b esp_id:%d hilo_id:%d\n", Thread.currentThread().getName(), transicion.getPosicion(),
+//                                transicionesConTiempo[transicion.getPosicion()].isEsperando(),
+//                                transicionesConTiempo[transicion.getPosicion()].getId(),
+//                                Thread.currentThread().getId());
+//                        System.exit(1);
+//                    }
+                    // System.out.printf(">>> entro sleep transicion:%d %s\n", transicion.getPosicion(), Thread.currentThread().getName());
+                    transicionesConTiempo[transicion.getPosicion()].setEsperando();
+                    transicionesConTiempo[transicion.getPosicion()].setId(Thread.currentThread().getId());
+                    sleepThread(transicion.getPosicion());
+                    //   System.out.printf("<<< salio del sleep %s\n", Thread.currentThread().getName());
+
+                } else if (!transicionesConTiempo[transicion.getPosicion()].isEsperando()) {
+                    System.out.printf("mayor que beta %s t:%d esp:%b\n",
+                            Thread.currentThread().getName(), transicion.getPosicion(), transicionesConTiempo[transicion.getPosicion()].isEsperando());
+                    System.exit(1);
+                }
+                Monitor.acquireMonitor();
+
+                boolean a;
+                if (getSensibilizadasExtendido()[transicion.getPosicion()]) {
+                    a = transicionesConTiempo[transicion.getPosicion()].testVentanaTiempo();
+                    if (a) {
+                        if ((transicionesConTiempo[transicion.getPosicion()].isEsperando()
+                                && (transicionesConTiempo[transicion.getPosicion()].getId() == Thread.currentThread().getId()))) {
+                            k = true;
+                        }
+                    }
+//                    System.out.printf("****%s t:%d test:%b esp:%b esp_id:%d hilo_id:%d\n", Thread.currentThread().getName(), transicion.getPosicion(), a,
+//                            transicionesConTiempo[transicion.getPosicion()].isEsperando(),
+//                            transicionesConTiempo[transicion.getPosicion()].getId(),
+//                            Thread.currentThread().getId());
+                }
+//                System.out.printf("salio else transicion:%d %s k:%b t:%d\n",
+//                        transicion.getPosicion(), Thread.currentThread().getName(), k, transicion.getPosicion());
+
+            }
+            System.out.printf("salio transicion:%d %s k:%b t:%d\n", transicion.getPosicion(), Thread.currentThread().getName(), k, transicion.getPosicion());
+
+        }
+
+
+        if (k) {
+            Boolean[] transicionesAnteriores = getSensibilizadasExtendido();
+            transicionesConTiempo[transicion.getPosicion()].resetTimestamp();
+            // Operaciones.printVector(vectorDeEstado);
+            verificarPInvariantes();
             vectorDeEstado = marcadoSiguiente(vectorDeEstado, transicion.getPosicion());
+            Operaciones.printVector(vectorDeEstado);
+            setNuevoTimeStamp(transicionesAnteriores);
             transicion.incrementoDisparo();
         }
         return k;
-        //k = false;
+//        boolean k = false;
 //        if (this.getSensibilizadasExtendido()[transicion.getPosicion()]) {
+//            Operaciones.printVector(vectorDeEstado);
+//
 //            vectorDeEstado = marcadoSiguiente(vectorDeEstado, transicion.getPosicion());
 //            transicion.incrementoDisparo();
 //
@@ -114,6 +173,11 @@ public class RedDePetri {
 //        }
     }
 
+    private boolean sePuedeDispara(Transicion transicion) {
+        return (getSensibilizadasExtendido()[transicion.getPosicion()] &&
+                transicionesConTiempo[transicion.getPosicion()].testVentanaTiempo());
+    }
+
     private void sincronizar(Transicion t) {
 
         System.out.println("La transicion: " + (t.getPosicion() + 1) + " en el tiempo: " + System.currentTimeMillis() / 1000);
@@ -121,10 +185,15 @@ public class RedDePetri {
 
     }
 
-    private void setNuevoTimeStamp() {
+    private void setNuevoTimeStamp(Boolean[] transicionesAnteriores) {
         for (int i = 0; i < transicionesConTiempo.length; i++) {
+
             if (getSensibilizadasExtendido()[i] && transiciones[i].isTemportizada()) {///
-                transicionesConTiempo[i].nuevoTimeStamp();
+                if (!transicionesAnteriores[i]) {
+                    transicionesConTiempo[i].nuevoTimeStamp();
+                }
+            } else if (!getSensibilizadasExtendido()[i] && transiciones[i].isTemportizada()) {
+                transicionesConTiempo[i].resetTimestamp();
             }
         }
     }
@@ -135,7 +204,11 @@ public class RedDePetri {
 
 
     private void sleepThread(int posicion) { //todo no se si esta bien
-        long sleepTime = transicionesConTiempo[posicion].getStartTime() + transicionesConTiempo[posicion].getAlpha() - System.currentTimeMillis();
+        long sleepTime = transicionesConTiempo[posicion].getTimeStamp() + transicionesConTiempo[posicion].getAlpha() - System.currentTimeMillis();
+        if (sleepTime < 0) {
+            System.out.println("sleep time negative " + sleepTime);
+            System.exit(1);
+        }
         try {
             Thread.sleep(sleepTime);
         } catch (InterruptedException e) {
@@ -145,7 +218,16 @@ public class RedDePetri {
 
 
     private boolean antesDeLaVentana(int posicion) {
-        return (transicionesConTiempo[posicion].getStartTime() + transicionesConTiempo[posicion].getAlpha() - System.currentTimeMillis() < 0);
+        long actual = System.currentTimeMillis();
+//        System.out.printf("t:%d %s start:%d alpha:%d beta:%d actual:%d suma:%d resta:%d\n", posicion,
+//                Thread.currentThread().getName(),
+//                transicionesConTiempo[posicion].getTimeStamp(),
+//                transicionesConTiempo[posicion].getAlpha(),
+//                transicionesConTiempo[posicion].getBeta(),
+//                actual,
+//                (transicionesConTiempo[posicion].getTimeStamp() + transicionesConTiempo[posicion].getAlpha()),
+//                (transicionesConTiempo[posicion].getTimeStamp() - actual));
+        return (transicionesConTiempo[posicion].getTimeStamp() + transicionesConTiempo[posicion].getAlpha() >= actual);
     }
 
 
@@ -157,7 +239,7 @@ public class RedDePetri {
         return vectorDeEstado;
     }
 
-    public int getCantTransisiones() {
+    public int getCantTransiciones() {
         return incidencia[0].length;
     }
 
@@ -248,7 +330,7 @@ public class RedDePetri {
 
     public Boolean[] getVectorB() {
 
-        Boolean[] vectorB = new Boolean[getCantTransisiones()];
+        Boolean[] vectorB = new Boolean[getCantTransiciones()];
         int[][] inhibidorTranspuesta = Operaciones.transpuesta(this.inhibidor);
         vectorB = Operaciones.productoMatrizVectorBoolean(inhibidorTranspuesta, this.getVectorQ());
         for (int i = 0; i < vectorB.length; i++) {
