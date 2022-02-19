@@ -65,7 +65,7 @@ public class Monitor {
 
             if (k) {
                 System.out.printf(ANSI_BLUE + "Disparo transicion: %d %s\n" + ANSI_RESET, transicion.getPosicion(), Thread.currentThread().getName());
-                Boolean[] Vs = this.redDePetri.getSensibilizadasExtendido();
+                Boolean[] Vs = this.redDePetri.getSensibilizadasEx();
                 System.out.println("-----vs ----");
                 Operaciones.printB(Vs);
                 System.out.println("---------");
@@ -107,7 +107,6 @@ public class Monitor {
             }
 
         }
-        cantidadDisparada(redDePetri);
 
         Log.write(transicion.getId());
         contador++;

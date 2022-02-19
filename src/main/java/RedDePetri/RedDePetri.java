@@ -15,7 +15,7 @@ public class RedDePetri {
     final int[] mki; //marca inicial. columna. NO VARIA
     private int[] vectorDeEstado; //la marca actual
     private SensibilizadasConTiempo[] transicionesConTiempo;
-    //private Boolean[] sensibilizadas;
+    private Boolean[] sensibilizadasEx;
     private Boolean[] Q;
     private Boolean[] Z;
     private Boolean[] B;
@@ -63,7 +63,7 @@ public class RedDePetri {
         setNuevoTimeStamp(temp);
 
 
-        //actualiceSensibilizadoT();
+        actualizaSensibilizadasExtendido();
     }
 
     public int[][] gettInvariantes() {
@@ -88,7 +88,7 @@ public class RedDePetri {
         boolean k = false;
 
         // if (estaSensibilizado(transicion.getPosicion())) {
-        if (getSensibilizadasExtendido()[transicion.getPosicion()]) {
+        if (sensibilizadasEx[transicion.getPosicion()]) {
 
             if (transicionesConTiempo[transicion.getPosicion()].testVentanaTiempo()) {
                 if (!transicionesConTiempo[transicion.getPosicion()].isEsperando()) {
@@ -127,7 +127,7 @@ public class RedDePetri {
                 Monitor.acquireMonitor();
 
                 boolean a;
-                if (getSensibilizadasExtendido()[transicion.getPosicion()]) {
+                if (sensibilizadasEx[transicion.getPosicion()]) {
                     a = transicionesConTiempo[transicion.getPosicion()].testVentanaTiempo();
                     if (a) {
                         if ((transicionesConTiempo[transicion.getPosicion()].isEsperando()
@@ -150,7 +150,8 @@ public class RedDePetri {
 
 
         if (k) {
-            Boolean[] transicionesAnteriores = getSensibilizadasExtendido();
+            actualizaSensibilizadasExtendido();
+            Boolean[] transicionesAnteriores = sensibilizadasEx;
             transicionesConTiempo[transicion.getPosicion()].resetTimestamp();
             // Operaciones.printVector(vectorDeEstado);
             verificarPInvariantes();
@@ -173,8 +174,12 @@ public class RedDePetri {
 //        }
     }
 
+    public Boolean[] getSensibilizadasEx(){
+        return sensibilizadasEx;
+    }
+
     private boolean sePuedeDispara(Transicion transicion) {
-        return (getSensibilizadasExtendido()[transicion.getPosicion()] &&
+        return (sensibilizadasEx[transicion.getPosicion()] &&
                 transicionesConTiempo[transicion.getPosicion()].testVentanaTiempo());
     }
 
@@ -187,12 +192,12 @@ public class RedDePetri {
 
     private void setNuevoTimeStamp(Boolean[] transicionesAnteriores) {
         for (int i = 0; i < transicionesConTiempo.length; i++) {
-
-            if (getSensibilizadasExtendido()[i] && transiciones[i].isTemportizada()) {///
+            actualizaSensibilizadasExtendido();
+            if (sensibilizadasEx[i] && transiciones[i].isTemportizada()) {///
                 if (!transicionesAnteriores[i]) {
                     transicionesConTiempo[i].nuevoTimeStamp();
                 }
-            } else if (!getSensibilizadasExtendido()[i] && transiciones[i].isTemportizada()) {
+            } else if (!sensibilizadasEx[i] && transiciones[i].isTemportizada()) {
                 transicionesConTiempo[i].resetTimestamp();
             }
         }
@@ -343,20 +348,12 @@ public class RedDePetri {
 
     }
 
-    public Boolean[] getConjuncionEAndBandLandC() {
-        Boolean[] E = this.getVectorE();
-
-        return Operaciones.andVector(B, E);
-    }
-
-    public Boolean[] getSensibilizadasExtendido() {
+    public void actualizaSensibilizadasExtendido() {
         Boolean Ex[];
         Boolean E[] = this.getVectorE();
 
         this.getVectorB();
-
-
-        return this.getConjuncionEAndBandLandC();
+        sensibilizadasEx = Operaciones.andVector(getVectorE(),getVectorB());
 
     }
 

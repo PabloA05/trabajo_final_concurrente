@@ -98,9 +98,9 @@ public class Grafico extends ApplicationFrame {
      */
     private static XYDataset createDataset() {
 
-        TimeSeries s1 = new TimeSeries("Invariante 1");
-        TimeSeries s2 = new TimeSeries("Invariante 2");
-        TimeSeries s3 = new TimeSeries("Invariante 3");
+        TimeSeries s1 = new TimeSeries("Invariante 1\n [T0 T1 T3 T5]");
+        TimeSeries s2 = new TimeSeries("Invariante 2\n [T0 T2 T4 T5]");
+        TimeSeries s3 = new TimeSeries("Invariante 3\n [T6 T7 T8 T9]");
         Second s = new Second();
         ArrayList<int[]> datos = Monitor.datos;
         int[] aux = new int[4];
