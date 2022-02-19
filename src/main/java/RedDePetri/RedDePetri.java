@@ -236,10 +236,6 @@ public class RedDePetri {
     }
 
 
-    /*    public boolean estaSensibilizado(int posicion) {
-            return sensibilizadasEx[posicion];
-        }
-   */
     public int[] getVectorDeEstado() {
         return vectorDeEstado;
     }
@@ -349,11 +345,16 @@ public class RedDePetri {
     }
 
     public void actualizaSensibilizadasExtendido() {
-        Boolean Ex[];
-        Boolean E[] = this.getVectorE();
 
-        this.getVectorB();
         sensibilizadasEx = Operaciones.andVector(getVectorE(),getVectorB());
+
+        /*if(sensibilizadasEx[0] || sensibilizadasEx[6]){
+            for (int i = 0; i < getCantTransiciones(); i++) {
+                if(!(i == 0 || i==6)){
+                    sensibilizadasEx[i] = false;
+                }
+            }
+        }*/
 
     }
 
