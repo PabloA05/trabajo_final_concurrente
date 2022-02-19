@@ -27,7 +27,6 @@ public class Operaciones {
                 return true;
             }
         }
-        System.out.printf("-------- > Retorna falso %s < ------------\n", Thread.currentThread().getName());
         return false;
     }
 

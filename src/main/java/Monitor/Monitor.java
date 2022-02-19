@@ -25,6 +25,7 @@ public class Monitor {
     private Politica politica = new Politica(2);
     private static int disparos = 0;
 
+    private int hilosEnLasColas;
 
     public Monitor(RedDePetri rdp) {
         semaforoMonitor = new Semaphore(1, true);
@@ -34,6 +35,7 @@ public class Monitor {
         for (int i = 0; i < redDePetri.getCantTransiciones(); i++) {
             cola[i] = new Colas(); //Inicialización de colas.
         }
+        this.hilosEnLasColas = 0;
     }
 
     private Boolean[] quienesEstan() {
@@ -47,12 +49,7 @@ public class Monitor {
     public void disparaTransicion(Transicion transicion) {
         // k = true;
         while (true) {//todo hace falta la k????
-
-            try {
-                semaforoMonitor.acquire();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            acquireMonitor();
             boolean k = true;
             System.out.print(ANSI_YELLOW + "Hilo: " + Thread.currentThread().getId() + " entro al monitor con transicion " + transicion.getPosicion() + " " + Thread.currentThread().getName() + ANSI_RESET + "\n");
             k = this.redDePetri.disparar(transicion);
@@ -94,8 +91,6 @@ public class Monitor {
                 }
             } else {
                 System.out.printf(ANSI_RED + "entro en cola t:%d %s\n" + ANSI_RESET, transicion.getPosicion(), Thread.currentThread().getName());
-
-                semaforoMonitor.release();
                 cola[transicion.getPosicion()].acquire();
                 System.out.printf(ANSI_GREEN + "salio de cola t:%d %s\n" + ANSI_RESET, transicion.getPosicion(), Thread.currentThread().getName());
             }
@@ -104,7 +99,7 @@ public class Monitor {
         cantidadDisparada(redDePetri);
 
         Log.write(transicion.getId());
-        semaforoMonitor.release();
+        releaseMonitor();
     }
 
     public static void acquireMonitor() {
