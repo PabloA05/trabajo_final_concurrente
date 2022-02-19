@@ -3,6 +3,7 @@ package Monitor;
 import RedDePetri.RedDePetri;
 import RedDePetri.Transicion;
 import Util.Log;
+import org.jfree.ui.RefineryUtilities;
 
 import java.util.concurrent.Semaphore;
 
@@ -19,12 +20,13 @@ public class Monitor {
     public static final String ANSI_WHITE = "\u001B[37m";
 
     private static Semaphore semaforoMonitor;
+    public boolean condicion;
     //private boolean k;
     private RedDePetri redDePetri;
     private Colas[] cola;
     private Politica politica = new Politica(2);
     private static int disparos = 0;
-
+    private Grafico grafico;
 
     public Monitor(RedDePetri rdp) {
         semaforoMonitor = new Semaphore(1, true);
@@ -34,6 +36,11 @@ public class Monitor {
         for (int i = 0; i < redDePetri.getCantTransiciones(); i++) {
             cola[i] = new Colas(); //Inicialización de colas.
         }
+        condicion = true;
+
+
+        //grafico.setVisible(true);
+
     }
 
     private Boolean[] quienesEstan() {
@@ -66,12 +73,12 @@ public class Monitor {
                 //Operaciones.printVectorColas(Vc);
                 Boolean[] m = new Boolean[Vs.length];
                 m = Operaciones.andVector(Vs, Vc); //todo ver si se puede simplificar
-                //  cantidadDisparada(redDePetri);
+                agregarDato(redDePetri.getTransiciones()[3].getCantidadDisparada(),redDePetri.getTransiciones()[4].getCantidadDisparada(),redDePetri.getTransiciones()[9].getCantidadDisparada());
                 if (Operaciones.comprobarUnos(m)) {
                     try {
                         if (semaforoMonitor.availablePermits() != 0) {
                             System.out.printf("valor del semaforo %d\n", semaforoMonitor.availablePermits());
-                            System.exit(1);
+                            //System.exit(1);
 
                         }
                         Transicion transicionADisparar = politica.cualDisparo(m, redDePetri);
@@ -99,6 +106,16 @@ public class Monitor {
 
         Log.write(transicion.getId());
         semaforoMonitor.release();
+        setCondicion();
+        if(!condicion){
+            for(int i=0;i<redDePetri.getCantTransiciones();i++){
+                if (!cola[i].isEmpty()) {
+                    while(!cola[i].isEmpty()) {cola[i].release();}
+                }
+            }
+            Monitor.releaseMonitor();
+        }
+
     }
 
     public static void acquireMonitor() {
@@ -107,6 +124,23 @@ public class Monitor {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean getCondicion(){
+        return condicion;
+    }
+
+    public void setCondicion(){
+        Transicion[] transiciones;
+        transiciones = redDePetri.getTransiciones().clone();
+        int suma = 0;
+        suma = transiciones[3].getCantidadDisparada() + transiciones[4].getCantidadDisparada() + transiciones[9].getCantidadDisparada();
+        if(suma>=20){
+            condicion = false;
+            grafico.setVisible(true);
+            System.out.println("Es condicion false");
+        }
+
     }
 
     public static void releaseMonitor() {
@@ -120,6 +154,11 @@ public class Monitor {
         System.out.println("Invariante 2: " + (transiciones[4].getPosicion()) + " se disparo: " + transiciones[4].getCantidadDisparada());
         System.out.println("Invariante 3: " + (transiciones[9].getPosicion()) + " se disparo: " + transiciones[9].getCantidadDisparada());
     }
+
+    public void agregarDato (int a, int b, int c){
+
+    }
+
 
 }
 

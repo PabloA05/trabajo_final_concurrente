@@ -21,15 +21,13 @@ public class Hilo implements Runnable {
     @Override
     public void run() {
 
-        int k = 1000;
-        while (k > 0) {
+        while (monitor.getCondicion()) {
             for (int i = 0; i < transiciones.length; i++) {
                 if (secuencia[i]) {
                     monitor.disparaTransicion(transiciones[i]);
                 }
             }
-            k--;
+
         }
-         System.out.println("Salio: "+Thread.currentThread().getName());
     }
 }

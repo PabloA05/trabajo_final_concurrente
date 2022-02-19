@@ -3,8 +3,7 @@ package Main;
 import Monitor.*;
 import RedDePetri.RedDePetri;
 import Util.Log;
-
-import java.io.IOException;
+import org.jfree.ui.RefineryUtilities;
 
 public class Main {
     public static void main(String[] args) {
@@ -21,6 +20,8 @@ public class Main {
         new Log(filepathLog);
 
 
+
+
         RedDePetri redDePetri = new RedDePetri(mji, I, H, tiempos, T);
         Monitor monitor = new Monitor(redDePetri);
 
@@ -31,7 +32,7 @@ public class Main {
         Boolean[] arr4 = {false, false, false, false, false, true, false, false, false, false};//T6
         Boolean[] arr5 = {false, false, false, false, false, false, true, true, true, true};//T7-T8-T9-T
 
-        Thread[] hilo = new Thread[8];
+        Thread[] hilo = new Thread[7];
 
 
         Runnable runnable1 = new Hilo(redDePetri, monitor, arr1);
@@ -66,6 +67,9 @@ public class Main {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
+        System.out.println("TERMINA EL PROGRAMA");
+
         Log.close();
     }
 }

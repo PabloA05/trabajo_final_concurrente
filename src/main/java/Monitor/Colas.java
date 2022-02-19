@@ -46,9 +46,9 @@ public class Colas {
         } catch (InterruptedException e) {
             e.printStackTrace();
             System.out.println("hilo en cola");
-            System.exit(1);
+            //System.exit(1);
         }
-        this.hilosEnCola--; //Cuando sale, resta la cantidad de hilos
+        hilosCola.decrementAndGet();
     }
 
     public synchronized void release() {
@@ -57,14 +57,16 @@ public class Colas {
             notify();
         } catch (Exception e) {
             e.printStackTrace();
-            System.exit(1);
+            //System.exit(1);
         }
-        int a = hilosCola.decrementAndGet();
+
         //System.out.printf("salio %d - %s\n", a, Thread.currentThread().getName());
     }
 
-    public boolean isEmpty() {
-        return hilosEnCola == 0;
-    }
 
+    public boolean isEmpty() {
+
+        return (hilosCola.intValue() == 0);
+
+    }
 }
