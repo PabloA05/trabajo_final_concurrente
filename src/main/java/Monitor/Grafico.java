@@ -25,7 +25,7 @@ import org.jfree.ui.RefineryUtilities;
 
 public class Grafico extends ApplicationFrame {
 
-    ArrayList<Integer[]> datos;
+
 
     private static final long serialVersionUID = 1L;
 
@@ -44,7 +44,6 @@ public class Grafico extends ApplicationFrame {
      */
     public Grafico(String title) {
         super(title);
-        datos = new ArrayList<>();
         ChartPanel chartPanel = (ChartPanel) createDemoPanel();
         chartPanel.setPreferredSize(new java.awt.Dimension(800, 540));
         setContentPane(chartPanel);
@@ -72,7 +71,7 @@ public class Grafico extends ApplicationFrame {
         chart.setBackgroundPaint(Color.white);
 
         XYPlot plot = (XYPlot) chart.getPlot();
-        plot.setBackgroundPaint(Color.lightGray);
+        plot.setBackgroundPaint(Color.black);
         plot.setDomainGridlinePaint(Color.white);
         plot.setRangeGridlinePaint(Color.white);
         plot.setAxisOffset(new RectangleInsets(5.0, 5.0, 5.0, 5.0));
@@ -87,8 +86,6 @@ public class Grafico extends ApplicationFrame {
             renderer.setDrawSeriesLineAsPath(true);
         }
 
-        DateAxis axis = (DateAxis) plot.getDomainAxis();
-        axis.setDateFormatOverride(new SimpleDateFormat());
 
         return chart;
 
@@ -101,33 +98,25 @@ public class Grafico extends ApplicationFrame {
      */
     private static XYDataset createDataset() {
 
-        TimeSeries s1 = new TimeSeries("L&G European Index Trust");
-        int a = 3;
+        TimeSeries s1 = new TimeSeries("Invariante 1");
+        TimeSeries s2 = new TimeSeries("Invariante 2");
+        TimeSeries s3 = new TimeSeries("Invariante 3");
         Second s = new Second();
-        for(int i=0;i<30;i++){
-            s1.add(new Millisecond(i, s), (int) (Math.random()*10));
+        ArrayList<int[]> datos = Monitor.datos;
+        int[] aux = new int[4];
+
+        for(int i=0;i<datos.size();i++){
+            aux= datos.get(i);
+            System.out.println(aux[3]);
+            s1.addOrUpdate(new Millisecond(aux[3],s),aux[0]);
+            s2.addOrUpdate(new Millisecond(aux[3],s),aux[1]);
+            s3.addOrUpdate(new Millisecond(aux[3],s),aux[2]);
         }
-
-
-
-        TimeSeries s2 = new TimeSeries("L&G UK Index Trust");
-
-        for(int i=0;i<30;i++){
-            s2.add(new Millisecond(i, s), (int) (Math.random()*10));
-        }
-
-        // ******************************************************************
-        //  More than 150 demo applications are included with the JFreeChart
-        //  Developer Guide...for more information, see:
-        //
-        //  >   http://www.object-refinery.com/jfreechart/guide.html
-        //
-        // ******************************************************************
 
         TimeSeriesCollection dataset = new TimeSeriesCollection();
         dataset.addSeries(s1);
         dataset.addSeries(s2);
-
+        dataset.addSeries(s3);
         return dataset;
 
     }

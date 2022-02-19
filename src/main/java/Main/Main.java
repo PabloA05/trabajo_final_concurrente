@@ -32,7 +32,7 @@ public class Main {
         Boolean[] arr3 = {false, false, false, false, false, true, false, false, false, false};//T5
         Boolean[] arr4 = {false, false, false, false, false, false, true, true, true, true};//T6-T7-T8-T9
 
-        Thread[] hilo = new Thread[7];
+        Thread[] hilo = new Thread[8];
 
 
         Runnable runnable1 = new Hilo(redDePetri, monitor, arr0);
@@ -68,6 +68,14 @@ public class Main {
             e.printStackTrace();
         }
 
+        Grafico grafico = new Grafico(
+                "Cantidad de disparos por Invariante");
+        grafico.pack();
+        RefineryUtilities.centerFrameOnScreen(grafico);
+        grafico.setVisible(true);
+        System.out.println("Invariante 1: " + (redDePetri.getTransiciones()[3].getPosicion()) + " se disparo: " + redDePetri.getTransiciones()[3].getCantidadDisparada());
+        System.out.println("Invariante 2: " + (redDePetri.getTransiciones()[4].getPosicion()) + " se disparo: " + redDePetri.getTransiciones()[4].getCantidadDisparada());
+        System.out.println("Invariante 3: " + (redDePetri.getTransiciones()[9].getPosicion()) + " se disparo: " + redDePetri.getTransiciones()[9].getCantidadDisparada());
         System.out.println("TERMINA EL PROGRAMA");
 
         Log.close();

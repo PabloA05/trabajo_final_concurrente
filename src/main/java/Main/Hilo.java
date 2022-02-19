@@ -23,6 +23,7 @@ public class Hilo implements Runnable {
 
         while (monitor.getCondicion()) {
             for (int i = 0; i < transiciones.length; i++) {
+                if(!monitor.getCondicion()){break;}
                 if (secuencia[i]) {
                     monitor.disparaTransicion(transiciones[i]);
                 }
