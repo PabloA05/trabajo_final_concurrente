@@ -25,8 +25,6 @@ public class Monitor {
     private Politica politica = new Politica(2);
     private static int disparos = 0;
 
-    private int hilosEnLasColas;
-
     public Monitor(RedDePetri rdp) {
         semaforoMonitor = new Semaphore(1, true);
         //k = false;
@@ -35,7 +33,6 @@ public class Monitor {
         for (int i = 0; i < redDePetri.getCantTransiciones(); i++) {
             cola[i] = new Colas(); //Inicialización de colas.
         }
-        this.hilosEnLasColas = 0;
     }
 
     private Boolean[] quienesEstan() {
@@ -48,6 +45,8 @@ public class Monitor {
 
     public void disparaTransicion(Transicion transicion) {
         // k = true;
+       // acquireMonitor();
+
         while (true) {//todo hace falta la k????
             acquireMonitor();
             boolean k = true;
