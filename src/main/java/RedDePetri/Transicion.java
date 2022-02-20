@@ -1,19 +1,19 @@
 package RedDePetri;
 
 public class Transicion {
-    private char id;//todo pasar a string?
+    private String id;//todo pasar a string?
     private boolean temporizada;
     private int posicion;
     private int cantidadDisparada;
 
-    public Transicion(char id, int posicion, boolean temporizada){
+    public Transicion(String id, int posicion, boolean temporizada){
         this.id = id;
         this.posicion = posicion;
         this.temporizada = temporizada;
         cantidadDisparada = 0;
     }
 //return (!(a == 0 || a == 6)) ;
-    public char getId (){
+    public String getId (){
         return id;
     }
 

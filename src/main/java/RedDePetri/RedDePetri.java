@@ -55,7 +55,7 @@ public class RedDePetri {
         }
         transiciones = new Transicion[getCantTransiciones()];
         for (int i = 0; i < getCantTransiciones(); i++) {
-            transiciones[i] = new Transicion((char) (97 + i), i, transicionesConTiempo[i].esInmediata());
+            transiciones[i] = new Transicion("T"+i, i, transicionesConTiempo[i].esInmediata());
         }
 
         Boolean[] temp = new Boolean[transiciones.length];

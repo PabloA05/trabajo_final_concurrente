@@ -18,11 +18,11 @@ public class Main {
         String tiempos = "src/main/resources/tiempos.csv";
         String filepathLog = "src/main/resources/log";
 
-        new Log(filepathLog);
+        Log log = new Log(filepathLog);
 
 
         RedDePetri redDePetri = new RedDePetri(mji, I, H, tiempos, T);
-        Monitor monitor = new Monitor(redDePetri);
+        Monitor monitor = new Monitor(redDePetri, log);
 
 
         Boolean[] arr0 = {true, false, false, false, false, false, false, false, false, false};//T0
@@ -66,6 +66,6 @@ public class Main {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        Log.close();
+        log.close();
     }
 }

@@ -7,26 +7,26 @@ import java.io.PrintWriter;
 
 
 public class Log {
-    FileWriter fw;
-    BufferedWriter bw;
-    static PrintWriter pw;
+    private FileWriter fw;
+    private BufferedWriter bw;
+    private PrintWriter pw;
 
     public Log(String filepath) {
         try {
-            fw = new FileWriter(filepath, false);
+            this.fw = new FileWriter(filepath, false);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        bw = new BufferedWriter(fw);
-        pw = new PrintWriter(bw);
+        this.bw = new BufferedWriter(fw);
+        this.pw = new PrintWriter(bw);
     }
 
-    public synchronized static void write(char str) {
+    public synchronized void write(String str) {
         pw.print(str);
         pw.flush();
     }
 
-    public static void close() {
+    public void close() {
         pw.close();
     }
 }

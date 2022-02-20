@@ -24,8 +24,10 @@ public class Monitor {
     private Colas[] cola;
     private Politica politica = new Politica(2);
     private static int disparos = 0;
+    private Log log;
 
-    public Monitor(RedDePetri rdp) {
+    public Monitor(RedDePetri rdp, Log log) {
+        this.log = log;
         semaforoMonitor = new Semaphore(1, true);
         //k = false;
         redDePetri = rdp;
@@ -45,7 +47,7 @@ public class Monitor {
 
     public void disparaTransicion(Transicion transicion) {
         // k = true;
-       // acquireMonitor();
+        // acquireMonitor();
 
         while (true) {//todo hace falta la k????
             acquireMonitor();
@@ -97,7 +99,7 @@ public class Monitor {
         }
         cantidadDisparada(redDePetri);
 
-        Log.write(transicion.getId());
+        log.write(transicion.getId());
         releaseMonitor();
     }
 
@@ -116,9 +118,9 @@ public class Monitor {
     public void cantidadDisparada(RedDePetri redDePetri) {
         Transicion[] transiciones;
         transiciones = redDePetri.getTransiciones().clone();
-        System.out.println("Invariante 1: " + (transiciones[3].getPosicion()) + " se disparo: " + transiciones[3].getCantidadDisparada());
-        System.out.println("Invariante 2: " + (transiciones[4].getPosicion()) + " se disparo: " + transiciones[4].getCantidadDisparada());
-        System.out.println("Invariante 3: " + (transiciones[9].getPosicion()) + " se disparo: " + transiciones[9].getCantidadDisparada());
+        System.out.println("Invariante 1: " + transiciones[3].getId() + " se disparo: " + transiciones[3].getCantidadDisparada());
+        System.out.println("Invariante 2: " + transiciones[4].getId() + " se disparo: " + transiciones[4].getCantidadDisparada());
+        System.out.println("Invariante 3: " + transiciones[9].getId() + " se disparo: " + transiciones[9].getCantidadDisparada());
     }
 
 }
