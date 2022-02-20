@@ -29,9 +29,9 @@ public class Monitor {
     private boolean flag;
     private int contador;
     private long cuenta =0;
-    private int cantidadDeInvariantesADisparar;
-
-    public Monitor(RedDePetri rdp) {
+    private final int cantidadDeInvariantesADisparar;
+    private int relacionDeMuestra;
+    public Monitor(RedDePetri rdp, int cantidadDeInvariantesADisparar) {
         semaforoMonitor = new Semaphore(1, true);
         //k = false;
         redDePetri = rdp;
@@ -44,7 +44,8 @@ public class Monitor {
         contador =0;
         datos = new ArrayList<int[]>();
         cuenta = System.currentTimeMillis();
-        cantidadDeInvariantesADisparar = 5000;
+        this.cantidadDeInvariantesADisparar = cantidadDeInvariantesADisparar;
+        relacionDeMuestra = cantidadDeInvariantesADisparar/10;
     }
 
     private Boolean[] quienesEstan() {
@@ -113,7 +114,7 @@ public class Monitor {
 
         Log.write(transicion.getId());
         contador++;
-        if(contador>=cantidadDeInvariantesADisparar/10){
+        if(contador>=relacionDeMuestra){
             agregarDato(redDePetri.getTransiciones()[3].getCantidadDisparada(),redDePetri.getTransiciones()[4].getCantidadDisparada(),redDePetri.getTransiciones()[9].getCantidadDisparada());
             contador=0;
         }

@@ -18,12 +18,12 @@ public class Main {
         String filepathLog = "src/main/resources/log";
 
         new Log(filepathLog);
-
+        int cantidadDeInvariantesADisparar = 50000;
 
 
 
         RedDePetri redDePetri = new RedDePetri(mji, I, H, tiempos, T);
-        Monitor monitor = new Monitor(redDePetri);
+        Monitor monitor = new Monitor(redDePetri,cantidadDeInvariantesADisparar);
 
 
         Boolean[] arr0 = {true, false, false, false, false, false, false, false, false, false};//T0

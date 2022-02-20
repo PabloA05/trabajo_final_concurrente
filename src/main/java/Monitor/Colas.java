@@ -26,7 +26,6 @@ public class Colas {
 
     public Colas() {
         this.hilosEnCola = 0;
-        hilosCola = 0;
         this.rwLock = new ReentrantReadWriteLock(true);
         this.writeLock = rwLock.writeLock();
         this.readLock = rwLock.readLock();
