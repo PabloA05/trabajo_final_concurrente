@@ -1,7 +1,7 @@
 package RedDePetri;
 
 import Monitor.Monitor;
-import Monitor.Operaciones;
+import Util.Operaciones;
 
 import java.util.ArrayList;
 import java.util.Arrays;
