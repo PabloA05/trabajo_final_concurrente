@@ -256,6 +256,12 @@ public class RedDePetri {
 
     }
 
+/*    public void calculoDeVectorEstado(Transicion transicion) {
+        for (int i = 0; i < vectorDeEstado.length; i++) {
+            vectorDeEstado[i] += incidencia[i][transicion.getPosicion()];
+        }
+    }*/
+
     public int[] getColumna() {
 
         return new int[0];
