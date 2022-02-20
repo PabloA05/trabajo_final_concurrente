@@ -96,7 +96,7 @@ public class TestMarcadoRdp {
         for (int i = 0; i < f_sen.length; i++) {
             redDePetri.disparar(arrTransiciones[f_sen[i]]);
         }
-        Boolean[] temp = redDePetri.getSensibilizadasExtendido();
+        Boolean[] temp = redDePetri.getSensibilizadasEx();
         System.out.println("antes");
         Operaciones.printBoolean(sensi5);
         System.out.println("despues");
