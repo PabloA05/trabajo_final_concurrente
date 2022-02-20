@@ -10,7 +10,7 @@ public class Main {
     public static void main(String[] args) {
 
         //todo implementar el numero de hilos
-        Operaciones.setCantidadHilos(1);
+        Operaciones.setCantidadHilos(8);
         String mji = "src/main/resources/inicial.csv";
         String I = "src/main/resources/incidencia.csv";
         String H = "src/main/resources/inhibidor.csv";
@@ -18,22 +18,20 @@ public class Main {
         String tiempos = "src/main/resources/tiempos.csv";
         String filepathLog = "src/main/resources/log";
 
-        new Log(filepathLog);
+        Log log = new Log(filepathLog);
+
 
         RedDePetri redDePetri = new RedDePetri(mji, I, H, tiempos, T);
-        Monitor monitor = new Monitor(redDePetri);
+        Monitor monitor = new Monitor(redDePetri, log);
 
 
-        Boolean[] arr0 = {true, true, false, true, false, true, false, false, false, false};
-        Boolean[] arr1 = {true, false, true, false, true, true, false, false, false, false};
-        Boolean[] arr2 = {true, true, false, true, false, true, false, false, false, false};
-        Boolean[] arr3 = {true, false, true, false, true, true, false, false, false, false};
-        Boolean[] arr4 = {false, false, false, false, false, false, true, true, true, true};
-        Boolean[] arr5 = {false, false, false, false, false, false, true, true, true, true};
-        Boolean[] arr6 = {false, false, false, false, false, false, true, true, true, true};
+        Boolean[] arr0 = {true, false, false, false, false, false, false, false, false, false};//T0
+        Boolean[] arr1 = {false, true, false, true, false, false, false, false, false, false};//T1-T3
+        Boolean[] arr2 = {false, false, true, false, true, false, false, false, false, false};//T2-T4
+        Boolean[] arr3 = {false, false, false, false, false, true, false, false, false, false};//T5
+        Boolean[] arr4 = {false, false, false, false, false, false, true, true, true, true};//T6-T7-T8-T9
 
-
-        Thread[] hilo = new Thread[7];
+        Thread[] hilo = new Thread[8];
 
 
         Runnable runnable1 = new Hilo(redDePetri, monitor, arr0);
@@ -51,11 +49,14 @@ public class Main {
         Runnable runnable5 = new Hilo(redDePetri, monitor, arr4);
         hilo[4] = new Thread(runnable5, "hilo_4");
 
-        Runnable runnable6 = new Hilo(redDePetri, monitor, arr5);
+        Runnable runnable6 = new Hilo(redDePetri, monitor, arr4);
         hilo[5] = new Thread(runnable6, "hilo_5");
 
-        Runnable runnable7 = new Hilo(redDePetri, monitor, arr6);
+        Runnable runnable7 = new Hilo(redDePetri, monitor, arr4);
         hilo[6] = new Thread(runnable7, "hilo_6");
+
+        Runnable runnable8 = new Hilo(redDePetri, monitor, arr0);
+        hilo[7] = new Thread(runnable8, "hilo_0.1");
 
         for (int i = 0; i < hilo.length; i++) {
             hilo[i].start();
@@ -65,6 +66,6 @@ public class Main {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        Log.close();
+        log.close();
     }
 }

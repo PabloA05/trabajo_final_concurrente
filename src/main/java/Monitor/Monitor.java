@@ -24,9 +24,10 @@ public class Monitor {
     private Colas[] cola;
     private Politica politica = new Politica(2);
     private static int disparos = 0;
+    private Log log;
 
-
-    public Monitor(RedDePetri rdp) {
+    public Monitor(RedDePetri rdp, Log log) {
+        this.log = log;
         semaforoMonitor = new Semaphore(1, true);
         //k = false;
         redDePetri = rdp;
@@ -46,24 +47,27 @@ public class Monitor {
 
     public void disparaTransicion(Transicion transicion) {
         // k = true;
-        while (true) {//todo hace falta la k????
+        // acquireMonitor();
 
-            try {
-                semaforoMonitor.acquire();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        while (true) {//todo hace falta la k????
+            acquireMonitor();
             boolean k = true;
-         //   System.out.print(ANSI_YELLOW + "Hilo: " + Thread.currentThread().getId() + " entro al monitor con transicion " + transicion.getPosicion() +" "+Thread.currentThread().getName()+ ANSI_RESET + "\n");
+            System.out.print(ANSI_YELLOW + "Hilo: " + Thread.currentThread().getId() + " entro al monitor con transicion " + transicion.getPosicion() + " " + Thread.currentThread().getName() + ANSI_RESET + "\n");
             k = this.redDePetri.disparar(transicion);
 
 
             if (k) {
                 System.out.printf(ANSI_BLUE + "Disparo transicion: %d %s\n" + ANSI_RESET, transicion.getPosicion(), Thread.currentThread().getName());
                 Boolean[] Vs = this.redDePetri.getSensibilizadasExtendido();
-                //Operaciones.printVectorEx(Vs);
+                System.out.println("-----vs ----");
+                Operaciones.printB(Vs);
+                System.out.println("---------");
+
+                System.out.println("-----vc ----");
                 Boolean[] Vc = quienesEstan();
-                //Operaciones.printVectorColas(Vc);
+                Operaciones.printB(Vc);
+                System.out.println("---------");
+
                 Boolean[] m = new Boolean[Vs.length];
                 m = Operaciones.andVector(Vs, Vc); //todo ver si se puede simplificar
                 //  cantidadDisparada(redDePetri);
@@ -76,6 +80,7 @@ public class Monitor {
                         }
                         Transicion transicionADisparar = politica.cualDisparo(m, redDePetri);
 
+                        System.out.printf("%s t:%d despertar:%d\n", Thread.currentThread().getName(), transicion.getPosicion(), transicionADisparar.getPosicion());
                         cola[transicionADisparar.getPosicion()].release();
                     } catch (IndexOutOfBoundsException e) {
                         e.printStackTrace();
@@ -86,17 +91,16 @@ public class Monitor {
                     break;
                 }
             } else {
-                semaforoMonitor.release();
                 System.out.printf(ANSI_RED + "entro en cola t:%d %s\n" + ANSI_RESET, transicion.getPosicion(), Thread.currentThread().getName());
                 cola[transicion.getPosicion()].acquire();
                 System.out.printf(ANSI_GREEN + "salio de cola t:%d %s\n" + ANSI_RESET, transicion.getPosicion(), Thread.currentThread().getName());
             }
 
         }
-        //cantidadDisparada(redDePetri);
+        cantidadDisparada(redDePetri);
 
-        Log.write(transicion.getId());
-        semaforoMonitor.release();
+        log.write(transicion.getId());
+        releaseMonitor();
     }
 
     public static void acquireMonitor() {
@@ -114,10 +118,9 @@ public class Monitor {
     public void cantidadDisparada(RedDePetri redDePetri) {
         Transicion[] transiciones;
         transiciones = redDePetri.getTransiciones().clone();
-        System.out.println("Invariante 1: " + (transiciones[3].getPosicion()) + " se disparo: " + transiciones[3].getCantidadDisparada());
-        System.out.println("Invariante 2: " + (transiciones[4].getPosicion()) + " se disparo: " + transiciones[4].getCantidadDisparada());
-        System.out.println("Invariante 3: " + (transiciones[6].getPosicion()) + " se disparo: " + transiciones[6].getCantidadDisparada());
-        System.out.println("Invariante 4: " + (transiciones[9].getPosicion()) + " se disparo: " + transiciones[9].getCantidadDisparada());
+        System.out.println("Invariante 1: " + transiciones[3].getId() + " se disparo: " + transiciones[3].getCantidadDisparada());
+        System.out.println("Invariante 2: " + transiciones[4].getId() + " se disparo: " + transiciones[4].getCantidadDisparada());
+        System.out.println("Invariante 3: " + transiciones[9].getId() + " se disparo: " + transiciones[9].getCantidadDisparada());
     }
 
 }
