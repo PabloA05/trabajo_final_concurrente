@@ -1,6 +1,6 @@
 package TestRedPetri;
 
-import Monitor.Operaciones;
+import Util.Operaciones;
 import RedDePetri.Transicion;
 import RedDePetri.RedDePetri;
 import Util.Log;

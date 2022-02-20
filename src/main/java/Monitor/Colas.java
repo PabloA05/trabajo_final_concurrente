@@ -1,19 +1,14 @@
 package Monitor;
 
-import RedDePetri.Transicion;
-
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class Colas {
     private int hilosCola;
-    private int hilosEnCola;
     private ReadWriteLock rwLock;
-    Lock writeLock;
-    Lock readLock;
+    private Lock writeLock;
+    private Lock readLock;
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_BLACK = "\u001B[30m";
     public static final String ANSI_RED = "\u001B[31m";
@@ -25,7 +20,7 @@ public class Colas {
     public static final String ANSI_WHITE = "\u001B[37m";
 
     public Colas() {
-        this.hilosEnCola = 0;
+        this.hilosCola = 0;
         this.rwLock = new ReentrantReadWriteLock(true);
         this.writeLock = rwLock.writeLock();
         this.readLock = rwLock.readLock();
@@ -49,8 +44,7 @@ public class Colas {
             e.printStackTrace();
             System.out.println("hilo en cola");
             System.exit(1);
-        }
-        finally {
+        } finally {
             decrement();
         }
     }
@@ -76,7 +70,7 @@ public class Colas {
             System.exit(1);
         }
 
-        System.out.printf(ANSI_PURPLE + "%s hilos en cola:%d\n" + ANSI_RESET, Thread.currentThread().getName(), hilosEnCola);
+        System.out.printf(ANSI_PURPLE + "%s hilos en cola:%d\n" + ANSI_RESET, Thread.currentThread().getName(), hilosCola);
 
         //System.out.printf("salio %d - %s\n", a, Thread.currentThread().getName());
     }
@@ -98,7 +92,6 @@ public class Colas {
 
     }
 }
-
 
 
 //package Monitor;

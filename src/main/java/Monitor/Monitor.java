@@ -3,6 +3,7 @@ package Monitor;
 import RedDePetri.RedDePetri;
 import RedDePetri.Transicion;
 import Util.Log;
+import Util.Operaciones;
 
 import java.util.concurrent.Semaphore;
 
