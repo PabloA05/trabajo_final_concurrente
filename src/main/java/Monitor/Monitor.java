@@ -29,6 +29,8 @@ public class Monitor {
     private boolean flag;
     private int contador;
     private long cuenta =0;
+    private int cantidadDeInvariantesADisparar;
+
     public Monitor(RedDePetri rdp) {
         semaforoMonitor = new Semaphore(1, true);
         //k = false;
@@ -42,6 +44,7 @@ public class Monitor {
         contador =0;
         datos = new ArrayList<int[]>();
         cuenta = System.currentTimeMillis();
+        cantidadDeInvariantesADisparar = 5000;
     }
 
     private Boolean[] quienesEstan() {
@@ -110,21 +113,23 @@ public class Monitor {
 
         Log.write(transicion.getId());
         contador++;
-        if(contador>=10){
+        if(contador>=cantidadDeInvariantesADisparar/10){
             agregarDato(redDePetri.getTransiciones()[3].getCantidadDisparada(),redDePetri.getTransiciones()[4].getCantidadDisparada(),redDePetri.getTransiciones()[9].getCantidadDisparada());
             contador=0;
         }
 
         int aux=0;
-        setCondicion();
+
+        if(condicion){
+            setCondicion();
+        }
+
         if(!condicion && flag){
             flag = false;
-            for(int i=0;i<redDePetri.getCantTransiciones();i++){
-                if (!cola[i].isEmpty()) {
-                    while(!cola[i].isEmpty()) {
-                        aux++;
-                        System.out.println("AUX: "+aux+"Name Thread:" + Thread.currentThread().getName());
-                        cola[i].release();}
+
+            for(int i=0;i<cola.length;i++){
+                while(cola[i].get()>0){
+                    cola[i].release();
                 }
             }
 
@@ -149,9 +154,13 @@ public class Monitor {
         transiciones = redDePetri.getTransiciones().clone();
         int suma = 0;
         suma = transiciones[3].getCantidadDisparada() + transiciones[4].getCantidadDisparada() + transiciones[9].getCantidadDisparada();
-        if(suma>=50){
+
+        if(suma>=cantidadDeInvariantesADisparar){
             condicion = false;
             flag = true;
+            for (int i = 0; i < cola.length; i++) {
+                System.out.println("Cola["+i+"]: "+cola[i].get());
+            }
             System.out.println("Es condicion false");
         }
 

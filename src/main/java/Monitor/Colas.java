@@ -26,6 +26,7 @@ public class Colas {
 
     public Colas() {
         this.hilosEnCola = 0;
+        hilosCola = 0;
         this.rwLock = new ReentrantReadWriteLock(true);
         this.writeLock = rwLock.writeLock();
         this.readLock = rwLock.readLock();
@@ -81,7 +82,7 @@ public class Colas {
         //System.out.printf("salio %d - %s\n", a, Thread.currentThread().getName());
     }
 
-    private int get() {
+    public int get() {
         try {
             readLock.lock();
             return hilosCola;
