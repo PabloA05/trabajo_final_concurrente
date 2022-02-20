@@ -166,16 +166,12 @@ public class Monitor {
         transiciones = redDePetri.getTransiciones().clone();
     }
 
-    public void agregarDato (int a, int b, int c){
+    public void agregarDato(int a, int b, int c) {
         System.out.println("Agrego dato");
-         long actual = System.currentTimeMillis()-cuenta;
-         int aux[]= new int[4];
-         aux[0]=a;
-         aux[1]=b;
-         aux[2]=c;
-         aux[3]=(int)actual;
-        System.out.println("Actual: "+actual);
-         datos.add(aux);
+        long actual = System.currentTimeMillis() - cuenta;
+
+        System.out.println("Actual: " + actual);
+        datos.add((new int[]{a, b, c, (int) actual}));
     }
 
 

@@ -60,10 +60,9 @@ public class RedDePetri {
 
         Boolean[] temp = new Boolean[transiciones.length];
         Arrays.fill(temp, false);
+        actualizaSensibilizadasExtendido();
         setNuevoTimeStamp(temp);
 
-
-        actualizaSensibilizadasExtendido();
     }
 
     public int[][] gettInvariantes() {
@@ -150,12 +149,13 @@ public class RedDePetri {
 
 
         if (k) {
-            actualizaSensibilizadasExtendido();
+
             Boolean[] transicionesAnteriores = sensibilizadasEx;
             transicionesConTiempo[transicion.getPosicion()].resetTimestamp();
             // Operaciones.printVector(vectorDeEstado);
             verificarPInvariantes();
             vectorDeEstado = marcadoSiguiente(vectorDeEstado, transicion.getPosicion());
+            actualizaSensibilizadasExtendido();
             setNuevoTimeStamp(transicionesAnteriores);
             //Operaciones.printB(getSensibilizadasExtendido());
             transicion.incrementoDisparo();
@@ -192,7 +192,6 @@ public class RedDePetri {
 
     private void setNuevoTimeStamp(Boolean[] transicionesAnteriores) {
         for (int i = 0; i < transicionesConTiempo.length; i++) {
-            actualizaSensibilizadasExtendido();
             if (sensibilizadasEx[i] && transiciones[i].isTemportizada()) {///
                 if (!transicionesAnteriores[i]) {
                     transicionesConTiempo[i].nuevoTimeStamp();
