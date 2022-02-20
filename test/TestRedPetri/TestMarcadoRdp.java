@@ -34,7 +34,7 @@ public class TestMarcadoRdp {
 
         char alp = 'a';
         for (int i = 0; i < arrTransiciones.length; i++) {
-            arrTransiciones[i] = new Transicion(alp++, i, false);
+            arrTransiciones[i] = new Transicion("T" + alp++, i, false);
         }
     }
 
@@ -108,12 +108,13 @@ public class TestMarcadoRdp {
 
     @Test
     public void testWrite() {
-        test('a');
-        test('n');
-        Log.close();
+        Log log = new Log("log");
+        test("aaaaa", log);
+        test("bbbbb", log);
+        log.close();
     }
 
-    public void test(char str) {
-        Log.write(str);
+    public void test(String str, Log log) {
+        log.write(str);
     }
 }

@@ -102,11 +102,10 @@ public class Grafico extends ApplicationFrame {
         TimeSeries s2 = new TimeSeries("Invariante 2\n [T0 T2 T4 T5]");
         TimeSeries s3 = new TimeSeries("Invariante 3\n [T6 T7 T8 T9]");
         Second s = new Second();
-        ArrayList<int[]> datos = Monitor.datos;
         int[] aux = new int[4];
 
-        for(int i=0;i<datos.size();i++){
-            aux= datos.get(i);
+        for(int i=0;i<Monitor.datos.size();i++){
+            aux= Monitor.datos.get(i);
             s1.addOrUpdate(new Millisecond(aux[3],s),aux[0]);
             s2.addOrUpdate(new Millisecond(aux[3],s),aux[1]);
             s3.addOrUpdate(new Millisecond(aux[3],s),aux[2]);

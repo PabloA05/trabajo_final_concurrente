@@ -5,6 +5,8 @@ import RedDePetri.RedDePetri;
 import Util.Log;
 import org.jfree.ui.RefineryUtilities;
 
+import java.io.IOException;
+
 public class Main {
     public static void main(String[] args) {
 
@@ -17,13 +19,14 @@ public class Main {
         String tiempos = "src/main/resources/tiempos.csv";
         String filepathLog = "src/main/resources/log";
 
-        new Log(filepathLog);
-        int cantidadDeInvariantesADisparar = 50000;
+        Log log = new Log(filepathLog);
+
+        int cantidadDeInvariantesADisparar = 50;
 
 
 
         RedDePetri redDePetri = new RedDePetri(mji, I, H, tiempos, T);
-        Monitor monitor = new Monitor(redDePetri,cantidadDeInvariantesADisparar);
+        Monitor monitor = new Monitor(redDePetri, log, cantidadDeInvariantesADisparar);
 
 
         Boolean[] arr0 = {true, false, false, false, false, false, false, false, false, false};//T0
@@ -76,8 +79,6 @@ public class Main {
         grafico.pack();
         RefineryUtilities.centerFrameOnScreen(grafico);
         grafico.setVisible(true);
-
-
-        Log.close();
+        log.close();
     }
 }
