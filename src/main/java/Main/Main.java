@@ -3,6 +3,7 @@ package Main;
 import Monitor.*;
 import RedDePetri.RedDePetri;
 import Util.Log;
+import Util.Operaciones;
 import org.jfree.ui.RefineryUtilities;
 
 import java.io.IOException;
