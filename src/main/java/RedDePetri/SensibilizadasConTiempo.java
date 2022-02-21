@@ -70,7 +70,7 @@ public class SensibilizadasConTiempo {
         return id;
     }
 
-    public boolean esInmediata() {
+    public boolean esTemporal() {
         return !(alpha < 0 && beta < 0);
     }
 
