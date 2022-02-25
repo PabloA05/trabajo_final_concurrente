@@ -106,6 +106,7 @@ public class RedDePetri {
 //                    System.out.printf("?? %s esp_id:%d hilo_id:%d\n", Thread.currentThread().getName(), id, Thread.currentThread().getId());
 //                }
 
+                boolean pudoDormir = true;
                 if (antes && !esperando) {
 //                    if (transicionesConTiempo[transicion.getPosicion()].isEsperando()) {
 //                        System.out.printf("fallo %s t:%d esp:%b esp_id:%d hilo_id:%d\n", Thread.currentThread().getName(), transicion.getPosicion(),
@@ -117,7 +118,7 @@ public class RedDePetri {
                     // System.out.printf(">>> entro sleep transicion:%d %s\n", transicion.getPosicion(), Thread.currentThread().getName());
                     transicionesConTiempo[transicion.getPosicion()].setEsperando();
                     transicionesConTiempo[transicion.getPosicion()].setId(Thread.currentThread().getId());
-                    sleepThread(transicion.getPosicion());
+                    pudoDormir = sleepThread(transicion.getPosicion());
                     //   System.out.printf("<<< salio del sleep %s\n", Thread.currentThread().getName());
 
                 } else if (!esperando) {
@@ -128,7 +129,7 @@ public class RedDePetri {
                 Monitor.acquireMonitor();
 
 
-                if (sensibilizadasEx[transicion.getPosicion()]) {
+                if (sensibilizadasEx[transicion.getPosicion()] && pudoDormir) {
                     ventana = transicionesConTiempo[transicion.getPosicion()].testVentanaTiempo();
                     if (ventana) {
                         if ((transicionesConTiempo[transicion.getPosicion()].isEsperando()
@@ -209,17 +210,17 @@ public class RedDePetri {
     }
 
 
-    private void sleepThread(int posicion) { //todo no se si esta bien
+    private boolean sleepThread(int posicion) { //todo no se si esta bien
         long sleepTime = transicionesConTiempo[posicion].getTimeStamp() + transicionesConTiempo[posicion].getAlpha() - System.currentTimeMillis();
         if (sleepTime < 0) {
-            System.out.println("sleep time negative " + sleepTime);
-            System.exit(1);
+            return false;
         }
         try {
             Thread.sleep(sleepTime);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        return true;
     }
 
 
