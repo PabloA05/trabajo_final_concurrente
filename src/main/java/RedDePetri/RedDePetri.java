@@ -234,7 +234,7 @@ public class RedDePetri {
 //                actual,
 //                (transicionesConTiempo[posicion].getTimeStamp() + transicionesConTiempo[posicion].getAlpha()),
 //                (transicionesConTiempo[posicion].getTimeStamp() - actual));
-        return (transicionesConTiempo[posicion].getTimeStamp() + transicionesConTiempo[posicion].getAlpha() >= actual);
+        return (transicionesConTiempo[posicion].getTimeStamp() + transicionesConTiempo[posicion].getAlpha() > actual);
     }
 
 
