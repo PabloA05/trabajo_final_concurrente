@@ -212,7 +212,7 @@ public class RedDePetri {
 
     private boolean sleepThread(int posicion) { //todo no se si esta bien
         long sleepTime = transicionesConTiempo[posicion].getTimeStamp() + transicionesConTiempo[posicion].getAlpha() - System.currentTimeMillis();
-        if (sleepTime < 0) {
+        if (sleepTime <= 0) {
             return false;
         }
         try {
