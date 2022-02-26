@@ -88,7 +88,7 @@ public class RedDePetri {
         boolean esperando;
         boolean ventana;
         // if (estaSensibilizado(transicion.getPosicion())) {
-        if (sensibilizadasEx[transicion.getPosicion()]) {
+        while (sensibilizadasEx[transicion.getPosicion()]&& !transicionesConTiempo[transicion.getPosicion()].isEsperando()) {
 
             ventana = transicionesConTiempo[transicion.getPosicion()].testVentanaTiempo();
             esperando = transicionesConTiempo[transicion.getPosicion()].isEsperando();
@@ -96,9 +96,11 @@ public class RedDePetri {
             if (ventana) {
                 if (!esperando) {
                     k = true;
+                    break;
                 }
             } else {
                 boolean antes = antesDeLaVentana(transicion.getPosicion());
+                System.out.printf("timestamp:%d t:%d %s\n", transicionesConTiempo[transicion.getPosicion()].getTimeStamp(), transicion.getPosicion(), Thread.currentThread().getName());
                 Monitor.releaseMonitor();
 
 //                System.out.printf("esperando %b %s t:%d \n", transicionesConTiempo[transicion.getPosicion()].isEsperando(), Thread.currentThread().getName(), transicion.getPosicion());
@@ -130,11 +132,14 @@ public class RedDePetri {
 
 
                 if (sensibilizadasEx[transicion.getPosicion()] && pudoDormir) {
+                    System.out.printf("entro aca ts:%d esp:%b id_esp:%d id_h:%d\n", transicionesConTiempo[transicion.getPosicion()].getTimeStamp(), transicionesConTiempo[transicion.getPosicion()].isEsperando(),
+                            transicionesConTiempo[transicion.getPosicion()].getId(), Thread.currentThread().getId());
                     ventana = transicionesConTiempo[transicion.getPosicion()].testVentanaTiempo();
                     if (ventana) {
                         if ((transicionesConTiempo[transicion.getPosicion()].isEsperando()
                                 && (transicionesConTiempo[transicion.getPosicion()].getId() == Thread.currentThread().getId()))) {
                             k = true;
+                            break;
                         }
                     }
 //                    System.out.printf("****%s t:%d test:%b esp:%b esp_id:%d hilo_id:%d\n", Thread.currentThread().getName(), transicion.getPosicion(), ventana,
@@ -146,7 +151,7 @@ public class RedDePetri {
 //                        transicion.getPosicion(), Thread.currentThread().getName(), k, transicion.getPosicion());
 
             }
-            System.out.printf("salio transicion:%d %s k:%b t:%d\n", transicion.getPosicion(), Thread.currentThread().getName(), k, transicion.getPosicion());
+            System.out.printf("salio transicion:%d %s k:%b t:%d v:%b\n", transicion.getPosicion(), Thread.currentThread().getName(), k, transicion.getPosicion(), ventana);
 
         }
 
@@ -166,11 +171,10 @@ public class RedDePetri {
         return k;
 //        boolean k = false;
 //        if (this.getSensibilizadasExtendido()[transicion.getPosicion()]) {
-//        Operaciones.printVector(vectorDeEstado);
-//            verificarPInvariantes();
+//            Operaciones.printVector(vectorDeEstado);
+//
 //            vectorDeEstado = marcadoSiguiente(vectorDeEstado, transicion.getPosicion());
 //            transicion.incrementoDisparo();
-//            actualizaSensibilizadasExtendido();
 //
 //            return true;
 //        } else {
@@ -356,24 +360,14 @@ public class RedDePetri {
     public void actualizaSensibilizadasExtendido() {
 
         sensibilizadasEx = Operaciones.andVector(getVectorE(), getVectorB());
-        Boolean[] temp = {true, false, false, false, false, false, true, false, false, false};
-        Boolean[] temp1 = {true, false, false, false, false, false, false, false, false, false};
-        Boolean[] temp2 = {false, false, false, false, false, false, true, false, false, false};
 
-        if (sensibilizadasEx[0] && sensibilizadasEx[6]) {
-            sensibilizadasEx = temp;
-        } else if (sensibilizadasEx[0]) {
-            sensibilizadasEx = temp1;
-        } else if (sensibilizadasEx[6]) {
-            sensibilizadasEx = temp2;
-        }
-//        if (sensibilizadasEx[0] || sensibilizadasEx[6]) {
-//            for (int i = 0; i < getCantTransiciones(); i++) {
-//                if (!(i == 0 || i == 6)) {
-//                    sensibilizadasEx[i] = false;
-//                }
-//            }
-//        }
+        /*if(sensibilizadasEx[0] || sensibilizadasEx[6]){
+            for (int i = 0; i < getCantTransiciones(); i++) {
+                if(!(i == 0 || i==6)){
+                    sensibilizadasEx[i] = false;
+                }
+            }
+        }*/
 
     }
 
