@@ -19,10 +19,10 @@ public class Main {
         String T = "src/main/resources/tInvariantes.csv";
         String tiempos = "src/main/resources/tiempos.csv";
         String filepathLog = "src/main/resources/log";
-
+        String logInvariantes = "src/main/resources/logInvariantes";
         Log log = new Log(filepathLog);
 
-        int cantidadDeInvariantesADisparar = 50;
+        int cantidadDeInvariantesADisparar = 10;
 
 
 
@@ -81,5 +81,6 @@ public class Main {
         RefineryUtilities.centerFrameOnScreen(grafico);
         grafico.setVisible(true);
         log.close();
+        monitor.printInvariantes(logInvariantes);
     }
 }
