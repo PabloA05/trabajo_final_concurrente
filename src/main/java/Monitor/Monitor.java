@@ -58,8 +58,8 @@ public class Monitor {
             while (true) {//todo hace falta la k????
                 acquireMonitor();
                 boolean k = true;
-                System.out.print(Colores.ANSI_YELLOW + "Hilo: " + Thread.currentThread().getId() +
-                        " entro al monitor con transicion " + transicion.getPosicion() + " " + Thread.currentThread().getName() + Colores.ANSI_RESET + "\n");
+                /*System.out.print(Colores.ANSI_YELLOW + "Hilo: " + Thread.currentThread().getId() +
+                        " entro al monitor con transicion " + transicion.getPosicion() + " " + Thread.currentThread().getName() + Colores.ANSI_RESET + "\n");*/
                 k = this.redDePetri.disparar(transicion);
                 if (!condicion) {
                     break;
@@ -68,14 +68,14 @@ public class Monitor {
                 if (k) {
                   System.out.printf(Colores.ANSI_BLUE + "Disparo transicion: %d %s\n" +Colores. ANSI_RESET, transicion.getPosicion(), Thread.currentThread().getName());
                     Boolean[] Vs = this.redDePetri.getSensibilizadasEx();
-                    System.out.println("-----vs ----");
+                  /*  System.out.println("-----vs ----");
                     Operaciones.printB(Vs);
                     System.out.println("---------");
 
-                    System.out.println("-----vc ----");
+                    System.out.println("-----vc ----");*/
                     Boolean[] Vc = quienesEstan();
-                    Operaciones.printB(Vc);
-                    System.out.println("---------");
+                   /* Operaciones.printB(Vc);
+                    System.out.println("---------");*/
 
                     Boolean[] m = new Boolean[Vs.length];
                     m = Operaciones.andVector(Vs, Vc); //todo ver si se puede simplificar
@@ -89,7 +89,7 @@ public class Monitor {
                             }
                             Transicion transicionADisparar = politica.cualDisparo(m, redDePetri);
 
-                            System.out.printf("%s t:%d despertar:%d\n", Thread.currentThread().getName(), transicion.getPosicion(), transicionADisparar.getPosicion());
+                            //System.out.printf("%s t:%d despertar:%d\n", Thread.currentThread().getName(), transicion.getPosicion(), transicionADisparar.getPosicion());
                             cola[transicionADisparar.getPosicion()].release();
                         } catch (IndexOutOfBoundsException e) {
                             e.printStackTrace();
@@ -103,9 +103,9 @@ public class Monitor {
                     if (!condicion) {
                         break;
                     }
-                    System.out.printf(Colores.ANSI_RED + "entro en cola t:%d %s\n" +Colores.ANSI_RESET, transicion.getPosicion(), Thread.currentThread().getName());
+                   // System.out.printf(Colores.ANSI_RED + "entro en cola t:%d %s\n" +Colores.ANSI_RESET, transicion.getPosicion(), Thread.currentThread().getName());
                     cola[transicion.getPosicion()].acquire();
-                    System.out.printf(Colores.ANSI_GREEN + "salio de cola t:%d %s\n" + Colores.ANSI_RESET, transicion.getPosicion(), Thread.currentThread().getName());
+             //       System.out.printf(Colores.ANSI_GREEN + "salio de cola t:%d %s\n" + Colores.ANSI_RESET, transicion.getPosicion(), Thread.currentThread().getName());
                 }
 
             }

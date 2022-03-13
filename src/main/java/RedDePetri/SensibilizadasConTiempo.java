@@ -2,11 +2,12 @@ package RedDePetri;
 
 
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class SensibilizadasConTiempo {
     final private long alpha;
     final private long beta;
-    private long id;
+    private AtomicLong id;
     private long timeStamp;
     private AtomicBoolean esperando;
 
@@ -14,34 +15,28 @@ public class SensibilizadasConTiempo {
         return beta;
     }
 
-    public void setId(long id) {
-        this.id = id;
-    }
 
     SensibilizadasConTiempo(long alpha, long beta) {
         this.alpha = alpha;
         this.beta = beta;
         this.timeStamp = -1;
-        this.id = -999999;
+        this.id = new AtomicLong(-999999);
         this.esperando = new AtomicBoolean(false);
     }
 
-//    public boolean testVentanaTiempo() {
-//        long ahora = System.currentTimeMillis();
-//        return ((ahora - this.startTime) >= this.alpha) && ((ahora - this.startTime) < this.beta &&
-//                !this.esperando.get() || this.esperando.get() && Thread.currentThread().getId() == this.id);
-//
-//    }
+    public void setId(long id) {
+        this.id.set(id);
+    }
+
 
     public boolean testVentanaTiempo() {
         long ahora = System.currentTimeMillis();
-       // System.out.printf("test de ventana:%b %s\n", ((ahora - timeStamp) >= alpha) && ((ahora - timeStamp) < beta), Thread.currentThread().getName());
         return ((ahora - timeStamp) >= alpha) && ((ahora - timeStamp) < beta);
     }
 
     public void nuevoTimeStamp() {
         this.timeStamp = System.currentTimeMillis();
-        this.id = -999999;
+        this.id.set(-999999);
         this.esperando.set(false);
     }
 
@@ -67,16 +62,19 @@ public class SensibilizadasConTiempo {
     }
 
     public long getId() {
-        return id;
+        return id.get();
     }
 
     public boolean esTemporal() {
         return !(alpha < 0 && beta < 0);
     }
 
+    public void resetEsperando() {
+        this.esperando.set(false);
+    }
+
     public void resetTimestamp() {
         this.timeStamp = -1;
-        this.id = -999999;
-        this.esperando.set(false);
+        this.id.set(-999999);
     }
 }
