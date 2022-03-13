@@ -168,6 +168,13 @@ public class RedDePetri {
             //Operaciones.printB(getSensibilizadasExtendido());
             transicion.incrementoDisparo();
         }
+        if (!k &&
+                transicionesConTiempo[transicion.getPosicion()].isEsperando() &&
+                transicionesConTiempo[transicion.getPosicion()].getId() == Thread.currentThread().getId()) {
+
+            //   if (!k && transicion.isTemportizada() && transicionesConTiempo[transicion.getPosicion()].isEsperando()) {
+            transicionesConTiempo[transicion.getPosicion()].resetEsperando();
+        }
         return k;
 //        boolean k = false;
 //        if (this.getSensibilizadasExtendido()[transicion.getPosicion()]) {

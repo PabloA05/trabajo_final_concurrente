@@ -22,7 +22,7 @@ public class Main {
 
         Log log = new Log(filepathLog);
 
-        int cantidadDeInvariantesADisparar = 1000;
+        int cantidadDeInvariantesADisparar = 30;
 
 
 
