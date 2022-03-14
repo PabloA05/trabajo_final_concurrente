@@ -3,6 +3,7 @@ package Main;
 import Monitor.Monitor;
 import RedDePetri.RedDePetri;
 import RedDePetri.Transicion;
+import Util.Colores;
 
 public class Hilo implements Runnable {
 
@@ -23,12 +24,15 @@ public class Hilo implements Runnable {
 
         while (monitor.getCondicion()) {
             for (int i = 0; i < transiciones.length; i++) {
-                if(!monitor.getCondicion()){break;}
+                if (!monitor.getCondicion()) {
+                    break;
+                }
                 if (secuencia[i]) {
                     monitor.disparaTransicion(transiciones[i]);
                 }
             }
 
         }
+        System.out.printf(Colores.ANSI_RED + "SALIO :%s\n" + Colores.ANSI_RESET, Thread.currentThread().getName());
     }
 }
