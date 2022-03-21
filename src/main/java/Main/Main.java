@@ -22,7 +22,7 @@ public class Main {
         String logInvariantes = "src/main/resources/logInvariantes";
         Log log = new Log(filepathLog);
 
-        int cantidadDeInvariantesADisparar = 10;
+        int cantidadDeInvariantesADisparar = 100;
 
 
 
@@ -77,10 +77,10 @@ public class Main {
         System.out.println("TERMINA EL PROGRAMA");
         Grafico grafico = new Grafico(
                 "Cantidad de disparos por Invariante");
-        grafico.pack();
-        RefineryUtilities.centerFrameOnScreen(grafico);
-        grafico.setVisible(true);
+       // grafico.pack();
+       // RefineryUtilities.centerFrameOnScreen(grafico);
+        //grafico.setVisible(true);
         log.close();
-        monitor.printInvariantes(logInvariantes);
+      //  monitor.printInvariantes(logInvariantes);
     }
 }

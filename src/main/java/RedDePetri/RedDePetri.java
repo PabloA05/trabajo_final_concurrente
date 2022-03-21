@@ -101,10 +101,8 @@ public class RedDePetri {
                 boolean antes = antesDeLaVentana(transicion.getPosicion());
                 Monitor.releaseMonitor();
 
-//                System.out.printf("esperando %b %s t:%d \n", transicionesConTiempo[transicion.getPosicion()].isEsperando(), Thread.currentThread().getName(), transicion.getPosicion());
-//                if (transicionesConTiempo[transicion.getPosicion()].isEsperando()) {
-//                    System.out.printf("?? %s esp_id:%d hilo_id:%d\n", Thread.currentThread().getName(), id, Thread.currentThread().getId());
-//                }
+                System.out.printf("esperando %b %s t:%d \n",
+                        transicionesConTiempo[transicion.getPosicion()].isEsperando(), Thread.currentThread().getName(), transicion.getPosicion());
 
                 boolean pudoDormir = true;
                 if (antes && !esperando) {
@@ -119,7 +117,7 @@ public class RedDePetri {
                     transicionesConTiempo[transicion.getPosicion()].setEsperando();
                     transicionesConTiempo[transicion.getPosicion()].setId(Thread.currentThread().getId());
                     pudoDormir = sleepThread(transicion.getPosicion());
-                    //   System.out.printf("<<< salio del sleep %s\n", Thread.currentThread().getName());
+                    System.out.printf("<<< salio del sleep %s\n", Thread.currentThread().getName());
 
                 } else if (!esperando) {
                     System.out.printf("mayor que beta %s t:%d esp:%b\n",

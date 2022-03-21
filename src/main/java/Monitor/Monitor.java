@@ -81,14 +81,17 @@ public class Monitor {
         while (true) {//todo hace falta la k????
             acquireMonitor();
             boolean k = true;
-            //System.out.print(Colores.ANSI_YELLOW + "Hilo: " + Thread.currentThread().getId() + " entro al monitor con transicion " + transicion.getPosicion() + " " + Thread.currentThread().getName() + ANSI_RESET + "\n");
+            System.out.print(Colores.ANSI_YELLOW + "Hilo: " + Thread.currentThread().getId()
+                    + " entro al monitor con transicion " + transicion.getPosicion() + " " + Thread.currentThread().getName() + Colores.ANSI_RESET + "\n");
             k = this.redDePetri.disparar(transicion);
             if (!condicion) {
                 break;
             }
 
             if (k) {
-                //  System.out.printf(ANSI_BLUE + "Disparo transicion: %d %s\n" + ANSI_RESET, transicion.getPosicion(), Thread.currentThread().getName());
+                 System.out.printf(Colores.ANSI_BLUE + "Disparo transicion: %d %s\n" + Colores.ANSI_RESET, transicion.getPosicion(), Thread.currentThread().getName());
+                System.out.printf(Colores.ANSI_RED + "Disparo transicion: %d %s\n" + Colores.ANSI_RESET, transicion.getPosicion()+1, Thread.currentThread().getName());
+
                 Boolean[] Vs = this.redDePetri.getSensibilizadasEx();
                 System.out.println("-----vs ----");
                 Operaciones.printB(Vs);
