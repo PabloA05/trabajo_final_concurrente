@@ -356,13 +356,13 @@ public class RedDePetri {
 
         sensibilizadasEx = Operaciones.andVector(getVectorE(), getVectorB());
 
-        /*if(sensibilizadasEx[0] || sensibilizadasEx[6]){
+        if(sensibilizadasEx[0] || sensibilizadasEx[6]){
             for (int i = 0; i < getCantTransiciones(); i++) {
                 if(!(i == 0 || i==6)){
                     sensibilizadasEx[i] = false;
                 }
             }
-        }*/
+        }
 
     }
 

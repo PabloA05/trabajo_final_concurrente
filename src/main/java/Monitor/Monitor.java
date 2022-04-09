@@ -9,6 +9,9 @@ import Util.Colores;
 import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
 
+import static Util.Colores.ANSI_BLUE;
+import static Util.Colores.ANSI_RESET;
+
 /**
  * Clase encargada del manejo de los hilos que disparan la red de petri.
  */
@@ -88,7 +91,7 @@ public class Monitor {
             }
 
             if (k) {
-                //  System.out.printf(ANSI_BLUE + "Disparo transicion: %d %s\n" + ANSI_RESET, transicion.getPosicion(), Thread.currentThread().getName());
+                System.out.printf(ANSI_BLUE + "Disparo transicion: %d %s\n" + ANSI_RESET, transicion.getPosicion(), Thread.currentThread().getName());
                 Boolean[] Vs = this.redDePetri.getSensibilizadasEx();
                 System.out.println("-----vs ----");
                 Operaciones.printB(Vs);
@@ -127,12 +130,18 @@ public class Monitor {
                     break;
                 }
                 cola[transicion.getPosicion()].acquire();
+                if(!condicion){
+                    semaforoMonitor.release();
+                    return;
+                }
                 //System.out.printf(ANSI_GREEN + "salio de cola t:%d %s\n" + ANSI_RESET, transicion.getPosicion(), Thread.currentThread().getName());
             }
 
         }
-
-        log.write(transicion.getId());
+        if(condicion){
+            log.write(transicion.getId());
+        }
+        //log.write(transicion.getId());
         contador++;
         if (contador >= relacionDeMuestra) {
             agregarDato(redDePetri.getTransiciones()[3].getCantidadDisparada(), redDePetri.getTransiciones()[4].getCantidadDisparada(), redDePetri.getTransiciones()[9].getCantidadDisparada());

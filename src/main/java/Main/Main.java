@@ -12,17 +12,17 @@ public class Main {
     public static void main(String[] args) {
 
         //todo implementar el numero de hilos
-        Operaciones.setCantidadHilos(8);
+
         String mji = "src/main/resources/inicial.csv";
         String I = "src/main/resources/incidencia.csv";
         String H = "src/main/resources/inhibidor.csv";
         String T = "src/main/resources/tInvariantes.csv";
         String tiempos = "src/main/resources/tiempos.csv";
-        String filepathLog = "src/main/resources/log";
+        String filepathLog = "checkTransiciones/log";
         String logInvariantes = "src/main/resources/logInvariantes";
         Log log = new Log(filepathLog);
 
-        int cantidadDeInvariantesADisparar = 10;
+        int cantidadDeInvariantesADisparar = 1000;
 
 
 
@@ -36,7 +36,7 @@ public class Main {
         Boolean[] arr3 = {false, false, false, false, false, true, false, false, false, false};//T5
         Boolean[] arr4 = {false, false, false, false, false, false, true, true, true, true};//T6-T7-T8-T9
 
-        Thread[] hilo = new Thread[8];
+        Thread[] hilo = new Thread[7];
 
 
         Runnable runnable1 = new Hilo(redDePetri, monitor, arr0);
@@ -59,9 +59,6 @@ public class Main {
 
         Runnable runnable7 = new Hilo(redDePetri, monitor, arr4);
         hilo[6] = new Thread(runnable7, "hilo_6");
-
-        Runnable runnable8 = new Hilo(redDePetri, monitor, arr0);
-        hilo[7] = new Thread(runnable8, "hilo_0.1");
 
         for (int i = 0; i < hilo.length; i++) {
             hilo[i].start();
