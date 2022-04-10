@@ -76,5 +76,6 @@ public class SensibilizadasConTiempo {
     public void resetTimestamp() {
         this.timeStamp = -1;
         this.id.set(-999999);
+
     }
 }
