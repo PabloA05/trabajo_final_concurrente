@@ -37,7 +37,7 @@ public class SensibilizadasConTiempo {
     public void nuevoTimeStamp(long timeStamp) {
         this.timeStamp = timeStamp;
         this.id.set(-999999);
-        this.esperando.set(false);
+        this.esperando.set(false); //todo probablemente este demas
     }
 
     public boolean isEsperando() {

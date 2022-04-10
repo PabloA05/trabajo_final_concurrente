@@ -60,7 +60,7 @@ public class RedDePetri {
 
         Boolean[] temp = new Boolean[transiciones.length];
         Arrays.fill(temp, false);
-        actualizaSensibilizadasExtendido(vectorDeEstado);
+        actualizaSensibilizadasExtendido();
         setNuevoTimeStamp(sensibilizadasEx, System.currentTimeMillis());
 
     }
@@ -69,18 +69,7 @@ public class RedDePetri {
         return tInvariantes;
     }
 
-    public Boolean[] getVectorE(int[] vectorEstado) {
-        Boolean[] sensibilizadas = new Boolean[getCantTransiciones()];
-        for (int i = 0; i < getCantTransiciones(); i++) {
-            try {
-                sensibilizadas[i] = esDisparoValido(marcadoSiguiente(vectorEstado, i));
-            } catch (Exception e) {
-                e.printStackTrace();
-                System.out.println("Error en getSensibilizadas()");
-            }
-        }
-        return sensibilizadas;
-    }
+
 //todo completar
 
     public boolean disparar(Transicion transicion) {//todo para transiciones inmediatas
@@ -89,6 +78,10 @@ public class RedDePetri {
         boolean ventana;
         long bufTimeStamp = 0;
         // if (estaSensibilizado(transicion.getPosicion())) {
+
+        if (!sensibilizadasEx[transicion.getPosicion()]) {
+            return false;
+        }
 
         if (!transicion.isTemportizada()) {
             k = true;
@@ -104,11 +97,12 @@ public class RedDePetri {
                     bufTimeStamp = System.currentTimeMillis();
                     break;
                 } else {
+
                     boolean antes = antesDeLaVentana(transicion.getPosicion());
-                    System.out.printf("[rdp] esp:%b timestamp:%d t:%d %s\n",!transicionesConTiempo[transicion.getPosicion()].isEsperando() ,transicionesConTiempo[transicion.getPosicion()].getTimeStamp(), transicion.getPosicion(), Thread.currentThread().getName());
+                    System.out.printf("[rdp] esp:%b timestamp:%d t:%d %s\n", !transicionesConTiempo[transicion.getPosicion()].isEsperando(), transicionesConTiempo[transicion.getPosicion()].getTimeStamp(), transicion.getPosicion(), Thread.currentThread().getName());
                     Monitor.releaseMonitor();
 
-                    System.out.printf("[rdp]rdp esp:%b %s t:%d \n", transicionesConTiempo[transicion.getPosicion()].isEsperando(), Thread.currentThread().getName(), transicion.getPosicion());
+                    System.out.printf("[rdp] esp:%b %s t:%d \n", transicionesConTiempo[transicion.getPosicion()].isEsperando(), Thread.currentThread().getName(), transicion.getPosicion());
 //                if (transicionesConTiempo[transicion.getPosicion()].isEsperando()) {
 //                    System.out.printf("?? %s esp_id:%d hilo_id:%d\n", Thread.currentThread().getName(), id, Thread.currentThread().getId());
 //                }
@@ -172,7 +166,12 @@ public class RedDePetri {
             // Operaciones.printVector(vectorDeEstado);
             verificarPInvariantes();
             vectorDeEstado = marcadoSiguiente(vectorDeEstado, transicion.getPosicion());
-            Boolean[] copyOriginalSensibilizadas = actualizaSensibilizadasExtendido(vectorDeEstado);
+            Boolean[] copyOriginalSensibilizadas = actualizaSensibilizadasExtendido();
+            System.out.println("************************************");
+            Operaciones.printB(sensibilizadasEx);
+            Operaciones.printB(copyOriginalSensibilizadas);
+            System.out.println("************************************");
+
             if (!esperando) {
                 setNuevoTimeStamp(copyOriginalSensibilizadas, bufTimeStamp);
             } else {
@@ -352,21 +351,33 @@ public class RedDePetri {
         return temp;
     }
 
+    public Boolean[] getVectorE() {
+        Boolean[] sensibilizadas = new Boolean[getCantTransiciones()];
+        for (int i = 0; i < getCantTransiciones(); i++) {
+            try {
+                sensibilizadas[i] = esDisparoValido(marcadoSiguiente(vectorDeEstado, i));
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.out.println("Error en getSensibilizadas()");
+            }
+        }
+        return sensibilizadas;
+    }
 
-    public Boolean[] getVectorQ(int[] vectorEstado) {
+    public Boolean[] getVectorQ() {
         Boolean[] vectorQ = new Boolean[getVectorDeEstado().length];
 
         for (int i = 0; i < getCantPlazas(); i++) {
-            vectorQ[i] = vectorEstado[i] != 0;
+            vectorQ[i] = vectorDeEstado[i] != 0;
         }
         return vectorQ;
     }
 
-    public Boolean[] getVectorB(int[] vectorEstado) {
+    public Boolean[] getVectorB() {
 
         Boolean[] vectorB = new Boolean[getCantTransiciones()];
         int[][] inhibidorTranspuesta = Operaciones.transpuesta(this.inhibidor);
-        vectorB = Operaciones.productoMatrizVectorBoolean(inhibidorTranspuesta, this.getVectorQ(vectorEstado));
+        vectorB = Operaciones.productoMatrizVectorBoolean(inhibidorTranspuesta, this.getVectorQ());
         for (int i = 0; i < vectorB.length; i++) {
             vectorB[i] = !vectorB[i];
         }
@@ -374,12 +385,11 @@ public class RedDePetri {
         B = vectorB;
 
         return this.B.clone();
-
     }
 
-    public Boolean[] actualizaSensibilizadasExtendido(int[] vectorEstado) {
+    public Boolean[] actualizaSensibilizadasExtendido() {
 
-        sensibilizadasEx = Operaciones.andVector(getVectorE(vectorEstado), getVectorB(vectorEstado));
+        sensibilizadasEx = Operaciones.andVector(getVectorE(), getVectorB());
         Boolean[] copy = sensibilizadasEx.clone();
 
         if (sensibilizadasEx[0] || sensibilizadasEx[6]) {
@@ -391,6 +401,7 @@ public class RedDePetri {
         }
 
         return copy;
+
     }
 
     public void setVectorDeEstado(int[] vector) {
