@@ -1,6 +1,7 @@
 package RedDePetri;
 
 import Monitor.Monitor;
+import Util.Colores;
 import Util.Operaciones;
 
 import java.util.ArrayList;
@@ -92,6 +93,8 @@ public class RedDePetri {
                 ventana = transicionesConTiempo[transicion.getPosicion()].testVentanaTiempo();
                 esperando = transicionesConTiempo[transicion.getPosicion()].isEsperando(); //todo ver si podria ir en otro lugar?
 
+                System.out.printf(Colores.ANSI_RED+"esp %b \n"+Colores.ANSI_RESET, esperando);;
+
                 if (ventana && !esperando) {
                     k = true;
                     bufTimeStamp = System.currentTimeMillis();
@@ -99,13 +102,14 @@ public class RedDePetri {
                 } else {
 
                     boolean antes = antesDeLaVentana(transicion.getPosicion());
-                    System.out.printf("[rdp] esp:%b timestamp:%d t:%d %s\n", !transicionesConTiempo[transicion.getPosicion()].isEsperando(), transicionesConTiempo[transicion.getPosicion()].getTimeStamp(), transicion.getPosicion(), Thread.currentThread().getName());
+                    System.out.printf(Colores.ANSI_RED +"[rdp] esp:%b timestamp:%d t:%d %s\n"+Colores.ANSI_RESET, transicionesConTiempo[transicion.getPosicion()].isEsperando(), transicionesConTiempo[transicion.getPosicion()].getTimeStamp(), transicion.getPosicion(), Thread.currentThread().getName());
                     Monitor.releaseMonitor();
 
                     System.out.printf("[rdp] esp:%b %s t:%d \n", transicionesConTiempo[transicion.getPosicion()].isEsperando(), Thread.currentThread().getName(), transicion.getPosicion());
 //                if (transicionesConTiempo[transicion.getPosicion()].isEsperando()) {
 //                    System.out.printf("?? %s esp_id:%d hilo_id:%d\n", Thread.currentThread().getName(), id, Thread.currentThread().getId());
 //                }
+                    System.out.printf(Colores.ANSI_GREEN+"antes:%b\n"+Colores.ANSI_RESET, antes);
 
                     boolean pudoDormir = true;
                     if (antes && !esperando) {
@@ -123,8 +127,8 @@ public class RedDePetri {
                         System.out.printf("[rdp] <<< salio del sleep %s\n", Thread.currentThread().getName());
 
                     } else if (!esperando) {
-                        System.out.printf("[rdp] mayor que beta %s t:%d esp:%b\n",
-                                Thread.currentThread().getName(), transicion.getPosicion(), transicionesConTiempo[transicion.getPosicion()].isEsperando());
+                        System.out.printf("[rdp] mayor que beta %s t:%d esp:%b antes:%b\n",
+                                Thread.currentThread().getName(), transicion.getPosicion(), transicionesConTiempo[transicion.getPosicion()].isEsperando(),antes);
                         System.exit(1);
                     }
                     Monitor.acquireMonitor();
@@ -185,7 +189,7 @@ public class RedDePetri {
                 transicionesConTiempo[transicion.getPosicion()].getId() == Thread.currentThread().getId()) {
 
             //   if (!k && transicion.isTemportizada() && transicionesConTiempo[transicion.getPosicion()].isEsperando()) {
-            transicionesConTiempo[transicion.getPosicion()].resetEsperando();
+            transicionesConTiempo[transicion.getPosicion()].isEsperando();
         }
 
         return k;
@@ -226,6 +230,7 @@ public class RedDePetri {
             if (tempSensibilizadasEx[i] && transiciones[i].isTemportizada()) {///
                 transicionesConTiempo[i].nuevoTimeStamp(timeStamp);
             }
+            //todo resetea
         }
     }
 
