@@ -1,6 +1,8 @@
 package RedDePetri;
 
 
+import Util.Colores;
+
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -70,10 +72,13 @@ public class SensibilizadasConTiempo {
     }
 
     public void resetEsperando() {
+
+    System.out.printf(Colores.ANSI_GREEN +"[ ST ] reseteo esperando %s\n"+Colores.ANSI_RESET,Thread.currentThread().getName());
         this.esperando.set(false);
     }
 
     public void resetTimestamp() {
+        System.out.printf(Colores.ANSI_GREEN+"[ ST ] reseteo timeStamp %s\n"+Colores.ANSI_RESET,Thread.currentThread().getName());
         this.timeStamp = -1;
         this.id.set(-999999);
 

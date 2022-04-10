@@ -21,7 +21,7 @@ public class Main {
 
         Log log = new Log(filepathLog);
 
-        int cantidadDeInvariantesADisparar = 10;
+        int cantidadDeInvariantesADisparar = 1000;
 
 
         RedDePetri redDePetri = new RedDePetri(mji, I, H, tiempos, T);

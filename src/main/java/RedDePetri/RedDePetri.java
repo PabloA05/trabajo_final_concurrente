@@ -134,7 +134,7 @@ public class RedDePetri {
 
 
                     if (sensibilizadasEx[transicion.getPosicion()] && pudoDormir) {
-                        System.out.printf("[rdp] entro aca ts:%d esp:%b id_esp:%d id_h:%d\n", transicionesConTiempo[transicion.getPosicion()].getTimeStamp(), transicionesConTiempo[transicion.getPosicion()].isEsperando(),
+                        System.out.printf("[rdp] %s entro aca timeStamp:%d esp:%b id_esp:%d id_h:%d\n", Thread.currentThread().getName(), transicionesConTiempo[transicion.getPosicion()].getTimeStamp(), transicionesConTiempo[transicion.getPosicion()].isEsperando(),
                                 transicionesConTiempo[transicion.getPosicion()].getId(), Thread.currentThread().getId());
                         ventana = transicionesConTiempo[transicion.getPosicion()].testVentanaTiempo();
                         if (ventana) {
@@ -162,6 +162,7 @@ public class RedDePetri {
 
         if (k) {
 
+            boolean bufEsperando = transicionesConTiempo[transicion.getPosicion()].isEsperando();
             if (transicionesConTiempo[transicion.getPosicion()].isEsperando()) {
                 transicionesConTiempo[transicion.getPosicion()].resetEsperando();
             }
@@ -173,7 +174,8 @@ public class RedDePetri {
             Operaciones.printB(copyOriginalSensibilizadas);
             System.out.println("************************************");
 
-            if (!esperando) {
+            if (!bufEsperando) {
+                System.out.printf(Colores.ANSI_BLUE + "[rdp] t:%d %s esp:%b timestamp:%d\n" + Colores.ANSI_RESET, transicion.getPosicion(), Thread.currentThread().getName(), esperando, bufTimeStamp);
                 setNuevoTimeStamp(copyOriginalSensibilizadas, bufTimeStamp);
             } else {
                 setNuevoTimeStamp(copyOriginalSensibilizadas, System.currentTimeMillis());
@@ -222,7 +224,8 @@ public class RedDePetri {
 
     private void setNuevoTimeStamp(Boolean[] tempSensibilizadasEx, long timeStamp) { //todo deberia ser un unico timeStamp?
 
-
+        System.out.printf(Colores.ANSI_RED + "[rdp] %d %s ***** \n" + Colores.ANSI_RESET, timeStamp, Thread.currentThread().getName());
+        Operaciones.printB(tempSensibilizadasEx);
         for (int i = 0; i < transicionesConTiempo.length; i++) {
             if (tempSensibilizadasEx[i] && transiciones[i].isTemportizada()) {///
                 transicionesConTiempo[i].nuevoTimeStamp(timeStamp);
@@ -231,6 +234,11 @@ public class RedDePetri {
             }
             //todo resetea
         }
+        for (int i = 0; i < transicionesConTiempo.length; i++) {
+            System.out.printf("%d %d\n", i, transicionesConTiempo[i].getTimeStamp());
+        }
+
+
     }
 
     public void setTransiciones(Transicion[] trans) {
