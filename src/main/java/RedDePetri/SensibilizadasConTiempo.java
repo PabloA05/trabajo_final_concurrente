@@ -34,8 +34,8 @@ public class SensibilizadasConTiempo {
         return ((ahora - timeStamp) >= alpha) && ((ahora - timeStamp) < beta);
     }
 
-    public void nuevoTimeStamp() {
-        this.timeStamp = System.currentTimeMillis();
+    public void nuevoTimeStamp(long timeStamp) {
+        this.timeStamp = timeStamp;
         this.id.set(-999999);
         this.esperando.set(false);
     }

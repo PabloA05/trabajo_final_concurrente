@@ -7,7 +7,6 @@ import java.util.Scanner;
 //100,100,100,100,100,100,100,100,99,99
 public class Operaciones {
 
-    private static int CANTIDAD; //hilos
     private static Scanner INPUT_STREAM;
 
     public static Boolean[] andVector(Boolean[] lista1, Boolean[] lista2) {
@@ -238,14 +237,6 @@ public class Operaciones {
             e.printStackTrace();
         }
         return a.stream().mapToInt(i -> i).toArray();
-    }
-
-    public static void setCantidadHilos(int i) {
-        CANTIDAD = i;
-    }
-
-    public static int getCantidadHilos() {
-        return CANTIDAD;
     }
 
     public static void prinThisMatrix(int[][] matrix) {

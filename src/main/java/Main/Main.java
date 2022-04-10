@@ -12,7 +12,6 @@ public class Main {
     public static void main(String[] args) {
 
         //todo implementar el numero de hilos
-        Operaciones.setCantidadHilos(8);
         String mji = "src/main/resources/inicial.csv";
         String I = "src/main/resources/incidencia.csv";
         String H = "src/main/resources/inhibidor.csv";
