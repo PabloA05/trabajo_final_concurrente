@@ -4,7 +4,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
-//100,100,100,100,100,100,100,100,99,99
+//-1,-1,-1,-1,-1,-1,-1,-1,-1,-1
+//-1,-1,-1,-1,-1,-1,-1,-1,-1,-1
 public class Operaciones {
 
     private static int CANTIDAD; //hilos

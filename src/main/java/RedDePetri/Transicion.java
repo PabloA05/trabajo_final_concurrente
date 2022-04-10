@@ -12,12 +12,14 @@ public class Transicion {
         this.temporizada = temporizada;
         cantidadDisparada = 0;
     }
-//return (!(a == 0 || a == 6)) ;
+
+
+    //return (!(a == 0 || a == 6)) ;
     public String getId (){
         return id;
     }
 
-    public boolean isTemportizada(){
+    public boolean isTemporizada(){
         return temporizada;
     }
 

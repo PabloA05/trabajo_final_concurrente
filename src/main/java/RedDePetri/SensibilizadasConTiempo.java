@@ -73,10 +73,11 @@ public class SensibilizadasConTiempo {
     public boolean esTemporal() {
         return !(alpha < 0 && beta < 0);
     }
-
+    public void resetEsperando() {
+        this.esperando.set(false);
+    }
     public void resetTimestamp() {
         this.timeStamp = -1;
         this.id = -999999;
-        this.esperando.set(false);
     }
 }

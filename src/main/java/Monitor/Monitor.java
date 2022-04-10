@@ -9,8 +9,7 @@ import Util.Colores;
 import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
 
-import static Util.Colores.ANSI_BLUE;
-import static Util.Colores.ANSI_RESET;
+import static Util.Colores.*;
 
 /**
  * Clase encargada del manejo de los hilos que disparan la red de petri.
@@ -84,7 +83,7 @@ public class Monitor {
         while (true) {//todo hace falta la k????
             acquireMonitor();
             boolean k = true;
-            //System.out.print(Colores.ANSI_YELLOW + "Hilo: " + Thread.currentThread().getId() + " entro al monitor con transicion " + transicion.getPosicion() + " " + Thread.currentThread().getName() + ANSI_RESET + "\n");
+            System.out.print(Colores.ANSI_YELLOW + "Hilo: " + Thread.currentThread().getId() + " entro al monitor con transicion " + transicion.getPosicion() + " " + Thread.currentThread().getName() + ANSI_RESET + "\n");
             k = this.redDePetri.disparar(transicion);
             if (!condicion) {
                 break;
@@ -125,7 +124,7 @@ public class Monitor {
                     break;
                 }
             } else {
-                //System.out.printf(ANSI_RED + "entro en cola t:%d %s\n" + ANSI_RESET, transicion.getPosicion(), Thread.currentThread().getName());
+                System.out.printf(ANSI_RED + "entro en cola t:%d %s\n" + ANSI_RESET, transicion.getPosicion(), Thread.currentThread().getName());
                 if (!condicion) {
                     break;
                 }
@@ -134,7 +133,7 @@ public class Monitor {
                     semaforoMonitor.release();
                     return;
                 }
-                //System.out.printf(ANSI_GREEN + "salio de cola t:%d %s\n" + ANSI_RESET, transicion.getPosicion(), Thread.currentThread().getName());
+                System.out.printf(ANSI_GREEN + "salio de cola t:%d %s\n" + ANSI_RESET, transicion.getPosicion(), Thread.currentThread().getName());
             }
 
         }
