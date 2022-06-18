@@ -35,12 +35,12 @@ public class SensibilizadasConTiempo {
 
     public boolean testVentanaTiempo() {
         long ahora = System.currentTimeMillis();
-       // System.out.printf("test de ventana:%b %s\n", ((ahora - timeStamp) >= alpha) && ((ahora - timeStamp) < beta), Thread.currentThread().getName());
+        // System.out.printf("test de ventana:%b %s\n", ((ahora - timeStamp) >= alpha) && ((ahora - timeStamp) < beta), Thread.currentThread().getName());
         return ((ahora - timeStamp) >= alpha) && ((ahora - timeStamp) < beta);
     }
 
-    public void nuevoTimeStamp() {
-        this.timeStamp = System.currentTimeMillis();
+    public void nuevoTimeStamp(long timeStamp) {
+        this.timeStamp = timeStamp;
         this.id = -999999;
         this.esperando.set(false);
     }
@@ -78,5 +78,10 @@ public class SensibilizadasConTiempo {
         this.timeStamp = -1;
         this.id = -999999;
         this.esperando.set(false);
+    }
+
+    public void resetEsperando() {
+        this.esperando.set(false);
+        this.id = -999999;
     }
 }

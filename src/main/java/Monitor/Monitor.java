@@ -84,7 +84,7 @@ public class Monitor {
         while (true) {//todo hace falta la k????
             acquireMonitor();
             boolean k = true;
-            //System.out.print(Colores.ANSI_YELLOW + "Hilo: " + Thread.currentThread().getId() + " entro al monitor con transicion " + transicion.getPosicion() + " " + Thread.currentThread().getName() + ANSI_RESET + "\n");
+            // System.out.print(Colores.ANSI_YELLOW + "Hilo: " + Thread.currentThread().getId() + " entro al monitor con transicion " + transicion.getPosicion() + " " + Thread.currentThread().getName() + ANSI_RESET + "\n");
             k = this.redDePetri.disparar(transicion);
             if (!condicion) {
                 break;
@@ -125,7 +125,7 @@ public class Monitor {
                     break;
                 }
             } else {
-                //System.out.printf(ANSI_RED + "entro en cola t:%d %s\n" + ANSI_RESET, transicion.getPosicion(), Thread.currentThread().getName());
+                System.out.printf(Colores.ANSI_RED + "entro en cola t:%d %s\n" + ANSI_RESET, transicion.getPosicion(), Thread.currentThread().getName());
                 if (!condicion) {
                     break;
                 }
@@ -134,7 +134,7 @@ public class Monitor {
                     semaforoMonitor.release();
                     return;
                 }
-                //System.out.printf(ANSI_GREEN + "salio de cola t:%d %s\n" + ANSI_RESET, transicion.getPosicion(), Thread.currentThread().getName());
+                System.out.printf(Colores.ANSI_GREEN + "salio de cola t:%d %s\n" + ANSI_RESET, transicion.getPosicion(), Thread.currentThread().getName());
             }
 
         }
@@ -209,10 +209,10 @@ public class Monitor {
     }
 
     public void agregarDato(int a, int b, int c) {
-        System.out.println("Agrego dato");
+       // System.out.println("Agrego dato");
         long actual = System.currentTimeMillis() - cuenta;
 
-        System.out.println("Actual: " + actual);
+        //System.out.println("Actual: " + actual);
         datos.add((new int[]{a, b, c, (int) actual}));
     }
 
