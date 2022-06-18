@@ -77,7 +77,6 @@ public class SensibilizadasConTiempo {
     public void resetTimestamp() {
         this.timeStamp = -1;
         this.id = -999999;
-        this.esperando.set(false);
     }
 
     public void resetEsperando() {

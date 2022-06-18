@@ -90,7 +90,7 @@ public class RedDePetri {
         boolean ventana;
         // if (estaSensibilizado(transicion.getPosicion())) {
 
-        if (!transicion.isTemportizada()) {
+        if (!transicion.isTemporizada()) {
             k = true;
 
         } else {
@@ -187,7 +187,7 @@ public class RedDePetri {
                 transicionesConTiempo[transicion.getPosicion()].isEsperando() &&
                 transicionesConTiempo[transicion.getPosicion()].getId() == Thread.currentThread().getId()) {
 
-            //   if (!k && transicion.isTemportizada() && transicionesConTiempo[transicion.getPosicion()].isEsperando()) {
+            //   if (!k && transicion.isTemporizada() && transicionesConTiempo[transicion.getPosicion()].isEsperando()) {
             transicionesConTiempo[transicion.getPosicion()].resetEsperando();
         }
 
@@ -224,11 +224,11 @@ public class RedDePetri {
     private void setNuevoTimeStamp(Boolean[] transicionesAnteriores) {
         long timeStamp = System.currentTimeMillis();
         for (int i = 0; i < transicionesConTiempo.length; i++) {
-            if (sensibilizadasEx[i] && transiciones[i].isTemportizada()) {///
+            if (sensibilizadasEx[i] && transiciones[i].isTemporizada()) {///
                 if (!transicionesAnteriores[i]) {
                     transicionesConTiempo[i].nuevoTimeStamp(timeStamp);
                 }
-            } else if (!sensibilizadasEx[i] && transiciones[i].isTemportizada()) {
+            } else if (!sensibilizadasEx[i] && transiciones[i].isTemporizada()) {
                 transicionesConTiempo[i].resetTimestamp();
             }
         }
