@@ -22,7 +22,7 @@ public class Main {
         String logInvariantes = "src/main/resources/logInvariantes";
         Log log = new Log(filepathLog);
 
-        int cantidadDeInvariantesADisparar = 50;
+        int cantidadDeInvariantesADisparar = 100000;
 
 
 

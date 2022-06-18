@@ -62,7 +62,7 @@ public class RedDePetri {
         Boolean[] temp = new Boolean[transiciones.length];
         Arrays.fill(temp, false);
         actualizaSensibilizadasExtendido();
-        setNuevoTimeStamp(temp);
+        setNuevoTimeStamp();
 
     }
 
@@ -173,13 +173,12 @@ public class RedDePetri {
 
         if (k) {
 
-            Boolean[] transicionesAnteriores = sensibilizadasEx;
             transicionesConTiempo[transicion.getPosicion()].resetTimestamp();
             // Operaciones.printVector(vectorDeEstado);
             verificarPInvariantes();
             vectorDeEstado = marcadoSiguiente(vectorDeEstado, transicion.getPosicion());
             actualizaSensibilizadasExtendido();
-            setNuevoTimeStamp(transicionesAnteriores);
+            setNuevoTimeStamp();
             //Operaciones.printB(getSensibilizadasExtendido());
             transicion.incrementoDisparo();
         }
@@ -221,17 +220,22 @@ public class RedDePetri {
 
     }
 
-    private void setNuevoTimeStamp(Boolean[] transicionesAnteriores) {
+    private void setNuevoTimeStamp() {
+        Boolean[]  tempSensibilizadasEx= Operaciones.andVector(getVectorE(), getVectorB());
         long timeStamp = System.currentTimeMillis();
+
         for (int i = 0; i < transicionesConTiempo.length; i++) {
-            if (sensibilizadasEx[i] && transiciones[i].isTemporizada()) {///
-                if (!transicionesAnteriores[i]) {
-                    transicionesConTiempo[i].nuevoTimeStamp(timeStamp);
-                }
-            } else if (!sensibilizadasEx[i] && transiciones[i].isTemporizada()) {
+            if (tempSensibilizadasEx[i] && transiciones[i].isTemporizada()) {///
+                transicionesConTiempo[i].nuevoTimeStamp(timeStamp);
+            } else {
                 transicionesConTiempo[i].resetTimestamp();
             }
+            //todo resetea
         }
+//        for (int i = 0; i < transicionesConTiempo.length; i++) {
+//            System.out.printf("%d %d\n", i, transicionesConTiempo[i].getTimeStamp());
+//        }
+
     }
 
     public void setTransiciones(Transicion[] trans) {
@@ -385,15 +389,18 @@ public class RedDePetri {
 
         sensibilizadasEx = Operaciones.andVector(getVectorE(), getVectorB());
 
-        if (sensibilizadasEx[0] || sensibilizadasEx[6]) {
-            for (int i = 0; i < getCantTransiciones(); i++) {
-                if (!(i == 0 || i == 6)) {
-                    sensibilizadasEx[i] = false;
-                }
-            }
-        }
-        if (sensibilizadasEx[6] == true) {
-            System.out.printf(Colores.ANSI_YELLOW + "se sensibilizo t6\n" + Colores.ANSI_RESET);
+//        if (sensibilizadasEx[0] || sensibilizadasEx[6]) {
+//            for (int i = 0; i < getCantTransiciones(); i++) {
+//                if (!(i == 0 || i == 6)) {
+//                    sensibilizadasEx[i] = false;
+//                }
+//            }
+//        }
+//        if (sensibilizadasEx[6]) {
+//            System.out.printf(Colores.ANSI_YELLOW + "se sensibilizo t6\n" + Colores.ANSI_RESET);
+//        }
+        if (sensibilizadasEx[3]) {
+            System.out.printf(Colores.ANSI_YELLOW + "*******   se sensibilizo t3\n" + Colores.ANSI_RESET);
         }
     }
 
