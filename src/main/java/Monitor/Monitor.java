@@ -177,10 +177,10 @@ public class Monitor {
         }
 
         public void agregarDato ( int a, int b, int c){
-            System.out.println("Agrego dato");
+            //System.out.println("Agrego dato");
             long actual = System.currentTimeMillis() - cuenta;
 
-            System.out.println("Actual: " + actual);
+          //  System.out.println("Actual: " + actual);
             datos.add((new int[]{a, b, c, (int) actual}));
         }
 
