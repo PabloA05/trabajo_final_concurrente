@@ -56,6 +56,7 @@ public class SensibilizadasConTiempo {
             System.exit(1);
         }
         this.esperando.set(true);
+        this.id = Thread.currentThread().getId();
     }
 
     public long getAlpha() {
