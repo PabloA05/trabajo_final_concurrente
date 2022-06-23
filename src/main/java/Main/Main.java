@@ -11,23 +11,21 @@ import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) {
-        long start = System.currentTimeMillis();
 
-        //todo implementar el numero de hilos
-        Operaciones.setCantidadHilos(8);
+
         String mji = "src/main/resources/inicial.csv";
         String I = "src/main/resources/incidencia.csv";
         String H = "src/main/resources/inhibidor.csv";
         String T = "src/main/resources/tInvariantes.csv";
         String tiempos = "src/main/resources/tiempos.csv";
         String filepathLog = "src/main/resources/log";
-
+        String Pinv = "src/main/resources/pInvariantes.csv";
         Log log = new Log(filepathLog);
 
         int cantidadDeInvariantesADisparar = 1000;
 
 
-        RedDePetri redDePetri = new RedDePetri(mji, I, H, tiempos, T);
+        RedDePetri redDePetri = new RedDePetri(mji, I, H, tiempos, T, Pinv);
         Monitor monitor = new Monitor(redDePetri, log, cantidadDeInvariantesADisparar);
 
 
@@ -64,7 +62,8 @@ public class Main {
         Runnable runnable8 = new Hilo(redDePetri, monitor, arr0);
         hilo[7] = new Thread(runnable8, "hilo_0.1");
 
-        System.out.println(Colores.ANSI_RED + "Andando ..." + Colores.ANSI_RESET);
+        System.out.println(Colores.ANSI_RED + "Ejecutando Red de Petri ..." + Colores.ANSI_RESET);
+        long start = System.currentTimeMillis();
         for (int i = 0; i < hilo.length; i++) {
             hilo[i].start();
         }
@@ -74,10 +73,11 @@ public class Main {
             e.printStackTrace();
         }
 
-        System.out.printf("calculado %f \n", (redDePetri.getTransiciones()[3].getCantidadDisparada() * 0.025 * 3 +
-                redDePetri.getTransiciones()[4].getCantidadDisparada() * 0.025 * 3
-                + redDePetri.getTransiciones()[9].getCantidadDisparada() * 0.02433 * 3));
-        System.out.printf("tiempo: %f\n", (double) (System.currentTimeMillis() - start) / 1000);
+        System.out.printf("calculo si el programa fuera un unico hilo %f \n",
+                (redDePetri.getTransiciones()[3].getCantidadDisparada() * 0.090 * 3 +
+                        redDePetri.getTransiciones()[4].getCantidadDisparada() * 0.090 * 3
+                        + redDePetri.getTransiciones()[9].getCantidadDisparada() * 0.003 * 3));
+        System.out.printf("tiempo real: %f\n", (double) (System.currentTimeMillis() - start) / 1000);
         System.out.println("Invariante 1: " + (redDePetri.getTransiciones()[3].getPosicion()) + " se disparo: " + redDePetri.getTransiciones()[3].getCantidadDisparada());
         System.out.println("Invariante 2: " + (redDePetri.getTransiciones()[4].getPosicion()) + " se disparo: " + redDePetri.getTransiciones()[4].getCantidadDisparada());
         System.out.println("Invariante 3: " + (redDePetri.getTransiciones()[9].getPosicion()) + " se disparo: " + redDePetri.getTransiciones()[9].getCantidadDisparada());

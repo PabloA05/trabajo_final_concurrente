@@ -23,13 +23,14 @@ public class TestMarcadoRdp {
     static String S = "src/main/resources/estadosPosibles.csv"; //no sirve
     static String tiempos = "src/main/resources/tiempos.csv";
     static String T = "src/main/resources/tInvariantes.csv";
+    static String Pinv = "src/main/resources/pInvariantes.csv";
     int[] fire = {0, 1, 6, 0, 7, 3, 5, 1, 6, 8, 7, 6, 9, 8, 9, 0, 7, 3, 1, 8, 9, 0, 5, 3, 2, 0, 5, 4, 5, 2, 0, 4, 1, 0, 5, 3, 5, 1, 0, 3}; //termina en S03
     int[] state3 = {1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 1, 3};
     int[] transiciones;
 
     @BeforeClass
     public static void setRedDePetri() {
-        redDePetri = new RedDePetri(mji, I, H, tiempos, T);
+        redDePetri = new RedDePetri(mji, I, H, tiempos, T, Pinv);
         arrTransiciones = new Transicion[10];
 
         char alp = 'a';

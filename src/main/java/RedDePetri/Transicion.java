@@ -1,7 +1,7 @@
 package RedDePetri;
 
 public class Transicion {
-    private String id;//todo pasar a string?
+    private String id;
     private boolean temporizada;
     private int posicion;
     private int cantidadDisparada;

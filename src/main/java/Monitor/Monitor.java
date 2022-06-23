@@ -95,7 +95,7 @@ public class Monitor {
                         }
                         break;
                     } else {
-                        k = false;
+
                         break;
                     }
                 } else {
@@ -159,7 +159,7 @@ public class Monitor {
 //                for (int i = 0; i < cola.length; i++) {
 //                    System.out.println("Cola[" + i + "]: " + cola[i].get());
 //                }
-                System.out.println("Es condicion false");
+                //System.out.println("Es condicion false");
             }
 
         }
