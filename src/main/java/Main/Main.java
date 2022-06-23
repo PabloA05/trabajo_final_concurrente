@@ -2,6 +2,7 @@ package Main;
 
 import Monitor.*;
 import RedDePetri.RedDePetri;
+import Util.Colores;
 import Util.Log;
 import Util.Operaciones;
 import org.jfree.ui.RefineryUtilities;
@@ -10,6 +11,7 @@ import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) {
+        long start = System.currentTimeMillis();
 
         //todo implementar el numero de hilos
         Operaciones.setCantidadHilos(8);
@@ -22,8 +24,7 @@ public class Main {
 
         Log log = new Log(filepathLog);
 
-        int cantidadDeInvariantesADisparar = 50;
-
+        int cantidadDeInvariantesADisparar = 1000;
 
 
         RedDePetri redDePetri = new RedDePetri(mji, I, H, tiempos, T);
@@ -63,6 +64,7 @@ public class Main {
         Runnable runnable8 = new Hilo(redDePetri, monitor, arr0);
         hilo[7] = new Thread(runnable8, "hilo_0.1");
 
+        System.out.println(Colores.ANSI_RED + "Andando ..." + Colores.ANSI_RESET);
         for (int i = 0; i < hilo.length; i++) {
             hilo[i].start();
         }
@@ -71,6 +73,11 @@ public class Main {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
+        System.out.printf("calculado %f \n", (redDePetri.getTransiciones()[3].getCantidadDisparada() * 0.025 * 3 +
+                redDePetri.getTransiciones()[4].getCantidadDisparada() * 0.025 * 3
+                + redDePetri.getTransiciones()[9].getCantidadDisparada() * 0.02433 * 3));
+        System.out.printf("tiempo: %f\n", (double) (System.currentTimeMillis() - start) / 1000);
         System.out.println("Invariante 1: " + (redDePetri.getTransiciones()[3].getPosicion()) + " se disparo: " + redDePetri.getTransiciones()[3].getCantidadDisparada());
         System.out.println("Invariante 2: " + (redDePetri.getTransiciones()[4].getPosicion()) + " se disparo: " + redDePetri.getTransiciones()[4].getCantidadDisparada());
         System.out.println("Invariante 3: " + (redDePetri.getTransiciones()[9].getPosicion()) + " se disparo: " + redDePetri.getTransiciones()[9].getCantidadDisparada());

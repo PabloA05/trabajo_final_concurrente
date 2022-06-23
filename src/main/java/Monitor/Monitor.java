@@ -67,14 +67,14 @@ public class Monitor {
                 if (k) {
                   //  System.out.printf(ANSI_BLUE + "Disparo transicion: %d %s\n" + ANSI_RESET, transicion.getPosicion(), Thread.currentThread().getName());
                     Boolean[] Vs = this.redDePetri.getSensibilizadasEx();
-                    System.out.println("-----vs ----");
-                    Operaciones.printB(Vs);
-                    System.out.println("---------");
+//                    System.out.println("-----vs ----");
+//                    Operaciones.printB(Vs);
+//                    System.out.println("---------");
 
-                    System.out.println("-----vc ----");
+//                    System.out.println("-----vc ----");
                     Boolean[] Vc = quienesEstan();
-                    Operaciones.printB(Vc);
-                    System.out.println("---------");
+//                    Operaciones.printB(Vc);
+//                    System.out.println("---------");
 
                     Boolean[] m = new Boolean[Vs.length];
                     m = Operaciones.andVector(Vs, Vc); //todo ver si se puede simplificar
@@ -88,7 +88,7 @@ public class Monitor {
                             }
                             Transicion transicionADisparar = politica.cualDisparo(m, redDePetri);
 
-                            System.out.printf("%s t:%d despertar:%d\n", Thread.currentThread().getName(), transicion.getPosicion(), transicionADisparar.getPosicion());
+                    //        System.out.printf("%s t:%d despertar:%d\n", Thread.currentThread().getName(), transicion.getPosicion(), transicionADisparar.getPosicion());
                             cola[transicionADisparar.getPosicion()].release();
                         } catch (IndexOutOfBoundsException e) {
                             e.printStackTrace();
@@ -156,9 +156,9 @@ public class Monitor {
             if (suma >= cantidadDeInvariantesADisparar) {
                 condicion = false;
                 flag = true;
-                for (int i = 0; i < cola.length; i++) {
-                    System.out.println("Cola[" + i + "]: " + cola[i].get());
-                }
+//                for (int i = 0; i < cola.length; i++) {
+//                    System.out.println("Cola[" + i + "]: " + cola[i].get());
+//                }
                 System.out.println("Es condicion false");
             }
 

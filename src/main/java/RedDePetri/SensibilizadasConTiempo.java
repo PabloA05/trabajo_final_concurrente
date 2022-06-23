@@ -1,6 +1,8 @@
 package RedDePetri;
 
 
+import Util.Colores;
+
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class SensibilizadasConTiempo {
@@ -35,7 +37,7 @@ public class SensibilizadasConTiempo {
 
     public boolean testVentanaTiempo() {
         long ahora = System.currentTimeMillis();
-       // System.out.printf("test de ventana:%b %s\n", ((ahora - timeStamp) >= alpha) && ((ahora - timeStamp) < beta), Thread.currentThread().getName());
+        // System.out.printf("test de ventana:%b %s\n", ((ahora - timeStamp) >= alpha) && ((ahora - timeStamp) < beta), Thread.currentThread().getName());
         return ((ahora - timeStamp) >= alpha) && ((ahora - timeStamp) < beta);
     }
 
@@ -52,10 +54,11 @@ public class SensibilizadasConTiempo {
 
     public void setEsperando() {
         if (this.esperando.get()) {
-            System.out.println("esperando error");
+            System.out.printf(Colores.ANSI_RED + "esperando error h:%s id_H:%s esp:%b id:%d>>\n", Thread.currentThread().getName(), Thread.currentThread().getId(), esperando, id);
             System.exit(1);
         }
         this.esperando.set(true);
+        this.id = Thread.currentThread().getId();
     }
 
     public long getAlpha() {
@@ -79,6 +82,7 @@ public class SensibilizadasConTiempo {
         this.id = -999999;
         this.esperando.set(false);
     }
+
     public void resetEsperando() {
         this.id = -999999;
         this.esperando.set(false);
