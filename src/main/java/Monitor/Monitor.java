@@ -109,7 +109,10 @@ public class Monitor {
 
             }
 
-            log.write(transicion.getId());
+            if(condicion){
+                log.write(transicion.getId());
+            }
+
             contador++;
             if (contador >= relacionDeMuestra) {
                 agregarDato(redDePetri.getTransiciones()[3].getCantidadDisparada(), redDePetri.getTransiciones()[4].getCantidadDisparada(), redDePetri.getTransiciones()[9].getCantidadDisparada());

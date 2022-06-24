@@ -17,7 +17,7 @@ public class Transicion {
         return id;
     }
 
-    public boolean isTemportizada(){
+    public boolean isTemporizada(){
         return temporizada;
     }
 
