@@ -33,7 +33,7 @@ public class RedDePetri {
         pInvariantes = Operaciones.setPinvariantes(Pinv);
         this.mki = vectorDeEstado.clone(); //marca inicial
 
-        int[][] tiempos = Operaciones.matriz2d(t);
+        int[][] tiempos = Operaciones.transpuesta(Operaciones.matriz2d(t));
         this.transicionesConTiempo = new SensibilizadasConTiempo[getCantTransiciones()];
         for (int i = 0; i < transicionesConTiempo.length; i++) {
             transicionesConTiempo[i] = new SensibilizadasConTiempo((long) tiempos[0][i], (long) tiempos[1][i]);
@@ -161,8 +161,7 @@ public class RedDePetri {
             // setNuevoTimeStamp(transicionesAnteriores);
             //Operaciones.printB(getSensibilizadasExtendido());
             transicion.incrementoDisparo();
-        }
-        else if (esperando && Thread.currentThread().getId() == transicionesConTiempo[transicion.getPosicion()].getId()) {
+        } else if (esperando && Thread.currentThread().getId() == transicionesConTiempo[transicion.getPosicion()].getId()) {
             transicionesConTiempo[transicion.getPosicion()].resetEsperando();
         }
 
@@ -304,11 +303,11 @@ public class RedDePetri {
             }
         }
 
-        if(activoLogicaInmediata){
+        if (activoLogicaInmediata) {
             for (int i = 0; i < soloInmediatas.size(); i++) {
-                if(sensibilizadasEx[soloInmediatas.get(i)]){
+                if (sensibilizadasEx[soloInmediatas.get(i)]) {
                     for (int j = 0; j < sensibilizadasEx.length; j++) {
-                        if(sensibilizadasEx[j] && transiciones[j].isTemporizada()){
+                        if (sensibilizadasEx[j] && transiciones[j].isTemporizada()) {
                             sensibilizadasEx[j] = false;
                         }
                     }
@@ -319,12 +318,12 @@ public class RedDePetri {
 
     }
 
-    public ArrayList<Integer> getsoloInmediatas (){
+    public ArrayList<Integer> getsoloInmediatas() {
 
-        ArrayList<Integer> soloInmediatas= new ArrayList<>();
+        ArrayList<Integer> soloInmediatas = new ArrayList<>();
 
         for (int i = 0; i < getCantTransiciones(); i++) {
-            if(!transiciones[i].isTemporizada()){
+            if (!transiciones[i].isTemporizada()) {
                 soloInmediatas.add(i);
             }
         }

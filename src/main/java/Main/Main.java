@@ -20,9 +20,10 @@ public class Main {
         String tiempos = "src/main/resources/tiempos.csv";
         String filepathLog = "checkTransiciones/log";
         String Pinv = "src/main/resources/pInvariantes.csv";
+        String logInvariantes = "src/main/resources/logInvariantes";
         Log log = new Log(filepathLog);
 
-        int cantidadDeInvariantesADisparar = 1000;
+        int cantidadDeInvariantesADisparar = 10;
 
 
         RedDePetri redDePetri = new RedDePetri(mji, I, H, tiempos, T, Pinv);
@@ -79,6 +80,7 @@ public class Main {
         System.out.println("Invariante 1: " + (redDePetri.getTransiciones()[3].getPosicion()) + " se disparo: " + redDePetri.getTransiciones()[3].getCantidadDisparada());
         System.out.println("Invariante 2: " + (redDePetri.getTransiciones()[4].getPosicion()) + " se disparo: " + redDePetri.getTransiciones()[4].getCantidadDisparada());
         System.out.println("Invariante 3: " + (redDePetri.getTransiciones()[9].getPosicion()) + " se disparo: " + redDePetri.getTransiciones()[9].getCantidadDisparada());
+        monitor.printInvariantes(logInvariantes);
         System.out.println("TERMINA EL PROGRAMA");
         Grafico grafico = new Grafico(
                 "Cantidad de disparos por Invariante");
