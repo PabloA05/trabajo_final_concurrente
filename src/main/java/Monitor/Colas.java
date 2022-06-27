@@ -20,7 +20,7 @@ public class Colas {
 
     }
 
-    public synchronized void acquire() { //todo fijarse si hacen falta los locks y synchronized
+    public synchronized void acquire() {
 
         increment();
         // System.out.println(ANSI_CYAN+"elementos en cola :" + a + " " + Thread.currentThread().getName()+ ANSI_RESET );

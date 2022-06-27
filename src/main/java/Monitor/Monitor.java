@@ -9,12 +9,6 @@ import Util.Colores;
 import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
 
-import static Util.Colores.ANSI_BLUE;
-import static Util.Colores.ANSI_RESET;
-
-/**
- * Clase encargada del manejo de los hilos que disparan la red de petri.
- */
 public class Monitor {
 
     public static ArrayList<int[]> datos;
@@ -32,13 +26,6 @@ public class Monitor {
     private int relacionDeMuestra;
     private Log log;
 
-    /**
-     * Constructor del monitor en donde se guardan los objectos a utilizar durante el manejo de los hilos.
-     *
-     * @param rdp                            La red de petri.
-     * @param log                            El objeto encargado de guardar los disparos realizados.
-     * @param cantidadDeInvariantesADisparar La cantidad de invariantes a disparar.
-     */
     public Monitor(RedDePetri rdp, Log log, int cantidadDeInvariantesADisparar) {
 
         this.log = log;
@@ -58,11 +45,6 @@ public class Monitor {
         relacionDeMuestra = cantidadDeInvariantesADisparar / 10;
     }
 
-    /**
-     * Recorre el array de las colas chequeado si existe algún hilo esperando en las colas.
-     *
-     * @return Array booleano con el estado de las colas,
-     */
     private Boolean[] quienesEstan() {
         Boolean[] Vc = new Boolean[cola.length];
         for (int i = 0; i < cola.length; i++) {
@@ -71,12 +53,6 @@ public class Monitor {
         return Vc;
     }
 
-    /**
-     * Se encarga de manejar los hilos, mandándolos a dormir si no pudieron disparar o si pudieron disparar y existan
-     * algún hilo en la cola despertándolo para que puedan volver a intentar a disparar.
-     *
-     * @param transicion transicion a disparar por la red de petri.
-     */
     public void disparaTransicion(Transicion transicion) {
         // k = true;
         // acquireMonitor();
@@ -91,16 +67,16 @@ public class Monitor {
             }
 
             if (k) {
-                System.out.printf(ANSI_BLUE + "Disparo transicion: %d %s\n" + ANSI_RESET, transicion.getPosicion(), Thread.currentThread().getName());
+                //  System.out.printf(ANSI_BLUE + "Disparo transicion: %d %s\n" + ANSI_RESET, transicion.getPosicion(), Thread.currentThread().getName());
                 Boolean[] Vs = this.redDePetri.getSensibilizadasEx();
-                System.out.println("-----vs ----");
-                Operaciones.printB(Vs);
-                System.out.println("---------");
+//                    System.out.println("-----vs ----");
+//                    Operaciones.printB(Vs);
+//                    System.out.println("---------");
 
-                System.out.println("-----vc ----");
+//                    System.out.println("-----vc ----");
                 Boolean[] Vc = quienesEstan();
-                Operaciones.printB(Vc);
-                System.out.println("---------");
+//                    Operaciones.printB(Vc);
+//                    System.out.println("---------");
 
                 Boolean[] m = new Boolean[Vs.length];
                 m = Operaciones.andVector(Vs, Vc); //todo ver si se puede simplificar
@@ -114,14 +90,14 @@ public class Monitor {
                         }
                         Transicion transicionADisparar = politica.cualDisparo(m, redDePetri);
 
-                        System.out.printf("%s t:%d despertar:%d\n", Thread.currentThread().getName(), transicion.getPosicion(), transicionADisparar.getPosicion());
+                        //        System.out.printf("%s t:%d despertar:%d\n", Thread.currentThread().getName(), transicion.getPosicion(), transicionADisparar.getPosicion());
                         cola[transicionADisparar.getPosicion()].release();
                     } catch (IndexOutOfBoundsException e) {
                         e.printStackTrace();
                     }
                     break;
                 } else {
-                    k = false;
+
                     break;
                 }
             } else {
@@ -130,18 +106,15 @@ public class Monitor {
                     break;
                 }
                 cola[transicion.getPosicion()].acquire();
-                if(!condicion){
-                    semaforoMonitor.release();
-                    return;
-                }
                 //System.out.printf(ANSI_GREEN + "salio de cola t:%d %s\n" + ANSI_RESET, transicion.getPosicion(), Thread.currentThread().getName());
             }
 
         }
-        if(condicion){
+
+        if (condicion) {
             log.write(transicion.getId());
         }
-        //log.write(transicion.getId());
+
         contador++;
         if (contador >= relacionDeMuestra) {
             agregarDato(redDePetri.getTransiciones()[3].getCantidadDisparada(), redDePetri.getTransiciones()[4].getCantidadDisparada(), redDePetri.getTransiciones()[9].getCantidadDisparada());
@@ -188,10 +161,10 @@ public class Monitor {
         if (suma >= cantidadDeInvariantesADisparar) {
             condicion = false;
             flag = true;
-            for (int i = 0; i < cola.length; i++) {
-                System.out.println("Cola[" + i + "]: " + cola[i].get());
-            }
-            System.out.println("Es condicion false");
+//                for (int i = 0; i < cola.length; i++) {
+//                    System.out.println("Cola[" + i + "]: " + cola[i].get());
+//                }
+            //System.out.println("Es condicion false");
         }
 
     }
@@ -209,19 +182,20 @@ public class Monitor {
     }
 
     public void agregarDato(int a, int b, int c) {
-        System.out.println("Agrego dato");
+        //System.out.println("Agrego dato");
         long actual = System.currentTimeMillis() - cuenta;
 
-        System.out.println("Actual: " + actual);
+        //  System.out.println("Actual: " + actual);
         datos.add((new int[]{a, b, c, (int) actual}));
     }
+
 
     public void printInvariantes(String path) {
         Log invariantes = new Log(path);
         int[] aux;
         for (int i = 0; i < datos.size(); i++) {
             aux = Monitor.datos.get(i);
-            invariantes.write(String.valueOf(aux[0])+","+String.valueOf(aux[1])+","+String.valueOf(aux[2])+","+String.valueOf(aux[3])+"\n");
+            invariantes.write(aux[0] + "," + aux[1] + "," + aux[2] + "," + aux[3]/1000.0 + "\n");
         }
     }
 }
