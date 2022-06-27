@@ -54,12 +54,7 @@ public class RedDePetri {
     public Boolean[] getVectorE() {
         Boolean[] sensibilizadas = new Boolean[getCantTransiciones()];
         for (int i = 0; i < getCantTransiciones(); i++) {
-            try {
-                sensibilizadas[i] = esDisparoValido(marcadoSiguiente(vectorDeEstado, i));
-            } catch (Exception e) {
-                e.printStackTrace();
-                System.out.println("Error en getSensibilizadas()");
-            }
+            sensibilizadas[i] = esDisparoValido(marcadoSiguiente(vectorDeEstado, i));
         }
         return sensibilizadas;
     }
@@ -241,7 +236,7 @@ public class RedDePetri {
         }
     }
 
-    public boolean esDisparoValido(int[] marcado_siguiente) throws NullPointerException {
+    public boolean esDisparoValido(int[] marcado_siguiente) {
 
         for (int j : marcado_siguiente) {
             if (j < 0) {
