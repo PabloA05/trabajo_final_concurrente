@@ -43,7 +43,7 @@ public class RedDePetri {
             transiciones[i] = new Transicion("T" + i, i, transicionesConTiempo[i].esTemporal());
         }
         soloInmediatas = getsoloInmediatas();
-        activoLogicaInmediata = false;
+        activoLogicaInmediata = true;
         actualizaSensibilizadasExtendido();
     }
 
