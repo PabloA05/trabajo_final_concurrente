@@ -72,7 +72,7 @@ public class Politica {
             Arrays.sort(transiciones, Comparator.comparingInt(Transicion::getCantidadDisparada));
             for (Transicion transicion : transiciones) {
                 if (m[transicion.getPosicion()]) {
-                    System.out.println("La politica decide por: T"+(transicion.getPosicion()+1));
+                    //System.out.println("La politica decide por: T"+(transicion.getPosicion()+1));
                     return transicion;
                 }
             }
