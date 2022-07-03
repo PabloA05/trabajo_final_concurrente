@@ -17,11 +17,10 @@ public class Monitor {
     private RedDePetri redDePetri;
     private Colas[] cola;
     private Politica politica = new Politica(2);
-    private static int disparos = 0;
     private boolean condicion;
     private boolean flag;
     private int contador;
-    private long cuenta = 0;
+    private long cuenta;
     private final int cantidadDeInvariantesADisparar;
     private int relacionDeMuestra;
     private Log log;
@@ -80,26 +79,16 @@ public class Monitor {
 
                 Boolean[] m = new Boolean[Vs.length];
                 m = Operaciones.andVector(Vs, Vc); //todo ver si se puede simplificar
-                //  cantidadDisparada(redDePetri);
                 if (Operaciones.comprobarUnos(m)) {
-                    try {
                         if (semaforoMonitor.availablePermits() != 0) {
                             System.out.printf("valor del semaforo %d\n", semaforoMonitor.availablePermits());
                             System.exit(1);
-
                         }
-                        Transicion transicionADisparar = politica.cualDisparo(m, redDePetri);
-
-                        //        System.out.printf("%s t:%d despertar:%d\n", Thread.currentThread().getName(), transicion.getPosicion(), transicionADisparar.getPosicion());
-                        cola[transicionADisparar.getPosicion()].release();
-                    } catch (IndexOutOfBoundsException e) {
-                        e.printStackTrace();
-                    }
-                    break;
-                } else {
-
-                    break;
+                    Transicion transicionADisparar = politica.cualDisparo(m, redDePetri);
+                    cola[transicionADisparar.getPosicion()].release();
                 }
+                break;
+
             } else {
                 //System.out.printf(ANSI_RED + "entro en cola t:%d %s\n" + ANSI_RESET, transicion.getPosicion(), Thread.currentThread().getName());
                 if (!condicion) {

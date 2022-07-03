@@ -7,11 +7,11 @@ import java.util.ArrayList;
 
 public class RedDePetri {
 
-    int[][] incidencia;
-    int[][] tInvariantes;
-    final int[][] inhibidor;
+    private final int[][] incidencia;
+    private final int[][] tInvariantes;
+    private final int[][] inhibidor;
     // private int[][] intervalos_tiempo; //matriz de intervalos de tiempo
-    final int[] mki; //marca inicial. columna. NO VARIA
+    //final int[] mki; //marca inicial. columna. NO VARIA
     private int[] vectorDeEstado; //la marca actual
     private final SensibilizadasConTiempo[] transicionesConTiempo;
     private Boolean[] sensibilizadasEx;
@@ -31,7 +31,7 @@ public class RedDePetri {
         this.inhibidor = Operaciones.matriz2d(h);
         this.tInvariantes = Operaciones.matriz2d(T);
         pInvariantes = Operaciones.setPinvariantes(Pinv);
-        this.mki = vectorDeEstado.clone(); //marca inicial
+        //this.mki = vectorDeEstado.clone(); //marca inicial
 
         int[][] tiempos = Operaciones.transpuesta(Operaciones.matriz2d(t));
         this.transicionesConTiempo = new SensibilizadasConTiempo[getCantTransiciones()];
@@ -43,7 +43,7 @@ public class RedDePetri {
             transiciones[i] = new Transicion("T" + i, i, transicionesConTiempo[i].esTemporal());
         }
         soloInmediatas = getsoloInmediatas();
-        activoLogicaInmediata = false;
+        activoLogicaInmediata = true;
         actualizaSensibilizadasExtendido();
     }
 

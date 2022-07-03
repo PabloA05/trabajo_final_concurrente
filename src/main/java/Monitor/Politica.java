@@ -12,17 +12,17 @@ public class Politica {
 
     private int modo;
 
-    class Temp {
+    class InvariantesMap {
 
-        int posicion;
-        int cantidad;
+        private int posicion;
+        private int cantidad;
 
-        int getCantidad(){
+        public int getCantidad(){
             return cantidad;
         }
 
     }
-    Temp[] temp = new Temp[3];
+    private InvariantesMap[] invariantesMap = new InvariantesMap[3];
 
     //modo = 0 → Dispara aleatoriamente
     //modo = 1 → Dispara la transición menos disparada
@@ -30,9 +30,9 @@ public class Politica {
 
     public Politica(int modo) {
         this.modo = modo;
-        temp[0] = new Temp();
-        temp[1] = new Temp();
-        temp[2] = new Temp();
+        invariantesMap[0] = new InvariantesMap();
+        invariantesMap[1] = new InvariantesMap();
+        invariantesMap[2] = new InvariantesMap();
     }
 
     public Transicion cualDisparo(Boolean[] m, RedDePetri rdp) {
@@ -42,14 +42,14 @@ public class Politica {
 
         if(modo==2){
 
-            temp[0].cantidad = transiciones[3].getCantidadDisparada();
-            temp[1].cantidad = transiciones[4].getCantidadDisparada();
-            temp[2].cantidad = transiciones[9].getCantidadDisparada();
+            invariantesMap[0].cantidad = transiciones[3].getCantidadDisparada();
+            invariantesMap[1].cantidad = transiciones[4].getCantidadDisparada();
+            invariantesMap[2].cantidad = transiciones[9].getCantidadDisparada();
 
             for (int i = 0; i < tInvariantes.length; i++) {
-                temp[i].posicion = i;
+                invariantesMap[i].posicion = i;
             }
-            Arrays.sort(temp, Comparator.comparingInt(Temp::getCantidad));
+            Arrays.sort(invariantesMap, Comparator.comparingInt(InvariantesMap::getCantidad));
 
             Arrays.sort(transiciones, Comparator.comparingInt(Transicion::getCantidadDisparada));
             HashMap<Integer,int[]> tInvariantemap = new HashMap<Integer,int[]>();
@@ -60,8 +60,8 @@ public class Politica {
             }
             for (int k = 0; k < tInvariantes.length; k++) {
                 for (int i = 0; i < transiciones.length; i++) {
-                    int[] temp1 = tInvariantemap.get(temp[k].posicion);
-                    if (m[transiciones[i].getPosicion()] && temp1[transiciones[i].getPosicion()] == 1) {
+                    int[] invariantesMap1 = tInvariantemap.get(invariantesMap[k].posicion);
+                    if (m[transiciones[i].getPosicion()] && invariantesMap1[transiciones[i].getPosicion()] == 1) {
                         return transiciones[i];
                     }
                 }

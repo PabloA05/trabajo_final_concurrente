@@ -10,15 +10,8 @@ public class SensibilizadasConTiempo {
     private long timeStamp;
     private boolean esperando;
 
-    public long getBeta() {
-        return beta;
-    }
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    SensibilizadasConTiempo(long alpha, long beta) {
+    public SensibilizadasConTiempo(long alpha, long beta) {
         this.alpha = alpha;
         this.beta = beta;
         this.timeStamp = -1;
