@@ -47,7 +47,7 @@ public class Monitor {
     private Boolean[] quienesEstan() {
         Boolean[] Vc = new Boolean[cola.length];
         for (int i = 0; i < cola.length; i++) {
-            Vc[i] = !cola[i].isEmpty();
+            Vc[i] = !(cola[i].get() == 0);
         }
         return Vc;
     }
@@ -109,8 +109,6 @@ public class Monitor {
             agregarDato(redDePetri.getTransiciones()[3].getCantidadDisparada(), redDePetri.getTransiciones()[4].getCantidadDisparada(), redDePetri.getTransiciones()[9].getCantidadDisparada());
             contador = 0;
         }
-
-        int aux = 0;
 
         if (condicion) {
             setCondicion();
