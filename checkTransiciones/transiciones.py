@@ -1,6 +1,7 @@
 import re
 archivo = open("log")
 line = [archivo.readline()]
+archivo.close()
 print("EXPRESION REGULAR:")
 print(line)
 
