@@ -1,4 +1,5 @@
 package RedDePetri;
+
 import Util.Colores;
 
 public class SensibilizadasConTiempo {
@@ -23,8 +24,11 @@ public class SensibilizadasConTiempo {
 
     public void nuevoTimeStamp(long timeStamp) {
         this.timeStamp = timeStamp;
-        this.id = -999999;
-        this.esperando = false;
+        if (!this.esperando) {
+            this.id = -999999;
+        }
+//        this.id = -999999;
+//        this.esperando = false;
     }
 
     public boolean isEsperando() {
@@ -54,10 +58,6 @@ public class SensibilizadasConTiempo {
 
     public boolean esTemporal() {
         return !(alpha < 0 && beta < 0);
-    }
-
-    public void resetTimestamp() {
-        this.timeStamp = -1;
     }
 
     public void resetEsperando() {

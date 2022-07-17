@@ -13,7 +13,6 @@ public class Colas {
             System.out.printf("hilosCola [%d] menor que cero", hilosCola);
             System.exit(1);
         }
-
         try {
             increment();
             Monitor.releaseMonitor();

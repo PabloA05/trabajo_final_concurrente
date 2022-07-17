@@ -1,6 +1,7 @@
 package RedDePetri;
 
 import Monitor.Monitor;
+import Util.Colores;
 import Util.Operaciones;
 
 import java.util.ArrayList;
@@ -10,7 +11,7 @@ public class RedDePetri {
     private final int[][] incidencia;
     private final int[][] tInvariantes;
     private final int[][] inhibidor;
-    private int[] vectorDeEstado;
+    private int[] vectorDeEstado; //la marca actual
     private final SensibilizadasConTiempo[] transicionesConTiempo;
     private Boolean[] sensibilizadasEx;
     private final Transicion[] transiciones;
@@ -27,14 +28,14 @@ public class RedDePetri {
         int[][] tiempos = Operaciones.transpuesta(Operaciones.matriz2d(t));
         this.transicionesConTiempo = new SensibilizadasConTiempo[getCantTransiciones()];
         for (int i = 0; i < transicionesConTiempo.length; i++) {
-            transicionesConTiempo[i] = new SensibilizadasConTiempo((long) tiempos[0][i], (long) tiempos[1][i]);
+            this.transicionesConTiempo[i] = new SensibilizadasConTiempo((long) tiempos[0][i], (long) tiempos[1][i]);
         }
         this.transiciones = new Transicion[getCantTransiciones()];
         for (int i = 0; i < getCantTransiciones(); i++) {
             this.transiciones[i] = new Transicion("T" + i, i, transicionesConTiempo[i].esTemporal());
         }
-        soloInmediatas = getsoloInmediatas();
-        activoLogicaInmediata = true;
+        this.soloInmediatas = getsoloInmediatas();
+        this.activoLogicaInmediata = true;
         actualizaSensibilizadasExtendido();
     }
 
@@ -53,7 +54,8 @@ public class RedDePetri {
     public boolean disparar(Transicion transicion) {
         boolean k = false;
         boolean esperando = false;
-        boolean ventana;
+        boolean ventana = false;
+
         while (sensibilizadasEx[transicion.getPosicion()] && !transicionesConTiempo[transicion.getPosicion()].isEsperando()
                 || sensibilizadasEx[transicion.getPosicion()] && transicionesConTiempo[transicion.getPosicion()].isEsperando()
                 && Thread.currentThread().getId() == transicionesConTiempo[transicion.getPosicion()].getId()) {
@@ -66,11 +68,8 @@ public class RedDePetri {
             esperando = transicionesConTiempo[transicion.getPosicion()].isEsperando();
 
             if (ventana) {
-                if (!esperando || transicionesConTiempo[transicion.getPosicion()].isEsperando()
-                        && Thread.currentThread().getId() == transicionesConTiempo[transicion.getPosicion()].getId()) {
-                    k = true;
-                    break;
-                }
+                k = true;
+                break;
             } else if (!esperando) {
                 boolean antes = antesDeLaVentana(transicion.getPosicion());
                 if (antes) {
@@ -79,17 +78,17 @@ public class RedDePetri {
                     esperando = true;
                     sleepThread(transicion.getPosicion());
                 } else {
-                    System.out.printf("mayor que beta o error en algún lado %s t:%d esp:%b\n",
+                    System.out.printf("mayor que beta %s t:%d esp:%b\n",
                             Thread.currentThread().getName(), transicion.getPosicion(), transicionesConTiempo[transicion.getPosicion()].isEsperando());
                     System.exit(1);
                 }
                 Monitor.acquireMonitor();
+
             }
         }
-
         if (k) {
             if (transicion.isTemporizada()) {
-                transicionesConTiempo[transicion.getPosicion()].resetTimestamp();
+                transicionesConTiempo[transicion.getPosicion()].resetEsperando();
             }
             verificarPInvariantes();
             vectorDeEstado = marcadoSiguiente(vectorDeEstado, transicion.getPosicion());
@@ -133,7 +132,6 @@ public class RedDePetri {
     public int getCantPlazas() {
         return incidencia.length;
     }
-
 
     public void verificarPInvariantes() {
         int suma;
@@ -192,7 +190,9 @@ public class RedDePetri {
         for (int i = 0; i < vectorB.length; i++) {
             vectorB[i] = !vectorB[i];
         }
+
         return vectorB;
+
     }
 
     public void actualizaSensibilizadasExtendido() {
@@ -217,12 +217,12 @@ public class RedDePetri {
                 }
             }
         }
+
     }
 
     public ArrayList<Integer> getsoloInmediatas() {
 
         ArrayList<Integer> soloInmediatas = new ArrayList<>();
-
         for (int i = 0; i < getCantTransiciones(); i++) {
             if (!transiciones[i].isTemporizada()) {
                 soloInmediatas.add(i);
@@ -230,4 +230,5 @@ public class RedDePetri {
         }
         return soloInmediatas;
     }
+
 }

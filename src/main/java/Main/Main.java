@@ -71,11 +71,11 @@ public class Main {
             e.printStackTrace();
         }
 
-//        System.out.printf("calculo si el programa fuera un unico hilo %f \n",
-//                (redDePetri.getTransiciones()[3].getCantidadDisparada() * 0.090 * 3 +
-//                        redDePetri.getTransiciones()[4].getCantidadDisparada() * 0.090 * 3
-//                        + redDePetri.getTransiciones()[9].getCantidadDisparada() * 0.003 * 3));
-//        System.out.printf("tiempo real: %f\n", (double) (System.currentTimeMillis() - start) / 1000);
+        System.out.printf("calculo si el programa fuera un unico hilo %f \n",
+                (redDePetri.getTransiciones()[3].getCantidadDisparada() * 0.090 * 3 +
+                        redDePetri.getTransiciones()[4].getCantidadDisparada() * 0.090 * 3
+                        + redDePetri.getTransiciones()[9].getCantidadDisparada() * 0.003 * 3));
+        System.out.printf("tiempo real: %f\n", (double) (System.currentTimeMillis() - start) / 1000);
         System.out.println("Invariante 1: " + (redDePetri.getTransiciones()[3].getPosicion()) + " se disparo: " + redDePetri.getTransiciones()[3].getCantidadDisparada());
         System.out.println("Invariante 2: " + (redDePetri.getTransiciones()[4].getPosicion()) + " se disparo: " + redDePetri.getTransiciones()[4].getCantidadDisparada());
         System.out.println("Invariante 3: " + (redDePetri.getTransiciones()[9].getPosicion()) + " se disparo: " + redDePetri.getTransiciones()[9].getCantidadDisparada());
