@@ -52,16 +52,11 @@ public class Politica {
             Arrays.sort(invariantesMap, Comparator.comparingInt(InvariantesMap::getCantidad));
 
             Arrays.sort(transiciones, Comparator.comparingInt(Transicion::getCantidadDisparada));
-            HashMap<Integer,int[]> tInvariantemap = new HashMap<Integer,int[]>();
 
-            for (int i = 0; i < tInvariantes.length; i++) {
-                tInvariantemap.put(i,tInvariantes[i]);
-                //balance.put(aux[i],i);
-            }
             for (int k = 0; k < tInvariantes.length; k++) {
+                int[] invarianteMenosDisparado = tInvariantes[invariantesMap[k].posicion];
                 for (int i = 0; i < transiciones.length; i++) {
-                    int[] invariantesMap1 = tInvariantemap.get(invariantesMap[k].posicion);
-                    if (m[transiciones[i].getPosicion()] && invariantesMap1[transiciones[i].getPosicion()] == 1) {
+                    if (m[transiciones[i].getPosicion()] && invarianteMenosDisparado[transiciones[i].getPosicion()] == 1) {
                         return transiciones[i];
                     }
                 }
