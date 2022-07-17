@@ -6,28 +6,30 @@ public class Transicion {
     private int posicion;
     private int cantidadDisparada;
 
-    public Transicion(String id, int posicion, boolean temporizada){
+    public Transicion(String id, int posicion, boolean temporizada) {
         this.id = id;
         this.posicion = posicion;
         this.temporizada = temporizada;
         cantidadDisparada = 0;
     }
-//return (!(a == 0 || a == 6)) ;
-    public String getId (){
+
+    public String getId() {
         return id;
     }
 
-    public boolean isTemporizada(){
+    public boolean isTemporizada() {
         return temporizada;
     }
 
-    public int getPosicion(){
+    public int getPosicion() {
         return posicion;
     }
 
-    public int getCantidadDisparada() {return cantidadDisparada;}
+    public int getCantidadDisparada() {
+        return cantidadDisparada;
+    }
 
-    public void incrementoDisparo(){
+    public void incrementoDisparo() {
         cantidadDisparada++;
     }
 }

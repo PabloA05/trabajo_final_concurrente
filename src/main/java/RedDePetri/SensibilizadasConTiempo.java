@@ -1,6 +1,4 @@
 package RedDePetri;
-
-
 import Util.Colores;
 
 public class SensibilizadasConTiempo {
@@ -10,7 +8,6 @@ public class SensibilizadasConTiempo {
     private long timeStamp;
     private boolean esperando;
 
-
     public SensibilizadasConTiempo(long alpha, long beta) {
         this.alpha = alpha;
         this.beta = beta;
@@ -19,16 +16,8 @@ public class SensibilizadasConTiempo {
         this.esperando = false;
     }
 
-//    public boolean testVentanaTiempo() {
-//        long ahora = System.currentTimeMillis();
-//        return ((ahora - this.startTime) >= this.alpha) && ((ahora - this.startTime) < this.beta &&
-//                !this.esperando.get() || this.esperando.get() && Thread.currentThread().getId() == this.id);
-//
-//    }
-
     public boolean testVentanaTiempo() {
         long ahora = System.currentTimeMillis();
-        // System.out.printf("test de ventana:%b %s\n", ((ahora - timeStamp) >= alpha) && ((ahora - timeStamp) < beta), Thread.currentThread().getName());
         return ((ahora - timeStamp) >= alpha) && ((ahora - timeStamp) < beta);
     }
 
@@ -41,7 +30,6 @@ public class SensibilizadasConTiempo {
     public boolean isEsperando() {
         return esperando;
     }
-
 
     public void setEsperando() {
         if (this.esperando) {
@@ -70,8 +58,6 @@ public class SensibilizadasConTiempo {
 
     public void resetTimestamp() {
         this.timeStamp = -1;
-        //   this.id = -999999;
-        //    this.esperando=false; // FIXME saque esto de aca
     }
 
     public void resetEsperando() {

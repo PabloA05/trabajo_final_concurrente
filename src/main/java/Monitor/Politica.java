@@ -6,22 +6,19 @@ import RedDePetri.RedDePetri;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.HashMap;
 
 public class Politica {
-
     private int modo;
 
     class InvariantesMap {
-
         private int posicion;
         private int cantidad;
 
-        public int getCantidad(){
+        public int getCantidad() {
             return cantidad;
         }
-
     }
+
     private InvariantesMap[] invariantesMap = new InvariantesMap[3];
 
     //modo = 0 → Dispara aleatoriamente
@@ -40,7 +37,7 @@ public class Politica {
         Transicion[] transiciones = rdp.getTransiciones().clone();
         int[][] tInvariantes = rdp.gettInvariantes().clone();
 
-        if(modo==2){
+        if (modo == 2) {
 
             invariantesMap[0].cantidad = transiciones[3].getCantidadDisparada();
             invariantesMap[1].cantidad = transiciones[4].getCantidadDisparada();
@@ -63,7 +60,7 @@ public class Politica {
             }
         }
 
-        if (modo==1) {
+        if (modo == 1) {
             Arrays.sort(transiciones, Comparator.comparingInt(Transicion::getCantidadDisparada));
             for (Transicion transicion : transiciones) {
                 if (m[transicion.getPosicion()]) {

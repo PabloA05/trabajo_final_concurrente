@@ -12,7 +12,6 @@ import java.io.IOException;
 public class Main {
     public static void main(String[] args) {
 
-
         String mji = "src/main/resources/inicial.csv";
         String I = "src/main/resources/incidencia.csv";
         String H = "src/main/resources/inhibidor.csv";
