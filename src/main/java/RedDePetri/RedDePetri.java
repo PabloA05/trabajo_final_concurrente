@@ -71,13 +71,9 @@ public class RedDePetri {
                     System.exit(1);
                 }
                 Monitor.acquireMonitor();
-
             }
         }
         if (k) {
-            if (transicion.isTemporizada()) {
-                transicionesConTiempo[transicion.getPosicion()].resetEsperando();
-            }
             verificarPInvariantes();
             vectorDeEstado = marcadoSiguiente(vectorDeEstado, transicion.getPosicion());
             actualizaSensibilizadasExtendido();
@@ -160,7 +156,6 @@ public class RedDePetri {
         return temp;
     }
 
-
     public Boolean[] getVectorQ() {
         Boolean[] vectorQ = new Boolean[getVectorDeEstado().length];
 
@@ -221,7 +216,6 @@ public class RedDePetri {
     }
 
     public ArrayList<Integer> getsoloInmediatas() {
-
         ArrayList<Integer> soloInmediatas = new ArrayList<>();
         for (int i = 0; i < getCantTransiciones(); i++) {
             if (!transiciones[i].isTemporizada()) {

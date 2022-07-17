@@ -24,11 +24,8 @@ public class SensibilizadasConTiempo {
 
     public void nuevoTimeStamp(long timeStamp) {
         this.timeStamp = timeStamp;
-        if (!this.esperando) {
-            this.id = -999999;
-        }
-//        this.id = -999999;
-//        this.esperando = false;
+        this.id = -999999;
+        this.esperando = false;
     }
 
     public boolean isEsperando() {
