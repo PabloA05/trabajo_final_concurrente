@@ -39,18 +39,6 @@ public class RedDePetri {
         actualizaSensibilizadasExtendido();
     }
 
-    public int[][] gettInvariantes() {
-        return tInvariantes;
-    }
-
-    public Boolean[] getVectorE() {
-        Boolean[] sensibilizadas = new Boolean[getCantTransiciones()];
-        for (int i = 0; i < getCantTransiciones(); i++) {
-            sensibilizadas[i] = esDisparoValido(marcadoSiguiente(vectorDeEstado, i));
-        }
-        return sensibilizadas;
-    }
-
     public boolean disparar(Transicion transicion) {
         boolean k = false;
         boolean esperando = false;
@@ -193,6 +181,18 @@ public class RedDePetri {
 
         return vectorB;
 
+    }
+
+    public Boolean[] getVectorE() {
+        Boolean[] sensibilizadas = new Boolean[getCantTransiciones()];
+        for (int i = 0; i < getCantTransiciones(); i++) {
+            sensibilizadas[i] = esDisparoValido(marcadoSiguiente(vectorDeEstado, i));
+        }
+        return sensibilizadas;
+    }
+
+    public int[][] gettInvariantes() {
+        return tInvariantes;
     }
 
     public void actualizaSensibilizadasExtendido() {
