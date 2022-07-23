@@ -38,6 +38,7 @@ public class Politica {
         int[][] tInvariantes = rdp.gettInvariantes().clone();
 
         if (modo == 2) {
+
             invariantesMap[0].cantidad = transiciones[3].getCantidadDisparada();
             invariantesMap[1].cantidad = transiciones[4].getCantidadDisparada();
             invariantesMap[2].cantidad = transiciones[9].getCantidadDisparada();
@@ -46,6 +47,7 @@ public class Politica {
                 invariantesMap[i].posicion = i;
             }
             Arrays.sort(invariantesMap, Comparator.comparingInt(InvariantesMap::getCantidad));
+
             Arrays.sort(transiciones, Comparator.comparingInt(Transicion::getCantidadDisparada));
 
             for (int k = 0; k < tInvariantes.length; k++) {
@@ -78,9 +80,11 @@ public class Politica {
         }
         random = (int) (Math.random() * (list.size()));
         return transiciones[list.get(random)];
+
     }
 
     public void cambiarPolitica(int modo) {
         this.modo = modo;
     }
+
 }
