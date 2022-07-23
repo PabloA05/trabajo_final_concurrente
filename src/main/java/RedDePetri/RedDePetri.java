@@ -36,7 +36,8 @@ public class RedDePetri {
         }
         this.soloInmediatas = getsoloInmediatas();
         this.activoLogicaInmediata = true;
-        actualizaSensibilizadasExtendido();
+        Boolean[] temp = new Boolean[getCantTransiciones()];
+        actualizaSensibilizadasExtendido(temp);
     }
 
     public boolean disparar(Transicion transicion) {
@@ -79,8 +80,9 @@ public class RedDePetri {
                 transicionesConTiempo[transicion.getPosicion()].resetEsperando();
             }
             verificarPInvariantes();
+            Boolean[] tempSensibilizadas = sensibilizadasEx;
             vectorDeEstado = marcadoSiguiente(vectorDeEstado, transicion.getPosicion());
-            actualizaSensibilizadasExtendido();
+            actualizaSensibilizadasExtendido(tempSensibilizadas);
             transicion.incrementoDisparo();
         } else if (esperando && Thread.currentThread().getId() == transicionesConTiempo[transicion.getPosicion()].getId()) {
             transicionesConTiempo[transicion.getPosicion()].resetEsperando();
@@ -109,7 +111,7 @@ public class RedDePetri {
         return (transicionesConTiempo[posicion].getTimeStamp() + transicionesConTiempo[posicion].getAlpha() >= actual);
     }
 
-    public int[] getVectorDeEstado() {
+    private int[] getVectorDeEstado() {
         return vectorDeEstado;
     }
 
@@ -117,11 +119,11 @@ public class RedDePetri {
         return incidencia[0].length;
     }
 
-    public int getCantPlazas() {
+    private int getCantPlazas() {
         return incidencia.length;
     }
 
-    public void verificarPInvariantes() {
+    private void verificarPInvariantes() {
         int suma;
 
         for (int i = 0; i < pInvariantes.size(); i++) {
@@ -138,7 +140,7 @@ public class RedDePetri {
         }
     }
 
-    public boolean esDisparoValido(int[] marcado_siguiente) {
+    private boolean esDisparoValido(int[] marcado_siguiente) {
 
         for (int j : marcado_siguiente) {
             if (j < 0) {
@@ -152,7 +154,7 @@ public class RedDePetri {
         return transiciones;
     }
 
-    public int[] marcadoSiguiente(int[] old, int position) {
+    private int[] marcadoSiguiente(int[] old, int position) {
         int[] temp = new int[old.length];
         for (int i = 0; i < temp.length; i++) {
             temp[i] = old[i] + incidencia[i][position];
@@ -161,7 +163,7 @@ public class RedDePetri {
     }
 
 
-    public Boolean[] getVectorQ() {
+    private Boolean[] getVectorQ() {
         Boolean[] vectorQ = new Boolean[getVectorDeEstado().length];
 
         for (int i = 0; i < getCantPlazas(); i++) {
@@ -170,7 +172,7 @@ public class RedDePetri {
         return vectorQ;
     }
 
-    public Boolean[] getVectorB() {
+    private Boolean[] getVectorB() {
 
         Boolean[] vectorB;
         int[][] inhibidorTranspuesta = Operaciones.transpuesta(this.inhibidor);
@@ -183,7 +185,7 @@ public class RedDePetri {
 
     }
 
-    public Boolean[] getVectorE() {
+    private Boolean[] getVectorE() {
         Boolean[] sensibilizadas = new Boolean[getCantTransiciones()];
         for (int i = 0; i < getCantTransiciones(); i++) {
             sensibilizadas[i] = esDisparoValido(marcadoSiguiente(vectorDeEstado, i));
@@ -195,16 +197,9 @@ public class RedDePetri {
         return tInvariantes;
     }
 
-    public void actualizaSensibilizadasExtendido() {
-
+    private void actualizaSensibilizadasExtendido(Boolean[] tempSensibilizadas) {
         sensibilizadasEx = Operaciones.andVector(getVectorE(), getVectorB());
-        long timeStamp = System.currentTimeMillis();
-        for (int i = 0; i < transicionesConTiempo.length; i++) {
-            if (sensibilizadasEx[i] && transiciones[i].isTemporizada()) {///
-                transicionesConTiempo[i].nuevoTimeStamp(timeStamp);
-            }
-        }
-
+        nuevoTimeStamp(tempSensibilizadas);
         if (activoLogicaInmediata) {
             for (int i = 0; i < soloInmediatas.size(); i++) {
                 if (sensibilizadasEx[soloInmediatas.get(i)]) {
@@ -217,10 +212,21 @@ public class RedDePetri {
                 }
             }
         }
-
     }
 
-    public ArrayList<Integer> getsoloInmediatas() {
+    private void nuevoTimeStamp(Boolean[] tempSensibilizadas) {
+        long timeStamp = System.currentTimeMillis();
+        for (int i = 0; i < transicionesConTiempo.length; i++) {
+            if (sensibilizadasEx[i] && transiciones[i].isTemporizada()) {///
+                if (!tempSensibilizadas[i]) {
+                    transicionesConTiempo[i].nuevoTimeStamp(timeStamp);
+                }
+            }
+        }
+    }
+
+
+    private ArrayList<Integer> getsoloInmediatas() {
 
         ArrayList<Integer> soloInmediatas = new ArrayList<>();
         for (int i = 0; i < getCantTransiciones(); i++) {

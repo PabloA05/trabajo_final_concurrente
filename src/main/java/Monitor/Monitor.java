@@ -120,7 +120,7 @@ public class Monitor {
         return condicion;
     }
 
-    public void setCondicion() {
+    private void setCondicion() {
         Transicion[] transiciones;
         transiciones = redDePetri.getTransiciones().clone();
         int suma = 0;
@@ -144,7 +144,7 @@ public class Monitor {
         System.out.println("Invariante 3: " + transiciones[9].getId() + " se disparo: " + transiciones[9].getCantidadDisparada());
     }
 
-    public void agregarDato(int a, int b, int c) {
+    private void agregarDato(int a, int b, int c) {
         long actual = System.currentTimeMillis() - cuenta;
         datos.add((new int[]{a, b, c, (int) actual}));
     }
