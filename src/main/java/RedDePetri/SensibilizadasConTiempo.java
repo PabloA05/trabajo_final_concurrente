@@ -1,35 +1,21 @@
 package RedDePetri;
 
-
 import Util.Colores;
-
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicLong;
 
 public class SensibilizadasConTiempo {
     final private long alpha;
     final private long beta;
-    private AtomicLong id;
+    private long id;
     private long timeStamp;
-    private AtomicBoolean esperando;
+    private boolean esperando;
 
-    public long getBeta() {
-        return beta;
-    }
-
-
-    SensibilizadasConTiempo(long alpha, long beta) {
+    public SensibilizadasConTiempo(long alpha, long beta) {
         this.alpha = alpha;
         this.beta = beta;
         this.timeStamp = -1;
-        this.id = new AtomicLong(-999999);
-        this.esperando = new AtomicBoolean(false);
+        this.id = -999999;
+        this.esperando = false;
     }
-
-    public void setId(long id) {
-        this.id.set(id);
-    }
-
 
     public boolean testVentanaTiempo() {
         long ahora = System.currentTimeMillis();
@@ -38,21 +24,24 @@ public class SensibilizadasConTiempo {
 
     public void nuevoTimeStamp(long timeStamp) {
         this.timeStamp = timeStamp;
-        this.id.set(-999999);
-        this.esperando.set(false); //todo probablemente este demas
+        if (!this.esperando) {
+            this.id = -999999;
+        }
+//        this.id = -999999;
+//        this.esperando = false;
     }
 
     public boolean isEsperando() {
-        return esperando.get();
+        return esperando;
     }
 
-
     public void setEsperando() {
-        if (this.esperando.get()) {
-            System.out.println("esperando error");
+        if (this.esperando) {
+            System.out.printf(Colores.ANSI_RED + "esperando error h:%s id_H:%s esp:%b id:%d>>\n", Thread.currentThread().getName(), Thread.currentThread().getId(), esperando, id);
             System.exit(1);
         }
-        this.esperando.set(true);
+        this.esperando = true;
+        this.id = Thread.currentThread().getId();
     }
 
     public long getAlpha() {
@@ -64,7 +53,7 @@ public class SensibilizadasConTiempo {
     }
 
     public long getId() {
-        return id.get();
+        return id;
     }
 
     public boolean esTemporal() {
@@ -72,15 +61,7 @@ public class SensibilizadasConTiempo {
     }
 
     public void resetEsperando() {
-
-    System.out.printf(Colores.ANSI_GREEN +"[ ST ] reseteo esperando %s\n"+Colores.ANSI_RESET,Thread.currentThread().getName());
-        this.esperando.set(false);
-    }
-
-    public void resetTimestamp() {
-        System.out.printf(Colores.ANSI_GREEN+"[ ST ] reseteo timeStamp %s\n"+Colores.ANSI_RESET,Thread.currentThread().getName());
-        this.timeStamp = -1;
-        this.id.set(-999999);
-
+        this.id = -999999;
+        this.esperando = false;
     }
 }

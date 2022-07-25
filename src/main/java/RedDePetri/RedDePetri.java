@@ -5,275 +5,113 @@ import Util.Colores;
 import Util.Operaciones;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class RedDePetri {
 
-    int[][] incidencia;
-    int[][] tInvariantes;
-    final int[][] inhibidor;
-    // private int[][] intervalos_tiempo; //matriz de intervalos de tiempo
-    final int[] mki; //marca inicial. columna. NO VARIA
+    private final int[][] incidencia;
+    private final int[][] tInvariantes;
+    private final int[][] inhibidor;
     private int[] vectorDeEstado; //la marca actual
-    private SensibilizadasConTiempo[] transicionesConTiempo;
+    private final SensibilizadasConTiempo[] transicionesConTiempo;
     private Boolean[] sensibilizadasEx;
-    private Boolean[] Q;
-    private Boolean[] Z;
-    private Boolean[] B;
-    int[] mj_1;// la siguiente
-    //private int[] e; //vector de transiciones sensibilizadas
-    int[] ex; //vector de sensibilizado extendido
-    //private int[] z; //Vector de transiciones des-sensibilizadas por tiempo
-    //  private boolean k = false;
-    private boolean[] VectorSensibilazadas;
-    private Transicion[] transiciones;
-    private ArrayList<ArrayList<Integer>> pInvariantes;
-    //private Boolean[] sensibilizadasEx;
+    private final Transicion[] transiciones;
+    private final ArrayList<ArrayList<Integer>> pInvariantes;
+    private final ArrayList<Integer> soloInmediatas;
+    private final Boolean activoLogicaInmediata;
 
-    public RedDePetri(String mji, String I, String h, String t, String T) {
-
-
-        //  e_semaphore = new Semaphore(1, true);//no se  si lo voy a usar
-
+    public RedDePetri(String mji, String I, String h, String t, String T, String Pinv) {
         this.incidencia = Operaciones.matriz2d(I);
         this.vectorDeEstado = Operaciones.vector(mji);
         this.inhibidor = Operaciones.matriz2d(h);
         this.tInvariantes = Operaciones.matriz2d(T);
-        pInvariantes = Operaciones.setPinvariantes("src/main/resources/pInvariantes.csv");
-        this.mki = vectorDeEstado.clone(); //marca inicial
-        /*sensibilizadas = new Boolean[getCantTransisiones()];
-        for (int i = 0; i < getCantTransisiones(); i++) {
-            sensibilizadas[i] = false;
-        }
-        sensibilizadasEx = new Boolean[getCantTransisiones()];
-        for (int i = 0; i < getCantTransisiones(); i++) {
-            sensibilizadasEx[i] = false;
-        }*/
-        int[][] tiempos = Operaciones.matriz2d(t);
+        this.pInvariantes = Operaciones.setPinvariantes(Pinv);
+        int[][] tiempos = Operaciones.transpuesta(Operaciones.matriz2d(t));
         this.transicionesConTiempo = new SensibilizadasConTiempo[getCantTransiciones()];
         for (int i = 0; i < transicionesConTiempo.length; i++) {
-            transicionesConTiempo[i] = new SensibilizadasConTiempo((long) tiempos[0][i], (long) tiempos[1][i]);
+            this.transicionesConTiempo[i] = new SensibilizadasConTiempo((long) tiempos[0][i], (long) tiempos[1][i]);
         }
-        transiciones = new Transicion[getCantTransiciones()];
+        this.transiciones = new Transicion[getCantTransiciones()];
         for (int i = 0; i < getCantTransiciones(); i++) {
-            transiciones[i] = new Transicion("T" + i, i, transicionesConTiempo[i].esTemporal());
+            this.transiciones[i] = new Transicion("T" + i, i, transicionesConTiempo[i].esTemporal());
         }
-
-        Boolean[] temp = new Boolean[transiciones.length];
-        Arrays.fill(temp, false);
-        actualizaSensibilizadasExtendido();
-        setNuevoTimeStamp(sensibilizadasEx, System.currentTimeMillis());
-
+        this.soloInmediatas = getsoloInmediatas();
+        this.activoLogicaInmediata = true;
+        Boolean[] temp = new Boolean[getCantTransiciones()];
+        actualizaSensibilizadasExtendido(temp);
     }
 
-    public int[][] gettInvariantes() {
-        return tInvariantes;
-    }
-
-
-    public boolean disparar(Transicion transicion) {//todo para transiciones inmediatas
+    public boolean disparar(Transicion transicion) {
         boolean k = false;
         boolean esperando = false;
-        boolean ventana;
-        long bufTimeStamp = 0;
-        // if (estaSensibilizado(transicion.getPosicion())) {
+        boolean ventana = false;
 
-        if (!sensibilizadasEx[transicion.getPosicion()]) {
-            return false;
-        }
+        while (sensibilizadasEx[transicion.getPosicion()] && !transicionesConTiempo[transicion.getPosicion()].isEsperando()
+                || sensibilizadasEx[transicion.getPosicion()] && transicionesConTiempo[transicion.getPosicion()].isEsperando()
+                && Thread.currentThread().getId() == transicionesConTiempo[transicion.getPosicion()].getId()) {
 
-        if (!transicion.isTemportizada()) {
-            k = true;
-            bufTimeStamp = System.currentTimeMillis();
-        } else {
-            while (sensibilizadasEx[transicion.getPosicion()] && !transicionesConTiempo[transicion.getPosicion()].isEsperando()) {
+            if (!transicion.isTemporizada()) {
+                k = true;
+                break;
+            }
+            ventana = transicionesConTiempo[transicion.getPosicion()].testVentanaTiempo();
+            esperando = transicionesConTiempo[transicion.getPosicion()].isEsperando();
 
-                ventana = transicionesConTiempo[transicion.getPosicion()].testVentanaTiempo();
-                esperando = transicionesConTiempo[transicion.getPosicion()].isEsperando(); //todo ver si podria ir en otro lugar?
-
-                System.out.printf(Colores.ANSI_RED + "[rdp] esp %b \n" + Colores.ANSI_RESET, esperando);
-                ;
-
-                if (ventana && !esperando) {
-                    k = true;
-                    bufTimeStamp = System.currentTimeMillis();
-                    break;
-                } else {
-
-                    boolean antes = antesDeLaVentana(transicion.getPosicion());
-                    System.out.printf(Colores.ANSI_RED + "[rdp] esp:%b timestamp:%d t:%d %s\n" + Colores.ANSI_RESET, transicionesConTiempo[transicion.getPosicion()].isEsperando(), transicionesConTiempo[transicion.getPosicion()].getTimeStamp(), transicion.getPosicion(), Thread.currentThread().getName());
+            if (ventana) {
+                k = true;
+                break;
+            } else if (!esperando) {
+                boolean antes = antesDeLaVentana(transicion.getPosicion());
+                if (antes) {
+                    transicionesConTiempo[transicion.getPosicion()].setEsperando();
                     Monitor.releaseMonitor();
-
-                    System.out.printf("[rdp] esp:%b %s t:%d \n", transicionesConTiempo[transicion.getPosicion()].isEsperando(), Thread.currentThread().getName(), transicion.getPosicion());
-//                if (transicionesConTiempo[transicion.getPosicion()].isEsperando()) {
-//                    System.out.printf("?? %s esp_id:%d hilo_id:%d\n", Thread.currentThread().getName(), id, Thread.currentThread().getId());
-//                }
-                    System.out.printf(Colores.ANSI_GREEN + "[rdp] antes:%b\n" + Colores.ANSI_RESET, antes);
-
-                    boolean pudoDormir = true;
-                    if (antes && !esperando) {
-                        if (transicionesConTiempo[transicion.getPosicion()].isEsperando()) {
-                            System.out.printf("[rdp] fallo %s t:%d esp:%b esp_id:%d hilo_id:%d\n", Thread.currentThread().getName(), transicion.getPosicion(),
-                                    transicionesConTiempo[transicion.getPosicion()].isEsperando(),
-                                    transicionesConTiempo[transicion.getPosicion()].getId(),
-                                    Thread.currentThread().getId());
-                            System.exit(1);
-                        }
-                        System.out.printf("[rdp] >>> entro sleep transicion:%d %s\n", transicion.getPosicion(), Thread.currentThread().getName());
-                        transicionesConTiempo[transicion.getPosicion()].setEsperando();
-                        transicionesConTiempo[transicion.getPosicion()].setId(Thread.currentThread().getId());
-                        pudoDormir = sleepThread(transicion.getPosicion());
-                        System.out.printf("[rdp] <<< salio del sleep %s\n", Thread.currentThread().getName());
-
-                    } else if (!esperando) {
-                        System.out.printf("[rdp] mayor que beta %s t:%d esp:%b antes:%b\n",
-                                Thread.currentThread().getName(), transicion.getPosicion(), transicionesConTiempo[transicion.getPosicion()].isEsperando(), antes);
-                        System.exit(1);
-                    }
-                    Monitor.acquireMonitor();
-
-
-                    if (sensibilizadasEx[transicion.getPosicion()] && pudoDormir) {
-                        System.out.printf("[rdp] %s entro aca timeStamp:%d esp:%b id_esp:%d id_h:%d\n", Thread.currentThread().getName(), transicionesConTiempo[transicion.getPosicion()].getTimeStamp(), transicionesConTiempo[transicion.getPosicion()].isEsperando(),
-                                transicionesConTiempo[transicion.getPosicion()].getId(), Thread.currentThread().getId());
-                        ventana = transicionesConTiempo[transicion.getPosicion()].testVentanaTiempo();
-                        if (ventana) {
-                            if ((transicionesConTiempo[transicion.getPosicion()].isEsperando()
-                                    && (transicionesConTiempo[transicion.getPosicion()].getId() == Thread.currentThread().getId()))) {
-                                k = true;
-                                break;
-                            }
-                        }
-                        System.out.printf("[rdp] ****%s t:%d test:%b esp:%b esp_id:%d hilo_id:%d\n", Thread.currentThread().getName(), transicion.getPosicion(), ventana,
-                                transicionesConTiempo[transicion.getPosicion()].isEsperando(),
-                                transicionesConTiempo[transicion.getPosicion()].getId(),
-                                Thread.currentThread().getId());
-                    }
-                    System.out.printf("[rdp] salio else transicion:%d %s k:%b t:%d\n",
-                            transicion.getPosicion(), Thread.currentThread().getName(), k, transicion.getPosicion());
-
+                    esperando = true;
+                    sleepThread(transicion.getPosicion());
+                } else {
+                    System.out.printf("mayor que beta %s t:%d esp:%b\n",
+                            Thread.currentThread().getName(), transicion.getPosicion(), transicionesConTiempo[transicion.getPosicion()].isEsperando());
+                    System.exit(1);
                 }
-                System.out.printf("[rdp] salio transicion:%d %s k:%b t:%d v:%b\n", transicion.getPosicion(), Thread.currentThread().getName(), k, transicion.getPosicion(), ventana);
+                Monitor.acquireMonitor();
 
             }
-
         }
-
-
         if (k) {
-
-            boolean bufEsperando = transicionesConTiempo[transicion.getPosicion()].isEsperando();
-            if (transicionesConTiempo[transicion.getPosicion()].isEsperando()) {
+            if (transicion.isTemporizada()) {
                 transicionesConTiempo[transicion.getPosicion()].resetEsperando();
             }
             verificarPInvariantes();
+            Boolean[] tempSensibilizadas = sensibilizadasEx;
             vectorDeEstado = marcadoSiguiente(vectorDeEstado, transicion.getPosicion());
-            Boolean[] copyOriginalSensibilizadas = actualizaSensibilizadasExtendido();
-            System.out.println("************************************");
-            Operaciones.printB(sensibilizadasEx);
-            Operaciones.printB(copyOriginalSensibilizadas);
-            System.out.println("************************************");
-
-            if (!bufEsperando) {
-                System.out.printf(Colores.ANSI_BLUE + "[rdp] t:%d %s esp:%b timestamp:%d\n" + Colores.ANSI_RESET, transicion.getPosicion(), Thread.currentThread().getName(), esperando, bufTimeStamp);
-                setNuevoTimeStamp(copyOriginalSensibilizadas, bufTimeStamp);
-            } else {
-                setNuevoTimeStamp(copyOriginalSensibilizadas, System.currentTimeMillis());
-            }
-            //Operaciones.printB(getSensibilizadasExtendido());
+            actualizaSensibilizadasExtendido(tempSensibilizadas);
             transicion.incrementoDisparo();
+        } else if (esperando && Thread.currentThread().getId() == transicionesConTiempo[transicion.getPosicion()].getId()) {
+            transicionesConTiempo[transicion.getPosicion()].resetEsperando();
         }
-        if (!k && //todo No se si esta bien esto
-                transicionesConTiempo[transicion.getPosicion()].isEsperando() &&
-                transicionesConTiempo[transicion.getPosicion()].getId() == Thread.currentThread().getId()) {
-
-            //   if (!k && transicion.isTemportizada() && transicionesConTiempo[transicion.getPosicion()].isEsperando()) {
-            transicionesConTiempo[transicion.getPosicion()].isEsperando();
-        }
-
         return k;
-//        boolean k = false;
-//        if (this.getSensibilizadasExtendido()[transicion.getPosicion()]) {
-//            Operaciones.printVector(vectorDeEstado);
-//
-//            vectorDeEstado = marcadoSiguiente(vectorDeEstado, transicion.getPosicion());
-//            transicion.incrementoDisparo();
-//
-//            return true;
-//        } else {
-//            return false;
-//        }
     }
-
 
     public Boolean[] getSensibilizadasEx() {
         return sensibilizadasEx;
     }
 
-    private boolean sePuedeDispara(Transicion transicion) {
-        return (sensibilizadasEx[transicion.getPosicion()] &&
-                transicionesConTiempo[transicion.getPosicion()].testVentanaTiempo());
-    }
-
-    private void sincronizar(Transicion t) {
-
-        System.out.println("La transicion: " + (t.getPosicion() + 1) + " en el tiempo: " + System.currentTimeMillis() / 1000);
-        Operaciones.printVector(vectorDeEstado);
-
-    }
-
-    private void setNuevoTimeStamp(Boolean[] tempSensibilizadasEx, long timeStamp) { //todo deberia ser un unico timeStamp?
-
-        System.out.printf(Colores.ANSI_RED + "[rdp] %d %s ***** \n" + Colores.ANSI_RESET, timeStamp, Thread.currentThread().getName());
-        Operaciones.printB(tempSensibilizadasEx);
-        for (int i = 0; i < transicionesConTiempo.length; i++) {
-            if (tempSensibilizadasEx[i] && transiciones[i].isTemportizada()) {///
-                transicionesConTiempo[i].nuevoTimeStamp(timeStamp);
-            } else {
-                transicionesConTiempo[i].resetTimestamp();
-            }
-            //todo resetea
-        }
-        for (int i = 0; i < transicionesConTiempo.length; i++) {
-            System.out.printf("%d %d\n", i, transicionesConTiempo[i].getTimeStamp());
-        }
-
-
-    }
-
-    public void setTransiciones(Transicion[] trans) {
-        this.transiciones = trans;
-    }
-
-
-    private boolean sleepThread(int posicion) { //todo no se si esta bien
+    private void sleepThread(int posicion) {
         long sleepTime = transicionesConTiempo[posicion].getTimeStamp() + transicionesConTiempo[posicion].getAlpha() - System.currentTimeMillis();
         if (sleepTime < 0) {
-            return false;
+            return;
         }
         try {
             Thread.sleep(sleepTime);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        return true;
     }
-
 
     private boolean antesDeLaVentana(int posicion) {
         long actual = System.currentTimeMillis();
-        System.out.printf(Colores.ANSI_RED + "[rdp]t:%d %s TimeStamp:%d alpha:%d beta:%d actual:%d suma:%d resta:%d\n" + Colores.ANSI_RESET, posicion,
-                Thread.currentThread().getName(),
-                transicionesConTiempo[posicion].getTimeStamp(),
-                transicionesConTiempo[posicion].getAlpha(),
-                transicionesConTiempo[posicion].getBeta(),
-                actual,
-                (transicionesConTiempo[posicion].getTimeStamp() + transicionesConTiempo[posicion].getAlpha()),
-                (transicionesConTiempo[posicion].getTimeStamp() - actual));
-        return (transicionesConTiempo[posicion].getTimeStamp() + transicionesConTiempo[posicion].getAlpha() > actual);
+        return (transicionesConTiempo[posicion].getTimeStamp() + transicionesConTiempo[posicion].getAlpha() >= actual);
     }
 
-    public int[] getVectorDeEstado() {
+    private int[] getVectorDeEstado() {
         return vectorDeEstado;
     }
 
@@ -281,44 +119,18 @@ public class RedDePetri {
         return incidencia[0].length;
     }
 
-    public int getCantPlazas() {
+    private int getCantPlazas() {
         return incidencia.length;
     }
 
-    public int[][] getInhibidor() {
-        return inhibidor;
-    }
-
-    public void calculoDeVectorEstado(Transicion transicion) {
-        vectorDeEstado = marcadoSiguiente(vectorDeEstado, transicion.getPosicion());
-
-    }
-
-/*    public void calculoDeVectorEstado(Transicion transicion) {
-        for (int i = 0; i < vectorDeEstado.length; i++) {
-            vectorDeEstado[i] += incidencia[i][transicion.getPosicion()];
-        }
-    }*/
-
-    public int[] getColumna() {
-
-        return new int[0];
-    }
-
-
-    public int[][] getIncidencia() {
-        return incidencia;
-    }
-
-    public void verificarPInvariantes() {
-        int suma = 0;
+    private void verificarPInvariantes() {
+        int suma;
 
         for (int i = 0; i < pInvariantes.size(); i++) {
-            ArrayList<Integer> a = new ArrayList<>();
+            ArrayList<Integer> a;
             a = pInvariantes.get(i);
             suma = 0;
             for (int j = 0; j < a.size() - 1; j++) {
-                int aux = a.get(j) - 1;
                 suma += vectorDeEstado[a.get(j) - 1];
             }
             if (suma != a.get(a.size() - 1)) {
@@ -328,7 +140,7 @@ public class RedDePetri {
         }
     }
 
-    public boolean esDisparoValido(int[] marcado_siguiente) throws NullPointerException {
+    private boolean esDisparoValido(int[] marcado_siguiente) {
 
         for (int j : marcado_siguiente) {
             if (j < 0) {
@@ -342,40 +154,16 @@ public class RedDePetri {
         return transiciones;
     }
 
-    public boolean esTemporizada(int a) {
-        //return a == 5 || a == 6 || a == 9 || a==11 || a==2 ;
-        return false;
-    }
-
-    public int[] marcadoSiguiente(int[] old, int position) {
-        /*calcularVectorB();
-        Operaciones.printVector(vectorDeEstado);
-        System.out.print("entro>>>>>>>>>>>>>>>>>>>>>>>\n");*/
+    private int[] marcadoSiguiente(int[] old, int position) {
         int[] temp = new int[old.length];
         for (int i = 0; i < temp.length; i++) {
             temp[i] = old[i] + incidencia[i][position];
         }
-        //Operaciones.printVector(temp);
-        //System.out.print("salio<<<<<<<<<<<<<<<<<<<<<<<<<<<\n");
-
-
         return temp;
     }
 
-    public Boolean[] getVectorE() {
-        Boolean[] sensibilizadas = new Boolean[getCantTransiciones()];
-        for (int i = 0; i < getCantTransiciones(); i++) {
-            try {
-                sensibilizadas[i] = esDisparoValido(marcadoSiguiente(vectorDeEstado, i));
-            } catch (Exception e) {
-                e.printStackTrace();
-                System.out.println("Error en getSensibilizadas()");
-            }
-        }
-        return sensibilizadas;
-    }
 
-    public Boolean[] getVectorQ() {
+    private Boolean[] getVectorQ() {
         Boolean[] vectorQ = new Boolean[getVectorDeEstado().length];
 
         for (int i = 0; i < getCantPlazas(); i++) {
@@ -384,39 +172,69 @@ public class RedDePetri {
         return vectorQ;
     }
 
-    public Boolean[] getVectorB() {
+    private Boolean[] getVectorB() {
 
-        Boolean[] vectorB = new Boolean[getCantTransiciones()];
+        Boolean[] vectorB;
         int[][] inhibidorTranspuesta = Operaciones.transpuesta(this.inhibidor);
         vectorB = Operaciones.productoMatrizVectorBoolean(inhibidorTranspuesta, this.getVectorQ());
         for (int i = 0; i < vectorB.length; i++) {
             vectorB[i] = !vectorB[i];
         }
 
-        B = vectorB;
+        return vectorB;
 
-        return this.B.clone();
     }
 
-    public Boolean[] actualizaSensibilizadasExtendido() {
+    private Boolean[] getVectorE() {
+        Boolean[] sensibilizadas = new Boolean[getCantTransiciones()];
+        for (int i = 0; i < getCantTransiciones(); i++) {
+            sensibilizadas[i] = esDisparoValido(marcadoSiguiente(vectorDeEstado, i));
+        }
+        return sensibilizadas;
+    }
 
+    public int[][] gettInvariantes() {
+        return tInvariantes;
+    }
+
+    private void actualizaSensibilizadasExtendido(Boolean[] tempSensibilizadas) {
         sensibilizadasEx = Operaciones.andVector(getVectorE(), getVectorB());
-        Boolean[] copy = sensibilizadasEx.clone();
-
-        if (sensibilizadasEx[0] || sensibilizadasEx[6]) {
-            for (int i = 0; i < getCantTransiciones(); i++) {
-                if (!(i == 0 || i == 6)) {
-                    sensibilizadasEx[i] = false;
+        nuevoTimeStamp(tempSensibilizadas);
+        if (activoLogicaInmediata) {
+            for (int i = 0; i < soloInmediatas.size(); i++) {
+                if (sensibilizadasEx[soloInmediatas.get(i)]) {
+                    for (int j = 0; j < sensibilizadasEx.length; j++) {
+                        if (sensibilizadasEx[j] && transiciones[j].isTemporizada()) {
+                            sensibilizadasEx[j] = false;
+                        }
+                    }
+                    break;
                 }
             }
         }
-
-        return copy;
-
     }
 
-    public void setVectorDeEstado(int[] vector) {
-        this.vectorDeEstado = vector;
+    private void nuevoTimeStamp(Boolean[] tempSensibilizadas) {
+        long timeStamp = System.currentTimeMillis();
+        for (int i = 0; i < transicionesConTiempo.length; i++) {
+            if (sensibilizadasEx[i] && transiciones[i].isTemporizada()) {///
+                if (!tempSensibilizadas[i]) {
+                    transicionesConTiempo[i].nuevoTimeStamp(timeStamp);
+                }
+            }
+        }
+    }
+
+
+    private ArrayList<Integer> getsoloInmediatas() {
+
+        ArrayList<Integer> soloInmediatas = new ArrayList<>();
+        for (int i = 0; i < getCantTransiciones(); i++) {
+            if (!transiciones[i].isTemporizada()) {
+                soloInmediatas.add(i);
+            }
+        }
+        return soloInmediatas;
     }
 
 }
