@@ -81,9 +81,14 @@ public class Monitor {
                 cola[transicion.getPosicion()].acquire();
             }
         }
+        condicionUpdate(transicion.getId());
 
+        Colores.cianWrite("salio! Disparos:" + contador, transicion.getPosicion());
+    }
+
+    private synchronized void condicionUpdate(String transicion) {
         if (condicion) {
-            log.write(transicion.getId());
+            log.write(transicion);
         }
 
         if (contador >= relacionDeMuestra) {
@@ -96,7 +101,6 @@ public class Monitor {
         }
 
         if (!condicion && flag) {
-            acquireMonitor();
             flag = false;
 
             for (int i = 0; i < cola.length; i++) {
@@ -105,10 +109,7 @@ public class Monitor {
                     cola[i].release();
                 }
             }
-            semaforoMonitor.release();
         }
-
-        Colores.cianWrite("salio! Disparos:"+ contador, transicion.getPosicion());
     }
 
     private Boolean[] quienesEstan() {
@@ -131,7 +132,7 @@ public class Monitor {
         return condicion;
     }
 
-    private synchronized void setCondicion() {
+    private void setCondicion() {
         Transicion[] transiciones;
         transiciones = redDePetri.getTransiciones().clone();
         int suma = 0;
@@ -155,7 +156,7 @@ public class Monitor {
         System.out.println("Invariante 3: " + transiciones[9].getId() + " se disparo: " + transiciones[9].getCantidadDisparada());
     }
 
-    private synchronized void agregarDato(int a, int b, int c) {
+    private void agregarDato(int a, int b, int c) {
         long actual = System.currentTimeMillis() - cuenta;
         datos.add((new int[]{a, b, c, (int) actual}));
     }
