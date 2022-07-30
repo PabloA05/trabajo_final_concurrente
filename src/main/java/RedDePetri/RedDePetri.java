@@ -35,7 +35,7 @@ public class RedDePetri {
             this.transiciones[i] = new Transicion("T" + i, i, transicionesConTiempo[i].esTemporal());
         }
         this.soloInmediatas = getsoloInmediatas();
-        this.activoLogicaInmediata = true;
+        this.activoLogicaInmediata = false;
         Boolean[] temp = new Boolean[getCantTransiciones()];
         actualizaSensibilizadasExtendido(temp);
     }
@@ -200,6 +200,10 @@ public class RedDePetri {
     private void actualizaSensibilizadasExtendido(Boolean[] tempSensibilizadas) {
         sensibilizadasEx = Operaciones.andVector(getVectorE(), getVectorB());
         nuevoTimeStamp(tempSensibilizadas);
+
+        System.out.println("------------- rdp ------------------");
+        Operaciones.printB(sensibilizadasEx);
+        System.out.println("-----------------------------------");
         if (activoLogicaInmediata) {
             for (int i = 0; i < soloInmediatas.size(); i++) {
                 if (sensibilizadasEx[soloInmediatas.get(i)]) {

@@ -53,21 +53,24 @@ public class Monitor {
 
             if (k) {
                 Colores.redWrite("Disparo", transicion.getPosicion());
-                contador++;
 
                 Boolean[] Vs = this.redDePetri.getSensibilizadasEx();
+                System.out.println("---------------------VS ---------------------");
+                Operaciones.printB(Vs);
+                System.out.println("------------------- VC-----------------------");
 
                 Boolean[] Vc = quienesEstan();
+                Operaciones.printB(Vc);
 
                 Boolean[] m = Operaciones.andVector(Vs, Vc); //todo ver si se puede simplificar
                 if (Operaciones.comprobarUnos(m)) {
                     if (semaforoMonitor.availablePermits() != 0) {
-                        System.out.printf("valor del semaforo %d\n", semaforoMonitor.availablePermits());
+                        System.out.printf(">> valor del semaforo: %d %s\n", semaforoMonitor.availablePermits(),Thread.currentThread().getName());
                         System.exit(1);
                     }
                     Transicion transicionADisparar = politica.cualDisparo(m, redDePetri);
-                    cola[transicionADisparar.getPosicion()].decrement();
                     Colores.redWrite("suelto monitor", transicion.getPosicion());
+                    Colores.redWrite("elijo t:",transicionADisparar.getPosicion());
                     releaseMonitor();
                     cola[transicionADisparar.getPosicion()].release();
                     break;
@@ -75,7 +78,6 @@ public class Monitor {
                 semaforoMonitor.release();
                 break;
             } else {
-                cola[transicion.getPosicion()].increment();
                 semaforoMonitor.release();
                 Colores.greenWrite("entro a cola", transicion.getPosicion());
                 cola[transicion.getPosicion()].acquire();
@@ -87,6 +89,7 @@ public class Monitor {
     }
 
     private synchronized void condicionUpdate(String transicion) {
+        contador++;
         if (condicion) {
             log.write(transicion);
         }
@@ -105,7 +108,7 @@ public class Monitor {
 
             for (int i = 0; i < cola.length; i++) {
                 while (cola[i].get() > 0) {
-                    cola[i].decrement();
+
                     cola[i].release();
                 }
             }
