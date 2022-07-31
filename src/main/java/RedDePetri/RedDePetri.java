@@ -5,6 +5,7 @@ import Util.Colores;
 import Util.Operaciones;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class RedDePetri {
 
@@ -37,6 +38,7 @@ public class RedDePetri {
         this.soloInmediatas = getsoloInmediatas();
         this.activoLogicaInmediata = false;
         Boolean[] temp = new Boolean[getCantTransiciones()];
+        Arrays.fill(temp, Boolean.FALSE);
         actualizaSensibilizadasExtendido(temp);
     }
 
@@ -80,7 +82,7 @@ public class RedDePetri {
                 transicionesConTiempo[transicion.getPosicion()].resetEsperando();
             }
             verificarPInvariantes();
-            Boolean[] tempSensibilizadas = sensibilizadasEx;
+            Boolean[] tempSensibilizadas = sensibilizadasEx.clone();
             vectorDeEstado = marcadoSiguiente(vectorDeEstado, transicion.getPosicion());
             actualizaSensibilizadasExtendido(tempSensibilizadas);
             transicion.incrementoDisparo();

@@ -65,12 +65,12 @@ public class Monitor {
                 Boolean[] m = Operaciones.andVector(Vs, Vc); //todo ver si se puede simplificar
                 if (Operaciones.comprobarUnos(m)) {
                     if (semaforoMonitor.availablePermits() != 0) {
-                        System.out.printf(">> valor del semaforo: %d %s\n", semaforoMonitor.availablePermits(),Thread.currentThread().getName());
+                        System.out.printf(">> valor del semaforo: %d %s\n", semaforoMonitor.availablePermits(), Thread.currentThread().getName());
                         System.exit(1);
                     }
                     Transicion transicionADisparar = politica.cualDisparo(m, redDePetri);
                     Colores.redWrite("suelto monitor", transicion.getPosicion());
-                    Colores.redWrite("elijo t:",transicionADisparar.getPosicion());
+                    Colores.redWrite("elijo t:", transicionADisparar.getPosicion());
                     releaseMonitor();
                     cola[transicionADisparar.getPosicion()].release();
                     break;
@@ -89,6 +89,9 @@ public class Monitor {
     }
 
     private synchronized void condicionUpdate(String transicion) {
+        if (!flag) {
+            return;
+        }
         contador++;
         if (condicion) {
             log.write(transicion);

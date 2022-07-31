@@ -55,6 +55,10 @@ public class Cola {
     }
 
     public void release() {
+        if (get() < 0) {
+            System.out.printf("hilosCola [%d] menor que cero\n", get());
+            System.exit(1);
+        }
         synchronized (this) {
             try {
                 notify();
