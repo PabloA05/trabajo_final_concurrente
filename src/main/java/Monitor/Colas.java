@@ -14,8 +14,6 @@ public class Colas {
             System.exit(1);
         }
         try {
-            increment();
-            Monitor.releaseMonitor();
             wait(); //El hilo entra a la cola, sumando la cantidad de hilos en cola
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -24,11 +22,11 @@ public class Colas {
         }
     }
 
-    private void increment() {
+    public void increment() {
         hilosCola++;
     }
 
-    private void decrement() {
+    public void decrement() {
         hilosCola--;
     }
 

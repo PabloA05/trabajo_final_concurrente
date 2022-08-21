@@ -264,7 +264,7 @@ public class Operaciones {
             if (boo[i]) {
                 System.out.printf("%d ", i);
             } else {
-                System.out.print("0 ");
+                System.out.print("* ");
             }
         }
         System.out.println();
