@@ -21,7 +21,7 @@ public class Log {
         this.pw = new PrintWriter(bw);
     }
 
-    public synchronized void write(String str) {
+    public void write(String str) {
         pw.print(str);
         pw.flush();
     }
