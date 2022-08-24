@@ -52,7 +52,7 @@ public class Monitor {
         while (true) {
             acquireMonitor();
             boolean k = true;
-            k = this.redDePetri.disparar(transicion);
+            k = this.redDePetri.disparar(transicion, semaforoMonitor);
             if (!condicion) {
                 break;
             }
@@ -61,7 +61,7 @@ public class Monitor {
                 Boolean[] Vs = this.redDePetri.getSensibilizadasEx();
 
                 Boolean[] Vc = quienesEstan();
-
+                //System.out.println("PRUEBAAA");
                 Boolean[] m = new Boolean[Vs.length];
                 m = Operaciones.andVector(Vs, Vc); //todo ver si se puede simplificar
                 if (Operaciones.comprobarUnos(m)) {
@@ -77,7 +77,7 @@ public class Monitor {
                 if (!condicion) {
                     break;
                 }
-                cola[transicion.getPosicion()].acquire();
+                cola[transicion.getPosicion()].acquire(semaforoMonitor);
             }
 
         }
@@ -158,4 +158,3 @@ public class Monitor {
         }
     }
 }
-

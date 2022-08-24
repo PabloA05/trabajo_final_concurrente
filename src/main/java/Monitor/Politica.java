@@ -37,6 +37,18 @@ public class Politica {
         Transicion[] transiciones = rdp.getTransiciones().clone();
         int[][] tInvariantes = rdp.gettInvariantes().clone();
 
+        boolean flagInmediatas = false;
+
+        for (int i = 0; i < transiciones.length; i++) {
+            if(m[i] && (!transiciones[i].isTemporizada())){
+                flagInmediatas = true;
+                System.out.println("La transicion: "+i+"es inmediata y tiene m en true"+m[i]+" "+(!transiciones[i].isTemporizada()));
+                break;
+            }
+        }
+
+        Arrays.sort(transiciones, Comparator.comparingInt(Transicion::getCantidadDisparada));
+
         if (modo == 2) {
 
             invariantesMap[0].cantidad = transiciones[3].getCantidadDisparada();
@@ -48,24 +60,37 @@ public class Politica {
             }
             Arrays.sort(invariantesMap, Comparator.comparingInt(InvariantesMap::getCantidad));
 
-            Arrays.sort(transiciones, Comparator.comparingInt(Transicion::getCantidadDisparada));
 
             for (int k = 0; k < tInvariantes.length; k++) {
                 int[] invarianteMenosDisparado = tInvariantes[invariantesMap[k].posicion];
                 for (int i = 0; i < transiciones.length; i++) {
                     if (m[transiciones[i].getPosicion()] && invarianteMenosDisparado[transiciones[i].getPosicion()] == 1) {
-                        return transiciones[i];
+                        if(flagInmediatas && !transiciones[i].isTemporizada()){
+                            System.out.println("Salgo de politica con transicion: "+ transiciones[i].getPosicion()+ " valor de flagInmediatas: "+flagInmediatas);
+                            return transiciones[i];
+                        }
+                        else if (!flagInmediatas){
+                            System.out.println("Salgo de politica con transicion: "+ transiciones[i].getPosicion()+ " valor de flagInmediatas: "+flagInmediatas);
+                            return transiciones[i];
+                        }
                     }
                 }
             }
         }
+        System.out.println("SALGO DE POLITICA");
 
         if (modo == 1) {
-            Arrays.sort(transiciones, Comparator.comparingInt(Transicion::getCantidadDisparada));
             for (Transicion transicion : transiciones) {
                 if (m[transicion.getPosicion()]) {
                     //System.out.println("La politica decide por: T"+(transicion.getPosicion()+1));
-                    return transicion;
+                    if(flagInmediatas && !transicion.isTemporizada()){
+                        System.out.println("Salgo de politica con transicion: "+ transicion.getPosicion()+ " valor de flagInmediatas: "+flagInmediatas);
+                        return transicion;
+                    }
+                    else if (!flagInmediatas){
+                        System.out.println("Salgo de politica con transicion: "+ transicion.getPosicion()+ " valor de flagInmediatas: "+flagInmediatas);
+                        return transicion;
+                    }
                 }
             }
         }
@@ -83,8 +108,11 @@ public class Politica {
 
     }
 
+
     public void cambiarPolitica(int modo) {
         this.modo = modo;
     }
+
+
 
 }

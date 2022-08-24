@@ -1,5 +1,7 @@
 package Monitor;
 
+import java.util.concurrent.Semaphore;
+
 public class Colas {
     private int hilosCola;
 
@@ -7,7 +9,7 @@ public class Colas {
         this.hilosCola = 0;
     }
 
-    public synchronized void acquire() {
+    public synchronized void acquire(Semaphore semaforoMonitor) {
 
         if (hilosCola < 0) {
             System.out.printf("hilosCola [%d] menor que cero", hilosCola);
@@ -15,7 +17,7 @@ public class Colas {
         }
         try {
             increment();
-            Monitor.releaseMonitor();
+            semaforoMonitor.release();
             wait(); //El hilo entra a la cola, sumando la cantidad de hilos en cola
         } catch (InterruptedException e) {
             e.printStackTrace();
