@@ -46,13 +46,13 @@ public class RedDePetri {
         boolean esperando = false;
         boolean ventana = false;
 
-//        if(transicion.isTemporizada()){
-//            for (int i = 0; i < soloInmediatas.size(); i++) {
-//                if (sensibilizadasEx[soloInmediatas.get(i)]) {
-//                    return false;
-//                }
-//            }
-//        }
+        if(transicion.isTemporizada()){
+            for (int i = 0; i < soloInmediatas.size(); i++) {
+                if (sensibilizadasEx[soloInmediatas.get(i)]) {
+                    return false;
+                }
+            }
+        }
 
         while (sensibilizadasEx[transicion.getPosicion()] && !transicionesConTiempo[transicion.getPosicion()].isEsperando()
                 || sensibilizadasEx[transicion.getPosicion()] && transicionesConTiempo[transicion.getPosicion()].isEsperando()

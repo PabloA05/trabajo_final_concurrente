@@ -2,7 +2,6 @@ package Monitor;
 
 import RedDePetri.RedDePetri;
 import RedDePetri.Transicion;
-import Util.Colores;
 import Util.Log;
 import Util.Operaciones;
 
@@ -50,61 +49,41 @@ public class Monitor {
     }
 
     public void disparaTransicion(Transicion transicion) {
-        acquireMonitor();
         while (true) {
+            acquireMonitor();
+            boolean k = true;
+            k = this.redDePetri.disparar(transicion, semaforoMonitor);
             if (!condicion) {
-                semaforoMonitor.release();
                 break;
             }
-            boolean k = this.redDePetri.disparar(transicion, semaforoMonitor);
+
             if (k) {
-                Colores.redWrite("disparo", transicion.getPosicion());
-                update_condition(transicion.getId());
-                if (!condicion) {
-                    semaforoMonitor.release();
-                    break;
-                }
                 Boolean[] Vs = this.redDePetri.getSensibilizadasEx();
 
                 Boolean[] Vc = quienesEstan();
-                System.out.println("---------------------- Vector sensibilizado -----------------------");
-                Operaciones.printB(Vs);
-                System.out.println("---------------------- Vector colas -----------------------");
-                Operaciones.printB(Vc);
-                Boolean[] m = Operaciones.andVector(Vs, Vc); //todo ver si se puede simplificar
-                System.out.println("---------------------- Vector m -----------------------");
-                Operaciones.printB(m);
+                //System.out.println("PRUEBAAA");
+                Boolean[] m = new Boolean[Vs.length];
+                m = Operaciones.andVector(Vs, Vc); //todo ver si se puede simplificar
                 if (Operaciones.comprobarUnos(m)) {
                     if (semaforoMonitor.availablePermits() != 0) {
                         System.out.printf("valor del semaforo %d\n", semaforoMonitor.availablePermits());
                         System.exit(1);
                     }
                     Transicion transicionADisparar = politica.cualDisparo(m, redDePetri);
-                    Colores.yellowWrite("despertó de las colas", transicionADisparar.getPosicion());
                     cola[transicionADisparar.getPosicion()].release();
-
-                } else {
-                    Colores.redWrite("solto el monitor", transicion.getPosicion());
-                    semaforoMonitor.release();
                 }
                 break;
             } else {
                 if (!condicion) {
-                    semaforoMonitor.release();
                     break;
                 }
-                Colores.blueWrite("Entro en las colas", transicion.getPosicion());
-                cola[transicion.getPosicion()].increment();
-                semaforoMonitor.release();
-                cola[transicion.getPosicion()].acquire();
-                Colores.blueWrite("Se fue a las colas", transicion.getPosicion());
+                cola[transicion.getPosicion()].acquire(semaforoMonitor);
             }
-        }
-    }
 
-    private void update_condition(String id) {
+        }
+
         if (condicion) {
-            log.write(id);
+            log.write(transicion.getId());
         }
 
         contador++;
@@ -118,6 +97,7 @@ public class Monitor {
         }
 
         if (!condicion && flag) {
+            flag = false;
 
             for (int i = 0; i < cola.length; i++) {
                 while (cola[i].get() > 0) {
@@ -125,6 +105,7 @@ public class Monitor {
                 }
             }
         }
+        releaseMonitor();
     }
 
     public static void acquireMonitor() {
@@ -177,4 +158,3 @@ public class Monitor {
         }
     }
 }
-
