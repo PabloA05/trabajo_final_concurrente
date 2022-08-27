@@ -77,7 +77,7 @@ public class Monitor {
         cuenta = System.currentTimeMillis();
         this.cantidadDeInvariantesADisparar = cantidadDeInvariantesADisparar;
         relacionDeMuestra = cantidadDeInvariantesADisparar / 10;
-        police = new Police();
+        //police = new Police();
     }
 
     private Boolean[] quienesEstan() {
@@ -98,10 +98,10 @@ public class Monitor {
                 releaseMon();
                 break;
             }
-            boolean k = this.redDePetri.disparar(transicion);
+            boolean k = this.redDePetri.disparar(transicion, semaforoMonitor);
             if (k) {
                 Colores.redWrite("disparo", transicion);
-                police.patrolling(transicion);
+                //police.patrolling(transicion);
                 update_condition(transicion.getId());
                 if (!condicion) {
                     releaseMon();
@@ -123,7 +123,7 @@ public class Monitor {
                         System.exit(1);
                     }
                     Transicion transicionADisparar = politica.cualDisparo(m, redDePetri);
-                    police.setColas(transicionADisparar);
+                    //police.setColas(transicionADisparar);
                     Colores.yellowWrite("politica despertó de las colas", transicionADisparar);
                     cola[transicionADisparar.getPosicion()].release();
 
@@ -139,8 +139,7 @@ public class Monitor {
                 }
                 Colores.blueWrite("Entro en las colas", transicion);
                 cola[transicion.getPosicion()].increment();
-                releaseMon();
-                cola[transicion.getPosicion()].acquire();
+                cola[transicion.getPosicion()].acquire(semaforoMonitor);
                 Colores.blueWrite("Se fue de las colas", transicion);
             }
         }

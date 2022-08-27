@@ -5,6 +5,7 @@ import Util.Colores;
 import Util.Operaciones;
 
 import java.util.ArrayList;
+import java.util.concurrent.Semaphore;
 
 public class RedDePetri {
 
@@ -40,10 +41,18 @@ public class RedDePetri {
         actualizaSensibilizadasExtendido(temp);
     }
 
-    public boolean disparar(Transicion transicion) {
+    public boolean disparar(Transicion transicion, Semaphore semaforoMonitor) {
         boolean k = false;
         boolean esperando = false;
         boolean ventana = false;
+
+        if(transicion.isTemporizada()){
+            for (int i = 0; i < soloInmediatas.size(); i++) {
+                if (sensibilizadasEx[soloInmediatas.get(i)]) {
+                    return false;
+                }
+            }
+        }
 
         while (sensibilizadasEx[transicion.getPosicion()] && !transicionesConTiempo[transicion.getPosicion()].isEsperando()
                 || sensibilizadasEx[transicion.getPosicion()] && transicionesConTiempo[transicion.getPosicion()].isEsperando()
@@ -64,7 +73,7 @@ public class RedDePetri {
                 if (antes) {
                     transicionesConTiempo[transicion.getPosicion()].setEsperando();
 
-                    Monitor.releaseMonitor();
+                    semaforoMonitor.release();
                     esperando = true;
                     sleepThread(transicion.getPosicion());
                 } else {
@@ -72,7 +81,11 @@ public class RedDePetri {
                             Thread.currentThread().getName(), transicion.getPosicion(), transicionesConTiempo[transicion.getPosicion()].isEsperando());
                     System.exit(1);
                 }
-                Monitor.acquireMonitor();
+                try {
+                    semaforoMonitor.acquire();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
 
             }
         }
