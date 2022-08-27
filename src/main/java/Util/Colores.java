@@ -1,5 +1,7 @@
 package Util;
 
+import RedDePetri.Transicion;
+
 public class Colores {
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_BLACK = "\u001B[30m";
@@ -11,23 +13,23 @@ public class Colores {
     public static final String ANSI_CYAN = "\u001B[36m";
     public static final String ANSI_WHITE = "\u001B[37m";
 
-    public static void redWrite(String s, int trans) { //monitor
-        System.out.printf(ANSI_RED + "%s %s t:%d\n" + ANSI_RESET, s, Thread.currentThread().getName(), trans);
+    public static void redWrite(String s, Transicion transicion) { //monitor
+        System.out.printf(ANSI_RED + "%s %s t:%d\n" + ANSI_RESET, s, Thread.currentThread().getName(), transicion.getPosicion());
     }
 
-    public static void blueWrite(String s, int transition) {
-        System.out.printf(ANSI_BLUE + "%s %s t:%d\n" + ANSI_RESET, s, Thread.currentThread().getName(), transition);
+    public static void blueWrite(String s, Transicion transicion) {
+        System.out.printf(ANSI_BLUE + "%s %s t:%d\n" + ANSI_RESET, s, Thread.currentThread().getName(), transicion.getPosicion());
     }
 
-    public static void yellowWrite(String s, int transition) {
-        System.out.printf(ANSI_YELLOW + "%s %s t:%d\n" + ANSI_RESET, s, Thread.currentThread().getName(), transition);
+    public static void yellowWrite(String s, Transicion transicion) {
+        System.out.printf(ANSI_YELLOW + "%s %s t:%d\n" + ANSI_RESET, s, Thread.currentThread().getName(), transicion.getPosicion());
     }
 
-    public static void greenWrite(String s, int transition) {
-        System.out.printf(ANSI_GREEN + "%s %s t:%d\n" + ANSI_RESET, s, Thread.currentThread().getName(), transition);
+    public static void greenWrite(String s, Transicion transicion) {
+        System.out.printf(ANSI_GREEN + "%s %s t:%d\n" + ANSI_RESET, s, Thread.currentThread().getName(), transicion.getPosicion());
     }
 
-    public static void cianWrite(String s, int transition) {
-        System.out.printf(ANSI_CYAN + "%s %s t:%d\n" + ANSI_RESET, s, Thread.currentThread().getName(), transition);
+    public static void cianWrite(String s, Transicion transicion) {
+        System.out.printf(ANSI_CYAN + "%s %s t:%d\n" + ANSI_RESET, s, Thread.currentThread().getName(), transicion.getPosicion());
     }
 }

@@ -63,6 +63,7 @@ public class RedDePetri {
                 boolean antes = antesDeLaVentana(transicion.getPosicion());
                 if (antes) {
                     transicionesConTiempo[transicion.getPosicion()].setEsperando();
+
                     Monitor.releaseMonitor();
                     esperando = true;
                     sleepThread(transicion.getPosicion());
@@ -95,6 +96,7 @@ public class RedDePetri {
     }
 
     private void sleepThread(int posicion) {
+        System.out.printf("se fue a dormir %s t:%d\n" , Thread.currentThread().getName(), posicion);
         long sleepTime = transicionesConTiempo[posicion].getTimeStamp() + transicionesConTiempo[posicion].getAlpha() - System.currentTimeMillis();
         if (sleepTime < 0) {
             return;

@@ -7,9 +7,8 @@ import Util.Log;
 import Util.Operaciones;
 import org.jfree.ui.RefineryUtilities;
 
-import java.io.IOException;
-
 public class Main {
+
     public static void main(String[] args) {
 
         String mji = "src/main/resources/inicial.csv";
