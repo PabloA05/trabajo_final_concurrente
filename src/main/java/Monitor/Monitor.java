@@ -60,7 +60,7 @@ public class Monitor {
             colasTransicion=-1;
         }
     }
-    Police police;
+ //   Police police;
 
     public Monitor(RedDePetri rdp, Log log, int cantidadDeInvariantesADisparar) {
 
@@ -77,7 +77,7 @@ public class Monitor {
         cuenta = System.currentTimeMillis();
         this.cantidadDeInvariantesADisparar = cantidadDeInvariantesADisparar;
         relacionDeMuestra = cantidadDeInvariantesADisparar / 10;
-        police = new Police();
+       // police = new Police();
     }
 
     private Boolean[] quienesEstan() {
@@ -100,8 +100,8 @@ public class Monitor {
             }
             boolean k = this.redDePetri.disparar(transicion);
             if (k) {
-                Colores.redWrite("disparo", transicion);
-                police.patrolling(transicion);
+                //Colores.redWrite("disparo", transicion);
+               // police.patrolling(transicion);
                 update_condition(transicion.getId());
                 if (!condicion) {
                     releaseMon();
@@ -123,7 +123,7 @@ public class Monitor {
                         System.exit(1);
                     }
                     Transicion transicionADisparar = politica.cualDisparo(m, redDePetri);
-                    police.setColas(transicionADisparar);
+                    //police.setColas(transicionADisparar);
                     Colores.yellowWrite("politica despertó de las colas", transicionADisparar);
                     cola[transicionADisparar.getPosicion()].release();
 
