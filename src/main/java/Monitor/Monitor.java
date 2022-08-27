@@ -56,7 +56,7 @@ public class Monitor {
             if (!condicion) {
                 break;
             }
-
+            System.out.println("print prueba");
             if (k) {
                 Boolean[] Vs = this.redDePetri.getSensibilizadasEx();
 
@@ -79,7 +79,6 @@ public class Monitor {
                 }
                 cola[transicion.getPosicion()].acquire(semaforoMonitor);
             }
-
         }
 
         if (condicion) {
@@ -108,7 +107,7 @@ public class Monitor {
         releaseMonitor();
     }
 
-    public static void acquireMonitor() {
+    public void acquireMonitor() {
         try {
             semaforoMonitor.acquire();
         } catch (InterruptedException e) {
@@ -132,7 +131,7 @@ public class Monitor {
         }
     }
 
-    public static void releaseMonitor() {
+    public void releaseMonitor() {
         semaforoMonitor.release();
     }
 
