@@ -9,14 +9,14 @@ public class Colas {
         this.hilosCola = 0;
     }
 
-    public synchronized void acquire(Semaphore semaforoMonitor) {
-
+    //public synchronized void acquire(Semaphore semaforoMonitor) {
+    public synchronized void acquire() {
         if (hilosCola < 0) {
             System.out.printf("hilosCola [%d] menor que cero", hilosCola);
             System.exit(1);
         }
         try {
-            semaforoMonitor.release();
+           // semaforoMonitor.release();
             wait(); //El hilo entra a la cola, sumando la cantidad de hilos en cola
         } catch (InterruptedException e) {
             e.printStackTrace();

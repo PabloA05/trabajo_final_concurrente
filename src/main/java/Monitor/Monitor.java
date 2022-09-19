@@ -139,7 +139,8 @@ public class Monitor {
                 }
                 Colores.blueWrite("Entro en las colas", transicion);
                 cola[transicion.getPosicion()].increment();
-                cola[transicion.getPosicion()].acquire(semaforoMonitor);
+                semaforoMonitor.release();
+                cola[transicion.getPosicion()].acquire();
                 Colores.blueWrite("Se fue de las colas", transicion);
             }
         }
