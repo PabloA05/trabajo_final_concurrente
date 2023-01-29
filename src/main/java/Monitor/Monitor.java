@@ -198,6 +198,7 @@ public class Monitor {
                     break;
                 }
                 case NO_FIRE: {
+                    //todo chequar si los hilos que se fueron a las colas y que se sensibilizan pueden dormir
                     Colores.redWrite("no disparo entro a colas", transicion);
                     cola[transicion.getPosicion()].increment();
                     releaseMon();
@@ -209,6 +210,7 @@ public class Monitor {
                     Colores.cianWrite("se fue a dormir", transicion);
 
                     releaseMon();
+                    //todo sacar afuera la logica del sleep
                     redDePetri.sleepThread(transicion.getPosicion());
                     acquireMon();
                     Colores.cianWrite("salio de dormir", transicion);

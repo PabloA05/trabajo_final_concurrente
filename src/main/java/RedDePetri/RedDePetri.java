@@ -1,9 +1,7 @@
 package RedDePetri;
 
-import Monitor.Monitor;
 import Util.Colores;
 import Util.Operaciones;
-
 import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
 
@@ -267,7 +265,7 @@ public class RedDePetri {
     }
 
     private void actualizaSensibilizadasExtendido(Boolean[] tempSensibilizadas) {
-        sensibilizadasEx = Operaciones.andVector(Operaciones.andVector(getVectorE(), getVectorB()), getVectorZ());
+        sensibilizadasEx =  getVectorZ();
 
         nuevoTimeStamp(tempSensibilizadas);
         if (activoLogicaInmediata) {
@@ -285,6 +283,7 @@ public class RedDePetri {
     }
 
     private void nuevoTimeStamp(Boolean[] tempSensibilizadas) {
+        //todo este rompe todo
         long timeStamp = System.currentTimeMillis();
         for (int i = 0; i < transicionesConTiempo.length; i++) {
             if (sensibilizadasEx[i] && transiciones[i].isTemporizada()) {///
