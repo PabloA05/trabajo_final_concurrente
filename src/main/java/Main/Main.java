@@ -21,7 +21,7 @@ public class Main {
         String logInvariantes = "src/main/resources/logInvariantes.csv";
         Log log = new Log(filepathLog);
 
-        int cantidadDeInvariantesADisparar = 1000;
+        int cantidadDeInvariantesADisparar = 10;
 
 
         RedDePetri redDePetri = new RedDePetri(mji, I, H, tiempos, T, Pinv);
@@ -75,9 +75,9 @@ public class Main {
 //                        redDePetri.getTransiciones()[4].getCantidadDisparada() * 0.090 * 3
 //                        + redDePetri.getTransiciones()[9].getCantidadDisparada() * 0.003 * 3));
         System.out.printf("tiempo real: %f\n", (double) (System.currentTimeMillis() - start) / 1000);
-        System.out.println("Invariante 1: " + (redDePetri.getTransiciones()[3].getPosicion()) + " se disparo: " + redDePetri.getTransiciones()[3].getCantidadDisparada());
-        System.out.println("Invariante 2: " + (redDePetri.getTransiciones()[4].getPosicion()) + " se disparo: " + redDePetri.getTransiciones()[4].getCantidadDisparada());
-        System.out.println("Invariante 3: " + (redDePetri.getTransiciones()[9].getPosicion()) + " se disparo: " + redDePetri.getTransiciones()[9].getCantidadDisparada());
+        System.out.println("Invariante 1: " + " se disparo: " + redDePetri.getTransiciones()[3].getCantidadDisparada());
+        System.out.println("Invariante 2: " + " se disparo: " + redDePetri.getTransiciones()[4].getCantidadDisparada());
+        System.out.println("Invariante 3: " + " se disparo: " + redDePetri.getTransiciones()[9].getCantidadDisparada());
         monitor.printInvariantes(logInvariantes);
         System.out.println("TERMINA EL PROGRAMA");
         Grafico grafico = new Grafico(

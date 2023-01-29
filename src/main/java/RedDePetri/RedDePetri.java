@@ -20,6 +20,7 @@ public class RedDePetri {
     private final ArrayList<Integer> soloInmediatas;
     private final Boolean activoLogicaInmediata;
 
+
     public RedDePetri(String mji, String I, String h, String t, String T, String Pinv) {
         this.incidencia = Operaciones.matriz2d(I);
         this.vectorDeEstado = Operaciones.vector(mji);
@@ -41,12 +42,45 @@ public class RedDePetri {
         actualizaSensibilizadasExtendido(temp);
     }
 
+    public State disparar(Transicion transicion) {
+        boolean k = false;
+        if (!transicion.isTemporizada()) {
+            k = true;
+        } else {
+            for (int i = 0; i < soloInmediatas.size(); i++) {
+                if (sensibilizadasEx[soloInmediatas.get(i)]) {
+                    return State.NO_FIRE;
+                }
+            }
+        }//todo solo para temporales, y no esta esparando el
+        if (transicionesConTiempo[transicion.getPosicion()].testVentanaTiempo() && !transicionesConTiempo[transicion.getPosicion()].isEsperando2()) {
+            if (antesDeLaVentana(transicion.getPosicion())) {
+                transicionesConTiempo[transicion.getPosicion()].setEsperando();
+                return State.SLEEP;
+            }
+            k = true;
+        }
+        if (k) {
+            Colores.blueWrite("pudo disparar", transicion);
+            if (transicion.isTemporizada()) {
+                transicionesConTiempo[transicion.getPosicion()].resetEsperando();
+            }
+            verificarPInvariantes();
+            Boolean[] tempSensibilizadas = sensibilizadasEx;
+            vectorDeEstado = marcadoSiguiente(vectorDeEstado, transicion.getPosicion());
+            actualizaSensibilizadasExtendido(tempSensibilizadas);
+            transicion.incrementoDisparo();
+            return State.FIRE;
+        }// todo ver si el esparando esta bien
+        return State.NO_FIRE;
+    }
+
     public boolean disparar(Transicion transicion, Semaphore semaforoMonitor) {
         boolean k = false;
         boolean esperando = false;
         boolean ventana = false;
 
-        if(transicion.isTemporizada()){
+        if (transicion.isTemporizada()) {
             for (int i = 0; i < soloInmediatas.size(); i++) {
                 if (sensibilizadasEx[soloInmediatas.get(i)]) {
                     return false;
@@ -108,8 +142,8 @@ public class RedDePetri {
         return sensibilizadasEx;
     }
 
-    private void sleepThread(int posicion) {
-        System.out.printf("se fue a dormir %s t:%d\n" , Thread.currentThread().getName(), posicion);
+    public void sleepThread(int posicion) {
+        //    System.out.printf("se fue a dormir %s t:%d\n" , Thread.currentThread().getName(), posicion);
         long sleepTime = transicionesConTiempo[posicion].getTimeStamp() + transicionesConTiempo[posicion].getAlpha() - System.currentTimeMillis();
         if (sleepTime < 0) {
             return;
@@ -208,12 +242,33 @@ public class RedDePetri {
         return sensibilizadas;
     }
 
+    private Boolean[] getVectorZ() {
+        Boolean[] vectorZ = new Boolean[getCantTransiciones()];
+        System.out.println("---------------------- Vector e  rdp -----------------------");
+        Operaciones.printB(getVectorE());
+        System.out.println("---------------------- Vector b  rdp -----------------------");
+        Operaciones.printB(getVectorB());
+
+        Boolean sensi[] = Operaciones.andVector(getVectorE(), getVectorB());
+        System.out.println("---------------------- Vector sensi  rdp -----------------------");
+        Operaciones.printB(sensi);
+
+        for (int i = 0; i < getCantTransiciones(); i++) {
+            vectorZ[i] = transicionesConTiempo[i].testVentanaTiempo() && sensi[i];
+        }
+        System.out.println("---------------------- Vector z  rdp -----------------------");
+        Operaciones.printB(vectorZ);
+        printTimeStamp();
+        return vectorZ;
+    }
+
     public int[][] gettInvariantes() {
         return tInvariantes;
     }
 
     private void actualizaSensibilizadasExtendido(Boolean[] tempSensibilizadas) {
-        sensibilizadasEx = Operaciones.andVector(getVectorE(), getVectorB());
+        sensibilizadasEx = Operaciones.andVector(Operaciones.andVector(getVectorE(), getVectorB()), getVectorZ());
+
         nuevoTimeStamp(tempSensibilizadas);
         if (activoLogicaInmediata) {
             for (int i = 0; i < soloInmediatas.size(); i++) {
@@ -240,6 +295,12 @@ public class RedDePetri {
         }
     }
 
+    private void printTimeStamp() {
+        for (int i = 0; i < transicionesConTiempo.length; i++) {
+            System.out.printf("%d ", transicionesConTiempo[i].getTimeStamp());
+        }
+        System.out.println();
+    }
 
     private ArrayList<Integer> getsoloInmediatas() {
 
