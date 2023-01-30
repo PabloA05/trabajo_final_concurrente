@@ -35,10 +35,6 @@ public class SensibilizadasConTiempo {
         return esperando;
     }
 
-    public boolean isEsperando2() {
-        return esperando && Thread.currentThread().getId() == this.id;
-    }
-
     public void setEsperando() {
         if (this.esperando) {
             System.out.printf(Colores.ANSI_RED + "esperando error h:%s id_H:%s esp:%b id:%d>>\n", Thread.currentThread().getName(), Thread.currentThread().getId(), esperando, id);

@@ -2,6 +2,7 @@ package RedDePetri;
 
 import Util.Colores;
 import Util.Operaciones;
+
 import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
 
@@ -50,13 +51,18 @@ public class RedDePetri {
                     return State.NO_FIRE;
                 }
             }
-        }//todo solo para temporales, y no esta esparando el
-        if (transicionesConTiempo[transicion.getPosicion()].testVentanaTiempo() && !transicionesConTiempo[transicion.getPosicion()].isEsperando2()) {
-            if (antesDeLaVentana(transicion.getPosicion())) {
-                transicionesConTiempo[transicion.getPosicion()].setEsperando();
-                return State.SLEEP;
+            boolean esperando = transicionesConTiempo[transicion.getPosicion()].isEsperando();
+            boolean ventana = transicionesConTiempo[transicion.getPosicion()].testVentanaTiempo();
+            boolean antes = antesDeLaVentana(transicion.getPosicion());
+            if (ventana && !esperando || ventana && esperando && Thread.currentThread().getId() == transicionesConTiempo[transicion.getPosicion()].getId()) {
+                if (antes) {
+                    transicionesConTiempo[transicion.getPosicion()].setEsperando();
+                    return State.SLEEP;
+                }
+                k = true;
+            } else if (ventana && !antes) {
+                return State.AFTER;
             }
-            k = true;
         }
         if (k) {
             Colores.blueWrite("pudo disparar", transicion);
@@ -64,12 +70,13 @@ public class RedDePetri {
                 transicionesConTiempo[transicion.getPosicion()].resetEsperando();
             }
             verificarPInvariantes();
+            //todo despues de aca se rompe todo, hay que arreglar el vector Z
             Boolean[] tempSensibilizadas = sensibilizadasEx;
             vectorDeEstado = marcadoSiguiente(vectorDeEstado, transicion.getPosicion());
             actualizaSensibilizadasExtendido(tempSensibilizadas);
             transicion.incrementoDisparo();
             return State.FIRE;
-        }// todo ver si el esparando esta bien
+        }// todo ver si el esparando esta bien y se resetea cuando espero y no disparo
         return State.NO_FIRE;
     }
 
@@ -140,7 +147,7 @@ public class RedDePetri {
         return sensibilizadasEx;
     }
 
-    public void sleepThread(int posicion) {
+    private void sleepThread(int posicion) {
         //    System.out.printf("se fue a dormir %s t:%d\n" , Thread.currentThread().getName(), posicion);
         long sleepTime = transicionesConTiempo[posicion].getTimeStamp() + transicionesConTiempo[posicion].getAlpha() - System.currentTimeMillis();
         if (sleepTime < 0) {
@@ -260,12 +267,21 @@ public class RedDePetri {
         return vectorZ;
     }
 
+    public long timeStamp(Transicion transicion) {
+        return transicionesConTiempo[transicion.getPosicion()].getTimeStamp();
+    }
+
+    public long alpha(Transicion transicion) {
+        return transicionesConTiempo[transicion.getPosicion()].getAlpha();
+    }
+
+
     public int[][] gettInvariantes() {
         return tInvariantes;
     }
 
     private void actualizaSensibilizadasExtendido(Boolean[] tempSensibilizadas) {
-        sensibilizadasEx =  getVectorZ();
+        sensibilizadasEx = getVectorZ();
 
         nuevoTimeStamp(tempSensibilizadas);
         if (activoLogicaInmediata) {

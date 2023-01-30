@@ -172,7 +172,7 @@ public class Monitor {
                     }
                     Boolean[] Vs = this.redDePetri.getSensibilizadasEx();
                     Boolean[] Vc = quienesEstan();
-                     System.out.println("---------------------- Vector sensibilizado -----------------------");
+                    System.out.println("---------------------- Vector sensibilizado -----------------------");
                     Operaciones.printB(Vs);
                     //    System.out.println("---------------------- Vector colas -----------------------");
                     //Operaciones.printB(Vc);
@@ -210,14 +210,14 @@ public class Monitor {
                     Colores.cianWrite("se fue a dormir", transicion);
 
                     releaseMon();
-                    //todo sacar afuera la logica del sleep
-                    redDePetri.sleepThread(transicion.getPosicion());
+                    //todo ver si les gusta asi. Capaz que pedir de esa forma el time stamp y el alpha no esta bien
+                    sleep_thread(transicion);
                     acquireMon();
                     Colores.cianWrite("salio de dormir", transicion);
                     break;
                 }
                 default: {
-                    System.out.printf("Error disparo transicion: %s\n", transicion.getId());
+                    Colores.redWrite("Error disparo", transicion);
                     System.exit(1);
                 }
 
@@ -229,17 +229,14 @@ public class Monitor {
         if (condicion) {
             log.write(id);
         }
-
         contador++;
         if (contador >= relacionDeMuestra) {
             agregarDato(redDePetri.getTransiciones()[3].getCantidadDisparada(), redDePetri.getTransiciones()[4].getCantidadDisparada(), redDePetri.getTransiciones()[9].getCantidadDisparada());
             contador = 0;
         }
-
         if (condicion) {
             setCondicion();
         }
-
         if (!condicion && flag) {
 
             for (int i = 0; i < cola.length; i++) {
@@ -247,6 +244,18 @@ public class Monitor {
                     cola[i].release();
                 }
             }
+        }
+    }
+
+    private void sleep_thread(Transicion transicion) {
+        long sleepTime = redDePetri.timeStamp(transicion) + redDePetri.alpha(transicion) - System.currentTimeMillis();
+        if (sleepTime < 0) {
+            return;
+        }
+        try {
+            Thread.sleep(sleepTime);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
