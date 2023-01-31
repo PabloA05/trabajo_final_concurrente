@@ -177,8 +177,8 @@ public class Monitor {
                     //    System.out.println("---------------------- Vector colas -----------------------");
                     //Operaciones.printB(Vc);
                     Boolean[] m = Operaciones.andVector(Vs, Vc); //todo ver si se puede simplificar
-                    //  System.out.println("---------------------- Vector m -----------------------");
-                    //  Operaciones.printB(m);
+                      System.out.println("---------------------- Vector m -----------------------");
+                      Operaciones.printB(m);
 //                System.out.println("---------------------- disparos -----------------------");
 //                cantidadDisparada(redDePetri);
                     if (Operaciones.comprobarUnos(m)) {
@@ -215,6 +215,10 @@ public class Monitor {
                     acquireMon();
                     Colores.cianWrite("salio de dormir", transicion);
                     break;
+                }
+                case AFTER: {
+                    Colores.redWrite("Disparo despues beta",transicion);
+                    System.exit(1);
                 }
                 default: {
                     Colores.redWrite("Error disparo", transicion);
