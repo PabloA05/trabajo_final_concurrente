@@ -70,15 +70,28 @@ public class RedDePetri {
             boolean antes = antesDeLaVentana(transicion.getPosicion());
 
 
-            if (ventana && !esperando || ventana && esperando && Thread.currentThread().getId() == transicionesConTiempo[transicion.getPosicion()].getId()) {
-                k = true;
-            }else  if (antes && !esperando) {
-                transicionesConTiempo[transicion.getPosicion()].setEsperando();
-                return State.SLEEP;
-            }
-            else {
+            if (ventana) {
+                if (!esperando || esperando && Thread.currentThread().getId() == transicionesConTiempo[transicion.getPosicion()].getId()) {
+                    k = true;
+                }
+            } else if (antes) {
+                if (esperando) {
+                    return State.NO_FIRE;
+                }else {
+                    return State.SLEEP;
+                }
+            }else{
                 return State.AFTER;
             }
+
+//            if (ventana && !esperando || ventana && esperando && Thread.currentThread().getId() == transicionesConTiempo[transicion.getPosicion()].getId()) {
+//                k = true;
+//            } else if (antes && !esperando) {
+//                transicionesConTiempo[transicion.getPosicion()].setEsperando();
+//                return State.SLEEP;
+//            } else if (!esperando) {
+//                return State.AFTER;
+//            }
         }
         if (k) {
             Colores.blueWrite("pudo disparar", transicion);
