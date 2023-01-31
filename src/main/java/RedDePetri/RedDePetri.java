@@ -23,6 +23,10 @@ public class RedDePetri {
     public RedDePetri(String mji, String I, String h, String t, String T, String Pinv) {
         this.incidencia = Operaciones.matriz2d(I);
         this.vectorDeEstado = Operaciones.vector(mji);
+
+        System.out.println("print Vector de estados");
+        Operaciones.printVector(vectorDeEstado);
+
         this.inhibidor = Operaciones.matriz2d(h);
         this.tInvariantes = Operaciones.matriz2d(T);
         this.pInvariantes = Operaciones.setPinvariantes(Pinv);
@@ -36,21 +40,31 @@ public class RedDePetri {
             this.transiciones[i] = new Transicion("T" + i, i, transicionesConTiempo[i].esTemporal());
         }
         this.soloInmediatas = getsoloInmediatas();
-        this.activoLogicaInmediata = true;
+        this.activoLogicaInmediata = false;
         Boolean[] temp = new Boolean[getCantTransiciones()];
         actualizaSensibilizadasExtendido(temp);
     }
 
     public State disparar(Transicion transicion) {
         boolean k = false;
+
+        System.out.println("PRINT DE SENSIBILIZADAS EX");
+        Operaciones.printB(sensibilizadasEx);
+
+        if(!sensibilizadasEx[transicion.getPosicion()]){
+            return State.NO_FIRE;
+        }
+
+//        for (int i = 0; i < soloInmediatas.size(); i++) {
+//            if (sensibilizadasEx[soloInmediatas.get(i)]) {
+//                return State.NO_FIRE;
+//            }
+//        }
+
         if (!transicion.isTemporizada()) {
             k = true;
         } else {
-            for (int i = 0; i < soloInmediatas.size(); i++) {
-                if (sensibilizadasEx[soloInmediatas.get(i)]) {
-                    return State.NO_FIRE;
-                }
-            }
+
             boolean esperando = transicionesConTiempo[transicion.getPosicion()].isEsperando();
             boolean ventana = transicionesConTiempo[transicion.getPosicion()].testVentanaTiempo();
             boolean antes = antesDeLaVentana(transicion.getPosicion());
@@ -144,6 +158,7 @@ public class RedDePetri {
     }
 
     public Boolean[] getSensibilizadasEx() {
+
         return sensibilizadasEx;
     }
 
@@ -249,17 +264,9 @@ public class RedDePetri {
 
     private Boolean[] getVectorZ() {
         Boolean[] vectorZ = new Boolean[getCantTransiciones()];
-        System.out.println("---------------------- Vector e  rdp -----------------------");
-        Operaciones.printB(getVectorE());
-        System.out.println("---------------------- Vector b  rdp -----------------------");
-        Operaciones.printB(getVectorB());
-
-        Boolean sensi[] = Operaciones.andVector(getVectorE(), getVectorB());
-        System.out.println("---------------------- Vector sensi  rdp -----------------------");
-        Operaciones.printB(sensi);
 
         for (int i = 0; i < getCantTransiciones(); i++) {
-            vectorZ[i] = transicionesConTiempo[i].testVentanaTiempo() && sensi[i];
+            vectorZ[i] = transicionesConTiempo[i].testVentanaTiempo();
         }
         System.out.println("---------------------- Vector z  rdp -----------------------");
         Operaciones.printB(vectorZ);
@@ -281,7 +288,17 @@ public class RedDePetri {
     }
 
     private void actualizaSensibilizadasExtendido(Boolean[] tempSensibilizadas) {
-        sensibilizadasEx = getVectorZ();
+
+
+
+        System.out.println("print E");
+        Operaciones.printB(getVectorE());
+
+        System.out.println("print B");
+        Operaciones.printB(getVectorB());
+
+        //sensibilizadasEx =  Operaciones.andVector(Operaciones.andVector(getVectorE(),getVectorB()),getVectorZ());
+        sensibilizadasEx =  Operaciones.andVector(getVectorE(),getVectorB());
 
         nuevoTimeStamp(tempSensibilizadas);
         if (activoLogicaInmediata) {
