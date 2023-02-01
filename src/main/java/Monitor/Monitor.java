@@ -172,12 +172,12 @@ public class Monitor {
                     }
                     Boolean[] Vs = this.redDePetri.getSensibilizadasEx();
                     Boolean[] Vc = quienesEstan();
-                    System.out.println("---------------------- Vector sensibilizado -----------------------");
+                    System.out.printf("-------------- Vector sensibilizado %s t:%d------------\n" , Thread.currentThread().getName() , transicion.getPosicion());
                     Operaciones.printB(Vs);
-                    //    System.out.println("---------------------- Vector colas -----------------------");
-                    //Operaciones.printB(Vc);
+                        System.out.printf("---------------------- Vector colas %s t:%d------------\n" , Thread.currentThread().getName() , transicion.getPosicion());
+                    Operaciones.printB(Vc);
                     Boolean[] m = Operaciones.andVector(Vs, Vc); //todo ver si se puede simplificar
-                      System.out.println("---------------------- Vector m -----------------------");
+                      System.out.printf("---------------------- Vector m %s t:%d------------\n" , Thread.currentThread().getName() , transicion.getPosicion());
                       Operaciones.printB(m);
 //                System.out.println("---------------------- disparos -----------------------");
 //                cantidadDisparada(redDePetri);
