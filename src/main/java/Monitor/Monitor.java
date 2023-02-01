@@ -26,6 +26,7 @@ public class Monitor {
     private int relacionDeMuestra;
     private Log log;
 
+    private long time = System.currentTimeMillis();
 
     public class Police {
 
@@ -94,70 +95,70 @@ public class Monitor {
     }
 
 
-    public void disparaTransicion1(Transicion transicion) {
-        //System.out.printf("valor del semaforo %d %s\n", semaforoMonitor.availablePermits(), Thread.currentThread().getName());
-        acquireMon();
-        // Colores.cianWrite("entro al monitor", transicion);
-
-        while (true) {
-            if (!condicion) {
-                releaseMon();
-                break;
-            }
-            boolean k = this.redDePetri.disparar(transicion, semaforoMonitor);
-            if (k) {
-                //Colores.redWrite("disparo", transicion);
-                //police.patrolling(transicion);
-                update_condition(transicion.getId());
-                if (!condicion) {
-                    releaseMon();
-                    break;
-                }
-                Boolean[] Vs = this.redDePetri.getSensibilizadasEx();
-
-                Boolean[] Vc = quienesEstan();
-                // System.out.println("---------------------- Vector sensibilizado -----------------------");
-                //Operaciones.printB(Vs);
-                //    System.out.println("---------------------- Vector colas -----------------------");
-                //Operaciones.printB(Vc);
-                Boolean[] m = Operaciones.andVector(Vs, Vc); //todo ver si se puede simplificar
-                //  System.out.println("---------------------- Vector m -----------------------");
-                //  Operaciones.printB(m);
-//                System.out.println("---------------------- disparos -----------------------");
-//                cantidadDisparada(redDePetri);
-                if (Operaciones.comprobarUnos(m)) {
-                    if (semaforoMonitor.availablePermits() != 0) {
-                        System.out.printf("valor del semaforo %d\n", semaforoMonitor.availablePermits());
-                        System.exit(1);
-                    }
-                    Transicion transicionADisparar = politica.cualDisparo(m, redDePetri);
-                    //police.setColas(transicionADisparar);
-                    // Colores.yellowWrite("politica despertó de las colas", transicionADisparar);
-                    cola[transicionADisparar.getPosicion()].release();
-
-                } else {
-                    //   Colores.redWrite("solto el monitor", transicion);
-                    releaseMon();
-                }
-                break;
-            } else {
-                if (!condicion) {
-                    releaseMon();
-                    break;
-                }
-                //Colores.blueWrite("Entro en las colas", transicion);
-                cola[transicion.getPosicion()].increment();
-                semaforoMonitor.release();
-                cola[transicion.getPosicion()].acquire();
-                //Colores.blueWrite("Se fue de las colas", transicion);
-            }
-        }
-        //   Colores.cianWrite("se fue del monitor", transicion);
-    }
+//    public void disparaTransicion1(Transicion transicion) {
+//        //System.out.printf("valor del semaforo %d %s\n", semaforoMonitor.availablePermits(), Thread.currentThread().getName());
+//        acquireMon();
+//        // Colores.cianWrite("entro al monitor", transicion);
+//
+//        while (true) {
+//            if (!condicion) {
+//                releaseMon();
+//                break;
+//            }
+//            boolean k = this.redDePetri.disparar(transicion, semaforoMonitor);
+//            if (k) {
+//                //Colores.redWrite("disparo", transicion);
+//                //police.patrolling(transicion);
+//                update_condition(transicion.getId());
+//                if (!condicion) {
+//                    releaseMon();
+//                    break;
+//                }
+//                Boolean[] Vs = this.redDePetri.getSensibilizadasEx();
+//
+//                Boolean[] Vc = quienesEstan();
+//                // System.out.println("---------------------- Vector sensibilizado -----------------------");
+//                //Operaciones.printB(Vs);
+//                //    System.out.println("---------------------- Vector colas -----------------------");
+//                //Operaciones.printB(Vc);
+//                Boolean[] m = Operaciones.andVector(Vs, Vc); //todo ver si se puede simplificar
+//                //  System.out.println("---------------------- Vector m -----------------------");
+//                //  Operaciones.printB(m);
+////                System.out.println("---------------------- disparos -----------------------");
+////                cantidadDisparada(redDePetri);
+//                if (Operaciones.comprobarUnos(m)) {
+//                    if (semaforoMonitor.availablePermits() != 0) {
+//                        System.out.printf("valor del semaforo %d\n", semaforoMonitor.availablePermits());
+//                        System.exit(1);
+//                    }
+//                    Transicion transicionADisparar = politica.cualDisparo(m, redDePetri);
+//                    //police.setColas(transicionADisparar);
+//                    // Colores.yellowWrite("politica despertó de las colas", transicionADisparar);
+//                    cola[transicionADisparar.getPosicion()].release();
+//
+//                } else {
+//                    //   Colores.redWrite("solto el monitor", transicion);
+//                    releaseMon();
+//                }
+//                break;
+//            } else {
+//                if (!condicion) {
+//                    releaseMon();
+//                    break;
+//                }
+//                //Colores.blueWrite("Entro en las colas", transicion);
+//                cola[transicion.getPosicion()].increment();
+//                semaforoMonitor.release();
+//                cola[transicion.getPosicion()].acquire();
+//                //Colores.blueWrite("Se fue de las colas", transicion);
+//            }
+//        }
+//        //   Colores.cianWrite("se fue del monitor", transicion);
+//    }
 
     public void disparaTransicion(Transicion transicion) {
         acquireMon();
-        Colores.redWrite("entro al monitor", transicion);
+        Colores.redWrite("entro al monitor " + String.valueOf(Thread.currentThread().getId()), transicion);
 
         State state = null;
         while (state != State.FIRE) {
@@ -172,28 +173,33 @@ public class Monitor {
                     }
                     Boolean[] Vs = this.redDePetri.getSensibilizadasEx();
                     Boolean[] Vc = quienesEstan();
-                    System.out.printf("-------------- Vector sensibilizado %s t:%d------------\n" , Thread.currentThread().getName() , transicion.getPosicion());
+                    System.out.printf("-------------- Vector sensibilizado %s t:%d ------------\n", Thread.currentThread().getName(), transicion.getPosicion());
                     Operaciones.printB(Vs);
-                        System.out.printf("---------------------- Vector colas %s t:%d------------\n" , Thread.currentThread().getName() , transicion.getPosicion());
+                    System.out.printf("---------------------- Vector colas %s t:%d ------------\n", Thread.currentThread().getName(), transicion.getPosicion());
                     Operaciones.printB(Vc);
                     Boolean[] m = Operaciones.andVector(Vs, Vc); //todo ver si se puede simplificar
-                      System.out.printf("---------------------- Vector m %s t:%d------------\n" , Thread.currentThread().getName() , transicion.getPosicion());
-                      Operaciones.printB(m);
+                    System.out.printf("---------------------- Vector m %s t:%d -------------\n", Thread.currentThread().getName(), transicion.getPosicion());
+                    Operaciones.printB(m);
 //                System.out.println("---------------------- disparos -----------------------");
 //                cantidadDisparada(redDePetri);
                     if (Operaciones.comprobarUnos(m)) {
                         if (semaforoMonitor.availablePermits() != 0) {
-                            System.out.printf("valor del semaforo %d\n", semaforoMonitor.availablePermits());
+                            System.out.printf("valor del semaforo %d %s t:%d - politica\n", semaforoMonitor.availablePermits(), Thread.currentThread().getName(), transicion.getPosicion());
                             System.exit(1);
                         }
                         Transicion transicionADisparar = politica.cualDisparo(m, redDePetri);
                         //police.setColas(transicionADisparar);
-                        System.out.printf(Colores.ANSI_YELLOW + "politica - El %s desperto la t:%d\n" + Colores.ANSI_RESET,  Thread.currentThread().getName(), transicionADisparar.getPosicion());
+                        System.out.printf(Colores.ANSI_YELLOW + "politica - El %s desperto la t:%d\n" + Colores.ANSI_RESET, Thread.currentThread().getName(), transicionADisparar.getPosicion());
 
                         cola[transicionADisparar.getPosicion()].release();
 
                     } else {
-                        Colores.redWrite("solto el monitor", transicion);
+
+                        if (semaforoMonitor.availablePermits() != 0) {
+                            System.out.printf("valor del semaforo %d %s t:%d - solto el monitor\n", semaforoMonitor.availablePermits(), Thread.currentThread().getName(), transicion.getPosicion());
+                            System.exit(1);
+                        }
+                        Colores.redWrite("solto el semaforo -  monitor - disparo y no hay nada que despertar", transicion);
                         releaseMon();
                     }
                     break;
@@ -202,6 +208,11 @@ public class Monitor {
                     //todo chequar si los hilos que se fueron a las colas y que se sensibilizan pueden dormir
                     Colores.blueWrite("no disparo entro a colas", transicion);
                     cola[transicion.getPosicion()].increment();
+                    if (semaforoMonitor.availablePermits() != 0) {
+                        System.out.printf("valor del semaforo %d %s t:%d - no disparo entro a colas\n", semaforoMonitor.availablePermits(), Thread.currentThread().getName(), transicion.getPosicion());
+                        System.exit(1);
+                    }
+                    Colores.redWrite("solto el semaforo -  monitor - no disparo y se fue a colas", transicion);
                     releaseMon();
                     cola[transicion.getPosicion()].acquire();
                     Colores.blueWrite("salio de colas", transicion);
@@ -209,6 +220,11 @@ public class Monitor {
                 }
                 case SLEEP: {
                     Colores.cianWrite("se fue a dormir", transicion);
+                    if (semaforoMonitor.availablePermits() != 0) {
+                        System.out.printf("valor del semaforo %d %s t:%d- se fue a dormir\n", semaforoMonitor.availablePermits(), Thread.currentThread().getName(), transicion.getPosicion());
+                        System.exit(1);
+                    }
+                    Colores.redWrite("solto el semaforo -  monitor - duerme", transicion);
 
                     releaseMon();
                     //todo ver si les gusta asi. Capaz que pedir de esa forma el time stamp y el alpha no esta bien
@@ -218,7 +234,7 @@ public class Monitor {
                     break;
                 }
                 case AFTER: {
-                    Colores.redWrite("Disparo despues beta",transicion);
+                    Colores.redWrite("Disparo despues beta", transicion);
                     System.exit(1);
                 }
                 default: {
@@ -228,6 +244,7 @@ public class Monitor {
 
             }
         }
+        Colores.redWrite("salio del monitor", transicion);
     }
 
     private void update_condition(String id) {
@@ -253,7 +270,8 @@ public class Monitor {
     }
 
     private void sleep_thread(Transicion transicion) {
-        long sleepTime = redDePetri.timeStamp(transicion) + redDePetri.alpha(transicion) - System.currentTimeMillis();
+        long sleepTime = redDePetri.timeToSleep(transicion)+1;
+        Colores.purpleWrite("--- sleepTime:" + sleepTime, transicion);
         if (sleepTime < 0) {
             return;
         }
@@ -328,3 +346,79 @@ public class Monitor {
         }
     }
 }
+
+//    public void disparaTransicion(Transicion transicion) {
+//        acquireMon();
+//        Colores.redWrite("entro al monitor", transicion, time);
+//
+//        State state = null;
+//        while (state != State.FIRE) {
+//            state = redDePetri.disparar(transicion);
+//            switch (state) {
+//                case FIRE: {
+//                    Colores.greenWrite(">>>Disparo", transicion, time);
+//                    update_condition(transicion.getId());
+//                    if (!condicion) {
+//                        releaseMon();
+//                        break;
+//                    }
+//                    Boolean[] Vs = this.redDePetri.getSensibilizadasEx();
+//                    Boolean[] Vc = quienesEstan();
+//                    System.out.printf("-------------- Vector sensibilizado %s t:%d time:%d------------\n", Thread.currentThread().getName(), transicion.getPosicion(), System.currentTimeMillis() - time);
+//                    Operaciones.printB(Vs);
+//                    System.out.printf("---------------------- Vector colas %s t:%d time:%d------------\n", Thread.currentThread().getName(), transicion.getPosicion(), System.currentTimeMillis() - time);
+//                    Operaciones.printB(Vc);
+//                    Boolean[] m = Operaciones.andVector(Vs, Vc); //todo ver si se puede simplificar
+//                    System.out.printf("---------------------- Vector m %s t:%d time:%d------------\n", Thread.currentThread().getName(), transicion.getPosicion(), System.currentTimeMillis() - time);
+//                    Operaciones.printB(m);
+////                System.out.println("---------------------- disparos -----------------------");
+////                cantidadDisparada(redDePetri);
+//                    if (Operaciones.comprobarUnos(m)) {
+//                        if (semaforoMonitor.availablePermits() != 0) {
+//                            System.out.printf("valor del semaforo %d\n", semaforoMonitor.availablePermits());
+//                            System.exit(1);
+//                        }
+//                        Transicion transicionADisparar = politica.cualDisparo(m, redDePetri);
+//                        //police.setColas(transicionADisparar);
+//                        System.out.printf(Colores.ANSI_YELLOW + "politica - El %s desperto la t:%d time:%d\n"
+//                                + Colores.ANSI_RESET, Thread.currentThread().getName(), transicionADisparar.getPosicion(), System.currentTimeMillis() - time);
+//
+//                        cola[transicionADisparar.getPosicion()].release();
+//
+//                    } else {
+//                        Colores.redWrite("solto el monitor", transicion, time);
+//                        releaseMon();
+//                    }
+//                    break;
+//                }
+//                case NO_FIRE: {
+//                    //todo chequar si los hilos que se fueron a las colas y que se sensibilizan pueden dormir
+////                    Colores.blueWrite("no disparo entro a colas", transicion);
+//                    cola[transicion.getPosicion()].increment();
+//                    releaseMon();
+//                    cola[transicion.getPosicion()].acquire();
+//                    Colores.blueWrite("salio de colas", transicion, time);
+//                    break;
+//                }
+//                case SLEEP: {
+//                    Colores.cianWrite("se fue a dormir", transicion, time);
+//
+//                    releaseMon();
+//                    //todo ver si les gusta asi. Capaz que pedir de esa forma el time stamp y el alpha no esta bien
+//                    sleep_thread(transicion);
+//                    acquireMon();
+//                    Colores.cianWrite("salio de dormir", transicion, time);
+//                    break;
+//                }
+//                case AFTER: {
+//                    Colores.redWrite("Disparo despues beta", transicion, time);
+//                    System.exit(1);
+//                }
+//                default: {
+//                    Colores.redWrite("Error disparo", transicion, time);
+//                    System.exit(1);
+//                }
+//
+//            }
+//        }
+//    }
