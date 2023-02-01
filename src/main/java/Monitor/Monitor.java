@@ -157,7 +157,7 @@ public class Monitor {
 
     public void disparaTransicion(Transicion transicion) {
         acquireMon();
-        Colores.yellowWrite("entro al monitor", transicion);
+        Colores.redWrite("entro al monitor", transicion);
 
         State state = null;
         while (state != State.FIRE) {
@@ -188,7 +188,8 @@ public class Monitor {
                         }
                         Transicion transicionADisparar = politica.cualDisparo(m, redDePetri);
                         //police.setColas(transicionADisparar);
-                        Colores.yellowWrite("politica despertó de las colas", transicionADisparar);
+                        System.out.printf(Colores.ANSI_YELLOW + "politica - El %s desperto la t:%d\n" + Colores.ANSI_RESET,  Thread.currentThread().getName(), transicionADisparar.getPosicion());
+
                         cola[transicionADisparar.getPosicion()].release();
 
                     } else {
@@ -199,11 +200,11 @@ public class Monitor {
                 }
                 case NO_FIRE: {
                     //todo chequar si los hilos que se fueron a las colas y que se sensibilizan pueden dormir
-                    Colores.redWrite("no disparo entro a colas", transicion);
+                    Colores.blueWrite("no disparo entro a colas", transicion);
                     cola[transicion.getPosicion()].increment();
                     releaseMon();
                     cola[transicion.getPosicion()].acquire();
-                    Colores.redWrite("salio de colas", transicion);
+                    Colores.blueWrite("salio de colas", transicion);
                     break;
                 }
                 case SLEEP: {

@@ -48,13 +48,13 @@ public class RedDePetri {
     public State disparar(Transicion transicion) {
         boolean k = false;
 
-        System.out.println("PRINT DE SENSIBILIZADAS EX");
-        Operaciones.printB(sensibilizadasEx);
+//        System.out.println("PRINT DE SENSIBILIZADAS EX");
+//        Operaciones.printB(sensibilizadasEx);
 
         if (!sensibilizadasEx[transicion.getPosicion()]) {
             return State.NO_FIRE;
         }
-
+        boolean esperando = false;
 
         if (!transicion.isTemporizada()) {
             k = true;
@@ -65,7 +65,7 @@ public class RedDePetri {
                 }
             }
 
-            boolean esperando = transicionesConTiempo[transicion.getPosicion()].isEsperando();
+            esperando = transicionesConTiempo[transicion.getPosicion()].isEsperando();
             boolean ventana = transicionesConTiempo[transicion.getPosicion()].testVentanaTiempo();
             boolean antes = antesDeLaVentana(transicion.getPosicion());
 
@@ -77,10 +77,11 @@ public class RedDePetri {
             } else if (antes) {
                 if (esperando) {
                     return State.NO_FIRE;
-                }else {
+                } else {
+                    transicionesConTiempo[transicion.getPosicion()].setEsperando();
                     return State.SLEEP;
                 }
-            }else{
+            } else {
                 return State.AFTER;
             }
 
@@ -94,7 +95,7 @@ public class RedDePetri {
 //            }
         }
         if (k) {
-            Colores.blueWrite("pudo disparar", transicion);
+//            Colores.blueWrite("pudo disparar", transicion);
             if (transicion.isTemporizada()) {
                 transicionesConTiempo[transicion.getPosicion()].resetEsperando();
             }
@@ -105,6 +106,8 @@ public class RedDePetri {
             actualizaSensibilizadasExtendido(tempSensibilizadas);
             transicion.incrementoDisparo();
             return State.FIRE;
+        } else if (esperando && Thread.currentThread().getId() == transicionesConTiempo[transicion.getPosicion()].getId()) {
+            transicionesConTiempo[transicion.getPosicion()].resetEsperando();
         }// todo ver si el esparando esta bien y se resetea cuando espero y no disparo
         return State.NO_FIRE;
     }
@@ -305,11 +308,11 @@ public class RedDePetri {
     private void actualizaSensibilizadasExtendido(Boolean[] tempSensibilizadas) {
 
 
-        System.out.println("print E");
-        Operaciones.printB(getVectorE());
-
-        System.out.println("print B");
-        Operaciones.printB(getVectorB());
+//        System.out.println("print E");
+//        Operaciones.printB(getVectorE());
+//
+//        System.out.println("print B");
+//        Operaciones.printB(getVectorB());
 
         //sensibilizadasEx =  Operaciones.andVector(Operaciones.andVector(getVectorE(),getVectorB()),getVectorZ());
         sensibilizadasEx = Operaciones.andVector(getVectorE(), getVectorB());
