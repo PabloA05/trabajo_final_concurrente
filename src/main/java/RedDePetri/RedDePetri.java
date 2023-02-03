@@ -104,7 +104,10 @@ public class RedDePetri {
 //            }
             }
         } else {
-            return State.NO_FIRE;
+            if (esperando && Thread.currentThread().getId() == transicionesConTiempo[transicion.getPosicion()].getId()) {
+                transicionesConTiempo[transicion.getPosicion()].resetEsperando();
+            }// todo ver si el esparando esta bien y se resetea cuando espero y no disparo
+             return State.NO_FIRE;
         }
         if (k) {
 //            Colores.blueWrite("pudo disparar", transicion);
