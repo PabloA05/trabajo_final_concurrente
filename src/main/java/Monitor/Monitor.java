@@ -26,6 +26,7 @@ public class Monitor {
     private int relacionDeMuestra;
     private Log log;
 
+    //private Cola2[] cola2;
     private long time = System.currentTimeMillis();
 
     public class Police {
@@ -74,8 +75,10 @@ public class Monitor {
         semaforoMonitor = new Semaphore(1, true);
         redDePetri = rdp;
         cola = new Colas[redDePetri.getCantTransiciones()];
+      //  cola2 = new Cola2[redDePetri.getCantTransiciones()];
         for (int i = 0; i < redDePetri.getCantTransiciones(); i++) {
             cola[i] = new Colas(); //Inicialización de colas.
+        //    cola2[i] = new Cola2();
         }
         condicion = true;
         contador = 0;
@@ -93,6 +96,14 @@ public class Monitor {
         }
         return Vc;
     }
+
+//    private Boolean[] quienesEstan2() {
+//        Boolean[] Vc = new Boolean[cola.length];
+//        for (int i = 0; i < cola.length; i++) {
+//            Vc[i] = cola2[i].isNotEmpty();
+//        }
+//        return Vc;
+//    }
 
 
     public void disparaTransicion1(Transicion transicion) {
@@ -157,12 +168,19 @@ public class Monitor {
     }
 
     public void disparaTransicion(Transicion transicion) {
+        Colores.redWrite("antes de acquireMon tokens semaforo:" + semaforoMonitor.availablePermits(), transicion);
+
         acquireMon();
-        Colores.redWrite("entro al monitor " + String.valueOf(Thread.currentThread().getId()), transicion);
+        if (!condicion) {
+            releaseMon();
+            return;
+        }
+        Colores.redWrite("entro al monitor id:" + String.valueOf(Thread.currentThread().getId()), transicion);
 
         State state = null;
         while (state != State.FIRE) {
             state = redDePetri.disparar(transicion);
+            Colores.greenWrite("estado " + state.name(), transicion);
             if (!condicion) {
                 releaseMon();
                 break;
@@ -196,6 +214,10 @@ public class Monitor {
                         System.out.printf(Colores.ANSI_YELLOW + "politica - El %s desperto la t:%d\n" + Colores.ANSI_RESET, Thread.currentThread().getName(), transicionADisparar.getPosicion());
 
                         cola[transicionADisparar.getPosicion()].release();
+                        if (!condicion) {
+                            releaseMon();
+                            break;
+                        }
 
                     } else {
 
@@ -224,6 +246,10 @@ public class Monitor {
                     releaseMon();
                     cola[transicion.getPosicion()].acquire();
                     Colores.blueWrite("salio de colas", transicion);
+                    if (!condicion) {
+                        releaseMon();
+                        state = State.FIRE;
+                    }
                     break;
                 }
                 case SLEEP: {
@@ -239,10 +265,19 @@ public class Monitor {
                     Colores.redWrite("solto el semaforo -  monitor - duerme", transicion);
 
                     releaseMon();
+                    if (semaforoMonitor.availablePermits() != 1) {
+                        System.out.printf("sleep valor del semaforo %d %s t:%d - no disparo entro a colas\n", semaforoMonitor.availablePermits(), Thread.currentThread().getName(), transicion.getPosicion());
+                        System.exit(1);
+                    }
                     //todo ver si les gusta asi. Capaz que pedir de esa forma el time stamp y el alpha no esta bien
                     sleep_thread(transicion);
                     acquireMon();
                     Colores.cianWrite("salio de dormir", transicion);
+                    if (!condicion) {
+                        releaseMon();
+                        state = State.FIRE;
+                    }
+
                     break;
                 }
                 case AFTER: {
@@ -256,7 +291,7 @@ public class Monitor {
 
             }
         }
-        Colores.redWrite("salio del monitor", transicion);
+        Colores.redWrite("salio del monitor tokens semaforo: " + semaforoMonitor.availablePermits(), transicion);
     }
 
     private void update_condition(String id) {
@@ -275,6 +310,7 @@ public class Monitor {
 
             for (int i = 0; i < cola.length; i++) {
                 while (cola[i].get() > 0) {
+                    System.out.printf("t:%d ",i);
                     cola[i].release();
                 }
             }
@@ -282,7 +318,7 @@ public class Monitor {
     }
 
     private void sleep_thread(Transicion transicion) {
-        long sleepTime = redDePetri.timeToSleep(transicion)+1;
+        long sleepTime = redDePetri.timeToSleep(transicion) + 1;
         Colores.purpleWrite("--- sleepTime:" + sleepTime, transicion);
         if (sleepTime < 0) {
             return;
@@ -327,6 +363,7 @@ public class Monitor {
         int suma = 0;
         suma = transiciones[3].getCantidadDisparada() + transiciones[4].getCantidadDisparada() + transiciones[9].getCantidadDisparada();
 
+        System.out.printf("cantidad disparada de invariantes %d\n", suma);
         if (suma >= cantidadDeInvariantesADisparar) {
             condicion = false;
             flag = true;

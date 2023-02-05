@@ -1,5 +1,7 @@
 package Monitor;
 
+import Util.Colores;
+
 import java.util.concurrent.Semaphore;
 
 public class Colas {
@@ -16,8 +18,9 @@ public class Colas {
             System.exit(1);
         }
         try {
-           // semaforoMonitor.release();
+            // semaforoMonitor.release();
             wait(); //El hilo entra a la cola, sumando la cantidad de hilos en cola
+            System.out.println("salio de colas - clase "+ Thread.currentThread().getName());
         } catch (InterruptedException e) {
             e.printStackTrace();
             System.out.println("hilo en cola");
@@ -36,6 +39,7 @@ public class Colas {
     public synchronized void release() {
         try {
             notify();
+            System.out.println("libero un hilo el " + Thread.currentThread().getName());
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);

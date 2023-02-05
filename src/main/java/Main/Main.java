@@ -21,7 +21,7 @@ public class Main {
         String logInvariantes = "src/main/resources/logInvariantes.csv";
         Log log = new Log(filepathLog);
 
-        int cantidadDeInvariantesADisparar = 1000;
+        int cantidadDeInvariantesADisparar = 2;
 
 
         RedDePetri redDePetri = new RedDePetri(mji, I, H, tiempos, T, Pinv);
@@ -80,11 +80,11 @@ public class Main {
         System.out.println("Invariante 3: " + " se disparo: " + redDePetri.getTransiciones()[9].getCantidadDisparada());
         monitor.printInvariantes(logInvariantes);
         System.out.println("TERMINA EL PROGRAMA");
-        Grafico grafico = new Grafico(
-                "Cantidad de disparos por Invariante");
-        grafico.pack();
-        RefineryUtilities.centerFrameOnScreen(grafico);
-        grafico.setVisible(true);
+//        Grafico grafico = new Grafico(
+//                "Cantidad de disparos por Invariante");
+//        grafico.pack();
+//        RefineryUtilities.centerFrameOnScreen(grafico);
+//        grafico.setVisible(true);
         log.close();
     }
 }
