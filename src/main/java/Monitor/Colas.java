@@ -14,7 +14,7 @@ public class Colas {
     //public synchronized void acquire(Semaphore semaforoMonitor) {
     public synchronized void acquire() {
         if (hilosCola < 0) {
-            System.out.printf("hilosCola [%d] menor que cero", hilosCola);
+            System.out.printf("Error, hilosCola [%d] menor que cero", hilosCola);
             System.exit(1);
         }
         try {
@@ -23,7 +23,7 @@ public class Colas {
             System.out.println("salio de colas - clase "+ Thread.currentThread().getName());
         } catch (InterruptedException e) {
             e.printStackTrace();
-            System.out.println("hilo en cola");
+            System.out.println("Error, hilo en cola");
             System.exit(1);
         }
     }

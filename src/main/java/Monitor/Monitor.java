@@ -75,10 +75,10 @@ public class Monitor {
         semaforoMonitor = new Semaphore(1, true);
         redDePetri = rdp;
         cola = new Colas[redDePetri.getCantTransiciones()];
-      //  cola2 = new Cola2[redDePetri.getCantTransiciones()];
+        //  cola2 = new Cola2[redDePetri.getCantTransiciones()];
         for (int i = 0; i < redDePetri.getCantTransiciones(); i++) {
             cola[i] = new Colas(); //Inicialización de colas.
-        //    cola2[i] = new Cola2();
+            //    cola2[i] = new Cola2();
         }
         condicion = true;
         contador = 0;
@@ -166,6 +166,100 @@ public class Monitor {
         }
         //   Colores.cianWrite("se fue del monitor", transicion);
     }
+//
+//    public void disparaTransicion(Transicion transicion) {
+//        Colores.redWrite("antes de acquireMon tokens semaforo:" + semaforoMonitor.availablePermits(), transicion);
+//        acquireMon();
+//        if (!condicion) {
+//            releaseMon();
+//            return;
+//        }
+//        Colores.redWrite("entro al monitor id:" + String.valueOf(Thread.currentThread().getId()), transicion);
+//        State state = null;
+//        do {
+//            state = redDePetri.disparar(transicion);
+//            if (!condicion) {
+//                releaseMon();
+//                state = State.FIRE;
+//            }
+//            switch (state) {
+//                case FIRE: {
+//                    Colores.greenWrite(">>>Disparo", transicion);
+//                    System.out.printf("-------------- Vector sensibilizado %s t:%d ------------\n", Thread.currentThread().getName(), transicion.getPosicion());
+//                    Operaciones.printB(redDePetri.getSensibilizadasEx());
+//                    System.out.printf("---------------------- Vector colas %s t:%d ------------\n", Thread.currentThread().getName(), transicion.getPosicion());
+//                    Operaciones.printB(quienesEstan());
+//                    Boolean[] m = Operaciones.andVector(quienesEstan(), redDePetri.getSensibilizadasEx());
+//                    System.out.printf("---------------------- Vector m %s t:%d -------------\n", Thread.currentThread().getName(), transicion.getPosicion());
+//                    Operaciones.printB(m);
+//                    if (Operaciones.comprobarUnos(m)) {
+//
+//                        Transicion transicionADisparar = politica.cualDisparo(m, redDePetri);
+//                        System.out.printf(Colores.ANSI_YELLOW + "politica - El %s desperto la t:%d - " + Colores.ANSI_RESET, Thread.currentThread().getName(), transicionADisparar.getPosicion());
+//                        cola[transicionADisparar.getPosicion()].release();
+//
+//                    } else {
+//                        Colores.redWrite("solto el semaforo -  monitor - disparo y no hay nada que despertar", transicion);
+//                        releaseMonitor();
+//                    }
+//                    break;
+//                }
+//                case NO_FIRE: {
+//                    //todo chequar si los hilos que se fueron a las colas y que se sensibilizan pueden dormir
+//                    Colores.blueWrite("no disparo entro a colas", transicion);
+//                    cola[transicion.getPosicion()].increment();
+//                    if (semaforoMonitor.availablePermits() != 0) {
+//                        System.out.printf("valor del semaforo %d %s t:%d - no disparo entro a colas\n", semaforoMonitor.availablePermits(), Thread.currentThread().getName(), transicion.getPosicion());
+//                        System.exit(1);
+//                    }
+//                    Colores.redWrite("solto el semaforo -  monitor - no disparo y se fue a colas", transicion);
+//                    releaseMon();
+//                    cola[transicion.getPosicion()].acquire();
+//                    Colores.blueWrite("salio de colas", transicion);
+//                    if (!condicion) {
+//                        releaseMon();
+//                        state = State.FIRE;
+//                    }
+//                    break;
+//                }
+//                case SLEEP: {
+//                    Colores.cianWrite("se fue a dormir", transicion);
+//                    if (semaforoMonitor.availablePermits() != 0) {
+//                        System.out.printf("valor del semaforo %d %s t:%d- se fue a dormir\n", semaforoMonitor.availablePermits(), Thread.currentThread().getName(), transicion.getPosicion());
+//                        System.exit(1);
+//                    }
+//                    Colores.redWrite("solto el semaforo -  monitor - duerme", transicion);
+//
+//                    releaseMon();
+//                    if (semaforoMonitor.availablePermits() != 1) {
+//                        System.out.printf("sleep valor del semaforo %d %s t:%d - no disparo entro a colas\n", semaforoMonitor.availablePermits(), Thread.currentThread().getName(), transicion.getPosicion());
+//                        System.exit(1);
+//                    }
+//                    //todo ver si les gusta asi. Capaz que pedir de esa forma el time stamp y el alpha no esta bien
+//                    sleep_thread(transicion);
+//                    acquireMon();
+//                    Colores.cianWrite("salio de dormir", transicion);
+//                    if (!condicion) {
+//                        releaseMon();
+//                        state = State.FIRE;
+//                    }
+//                    break;
+//                }
+//                case AFTER: {
+//                    Colores.redWrite("Disparo despues beta", transicion);
+//                    System.exit(1);
+//                }
+//                default: {
+//                    Colores.redWrite("Error disparo", transicion);
+//                    System.exit(1);
+//                }
+//
+//            }
+//        } while (state != State.FIRE);
+//    }
+
+
+
 
     public void disparaTransicion(Transicion transicion) {
         Colores.redWrite("antes de acquireMon tokens semaforo:" + semaforoMonitor.availablePermits(), transicion);
@@ -206,12 +300,12 @@ public class Monitor {
 //                cantidadDisparada(redDePetri);
                     if (Operaciones.comprobarUnos(m)) {
                         if (semaforoMonitor.availablePermits() != 0) {
-                            System.out.printf("valor del semaforo %d %s t:%d - politica\n", semaforoMonitor.availablePermits(), Thread.currentThread().getName(), transicion.getPosicion());
+                            System.out.printf("Error, valor del semaforo %d %s t:%d - politica\n", semaforoMonitor.availablePermits(), Thread.currentThread().getName(), transicion.getPosicion());
                             System.exit(1);
                         }
                         Transicion transicionADisparar = politica.cualDisparo(m, redDePetri);
                         //police.setColas(transicionADisparar);
-                        System.out.printf(Colores.ANSI_YELLOW + "politica - El %s desperto la t:%d\n" + Colores.ANSI_RESET, Thread.currentThread().getName(), transicionADisparar.getPosicion());
+                        System.out.printf(Colores.ANSI_YELLOW + "politica - El %s desperto la t:%d - " + Colores.ANSI_RESET, Thread.currentThread().getName(), transicionADisparar.getPosicion());
 
                         cola[transicionADisparar.getPosicion()].release();
                         if (!condicion) {
@@ -222,7 +316,7 @@ public class Monitor {
                     } else {
 
                         if (semaforoMonitor.availablePermits() != 0) {
-                            System.out.printf("valor del semaforo %d %s t:%d - solto el monitor\n", semaforoMonitor.availablePermits(), Thread.currentThread().getName(), transicion.getPosicion());
+                            System.out.printf("Error, valor del semaforo %d %s t:%d - solto el monitor\n", semaforoMonitor.availablePermits(), Thread.currentThread().getName(), transicion.getPosicion());
                             System.exit(1);
                         }
                         Colores.redWrite("solto el semaforo -  monitor - disparo y no hay nada que despertar", transicion);
@@ -239,7 +333,7 @@ public class Monitor {
                     Colores.blueWrite("no disparo entro a colas", transicion);
                     cola[transicion.getPosicion()].increment();
                     if (semaforoMonitor.availablePermits() != 0) {
-                        System.out.printf("valor del semaforo %d %s t:%d - no disparo entro a colas\n", semaforoMonitor.availablePermits(), Thread.currentThread().getName(), transicion.getPosicion());
+                        System.out.printf("Error, valor del semaforo %d %s t:%d - no disparo entro a colas\n", semaforoMonitor.availablePermits(), Thread.currentThread().getName(), transicion.getPosicion());
                         System.exit(1);
                     }
                     Colores.redWrite("solto el semaforo -  monitor - no disparo y se fue a colas", transicion);
@@ -259,16 +353,16 @@ public class Monitor {
                     }
                     Colores.cianWrite("se fue a dormir", transicion);
                     if (semaforoMonitor.availablePermits() != 0) {
-                        System.out.printf("valor del semaforo %d %s t:%d- se fue a dormir\n", semaforoMonitor.availablePermits(), Thread.currentThread().getName(), transicion.getPosicion());
+                        System.out.printf("Error, valor del semaforo %d %s t:%d- se fue a dormir\n", semaforoMonitor.availablePermits(), Thread.currentThread().getName(), transicion.getPosicion());
                         System.exit(1);
                     }
                     Colores.redWrite("solto el semaforo -  monitor - duerme", transicion);
 
                     releaseMon();
-                    if (semaforoMonitor.availablePermits() != 1) {
-                        System.out.printf("sleep valor del semaforo %d %s t:%d - no disparo entro a colas\n", semaforoMonitor.availablePermits(), Thread.currentThread().getName(), transicion.getPosicion());
-                        System.exit(1);
-                    }
+//                    if (semaforoMonitor.availablePermits() != 1) {
+//                        System.out.printf("Error, sleep valor del semaforo %d %s t:%d - no disparo entro a colas\n", semaforoMonitor.availablePermits(), Thread.currentThread().getName(), transicion.getPosicion());
+//                        System.exit(1);
+//                    }
                     //todo ver si les gusta asi. Capaz que pedir de esa forma el time stamp y el alpha no esta bien
                     sleep_thread(transicion);
                     acquireMon();
@@ -281,7 +375,7 @@ public class Monitor {
                     break;
                 }
                 case AFTER: {
-                    Colores.redWrite("Disparo despues beta", transicion);
+                    Colores.redWrite("Error,Disparo despues beta", transicion);
                     System.exit(1);
                 }
                 default: {
@@ -291,7 +385,7 @@ public class Monitor {
 
             }
         }
-        Colores.redWrite("salio del monitor tokens semaforo: " + semaforoMonitor.availablePermits(), transicion);
+        Colores.redWrite("salio del monitor tokens semaforo: " + semaforoMonitor.availablePermits() + " condicion:" + condicion, transicion);
     }
 
     private void update_condition(String id) {
@@ -310,7 +404,7 @@ public class Monitor {
 
             for (int i = 0; i < cola.length; i++) {
                 while (cola[i].get() > 0) {
-                    System.out.printf("t:%d ",i);
+                    System.out.printf("t:%d ", i);
                     cola[i].release();
                 }
             }

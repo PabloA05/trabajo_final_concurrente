@@ -18,7 +18,7 @@ public class RedDePetri {
     private final ArrayList<ArrayList<Integer>> pInvariantes;
     private final ArrayList<Integer> soloInmediatas;
     private final Boolean activoLogicaInmediata;
-
+    private Boolean sensibilizadas[];
 
     public RedDePetri(String mji, String I, String h, String t, String T, String Pinv) {
         this.incidencia = Operaciones.matriz2d(I);
@@ -36,6 +36,7 @@ public class RedDePetri {
             this.transicionesConTiempo[i] = new SensibilizadasConTiempo((long) tiempos[0][i], (long) tiempos[1][i]);
         }
         this.transiciones = new Transicion[getCantTransiciones()];
+        this.sensibilizadas = new Boolean[getCantTransiciones()]; // todo no hace falta creo
         for (int i = 0; i < getCantTransiciones(); i++) {
             this.transiciones[i] = new Transicion("T" + i, i, transicionesConTiempo[i].esTemporal());
         }
@@ -58,8 +59,9 @@ public class RedDePetri {
             if (!transicion.isTemporizada()) {
                 k = true;
             } else {
+
                 for (int i = 0; i < soloInmediatas.size(); i++) {
-                    if (sensibilizadasEx[soloInmediatas.get(i)]) {
+                    if (sensibilizadasEx[soloInmediatas.get(i)]) { // aunque haya esperado no deberia de haber problema con que salga
                         System.out.printf(Colores.ANSI_PURPLE + "inmediatas -ventana:%b antes:%b esperando:%b %s t:%d\n" + Colores.ANSI_RESET, ventana, antes, esperando, Thread.currentThread().getName(), transicion.getPosicion());
                         return State.NO_FIRE;
                     }
@@ -107,7 +109,9 @@ public class RedDePetri {
             if (esperando && Thread.currentThread().getId() == transicionesConTiempo[transicion.getPosicion()].getId()) {
                 transicionesConTiempo[transicion.getPosicion()].resetEsperando();
             }// todo ver si el esparando esta bien y se resetea cuando espero y no disparo
-             return State.NO_FIRE;
+            System.out.printf(Colores.ANSI_PURPLE + "valor de k:%b - ventana:%b antes:%b esperando:%b %s t:%d\n" + Colores.ANSI_RESET, k, ventana, antes, esperando, Thread.currentThread().getName(), transicion.getPosicion());
+
+            return State.NO_FIRE;
         }
         if (k) {
 //            Colores.blueWrite("pudo disparar", transicion);
@@ -117,15 +121,17 @@ public class RedDePetri {
             }
             verificarPInvariantes();
             //todo despues de aca se rompe todo, hay que arreglar el vector Z
-            Boolean[] tempSensibilizadas = sensibilizadasEx;
+            Boolean[] tempSensibilizadas = sensibilizadas.clone();
             vectorDeEstado = marcadoSiguiente(vectorDeEstado, transicion.getPosicion());
             actualizaSensibilizadasExtendido(tempSensibilizadas);
             transicion.incrementoDisparo();
+            System.out.printf(Colores.ANSI_PURPLE + "valor de k:%b - ventana:%b antes:%b esperando:%b %s t:%d\n" + Colores.ANSI_RESET, k, ventana, antes, esperando, Thread.currentThread().getName(), transicion.getPosicion());
+
             return State.FIRE;
         } else if (esperando && Thread.currentThread().getId() == transicionesConTiempo[transicion.getPosicion()].getId()) {
             transicionesConTiempo[transicion.getPosicion()].resetEsperando();
         }// todo ver si el esparando esta bien y se resetea cuando espero y no disparo
-        System.out.printf(Colores.ANSI_PURPLE + "esperando - ventana:%b antes:%b esperando:%b %s t:%d\n" + Colores.ANSI_RESET, ventana, antes, esperando, Thread.currentThread().getName(), transicion.getPosicion());
+        System.out.printf(Colores.ANSI_PURPLE + "valor de k:%b - ventana:%b antes:%b esperando:%b %s t:%d\n" + Colores.ANSI_RESET, k, ventana, antes, esperando, Thread.currentThread().getName(), transicion.getPosicion());
 
         return State.NO_FIRE;
     }
@@ -166,7 +172,7 @@ public class RedDePetri {
                     esperando = true;
                     sleepThread(transicion.getPosicion());
                 } else {
-                    System.out.printf("mayor que beta %s t:%d esp:%b\n",
+                    System.out.printf("Error, mayor que beta %s t:%d esp:%b\n",
                             Thread.currentThread().getName(), transicion.getPosicion(), transicionesConTiempo[transicion.getPosicion()].isEsperando());
                     System.exit(1);
                 }
@@ -239,7 +245,7 @@ public class RedDePetri {
                 suma += vectorDeEstado[a.get(j) - 1];
             }
             if (suma != a.get(a.size() - 1)) {
-                System.out.println("No se cumple el invariante " + i + " de plaza");
+                System.out.println("Error, No se cumple el invariante " + i + " de plaza");
                 System.exit(1);
             }
         }
@@ -302,8 +308,13 @@ public class RedDePetri {
         Boolean[] vectorZ = new Boolean[getCantTransiciones()];
 
         for (int i = 0; i < getCantTransiciones(); i++) {
-            vectorZ[i] = transicionesConTiempo[i].testVentanaTiempo();
+            if (transicionesConTiempo[i].esTemporal()) {
+                vectorZ[i] = transicionesConTiempo[i].testVentanaTiempo();
+            } else {
+                vectorZ[i] = true;
+            }
         }
+
         System.out.println("---------------------- Vector z  rdp -----------------------");
         Operaciones.printB(vectorZ);
         printTimeStamp();
@@ -327,7 +338,37 @@ public class RedDePetri {
         return tInvariantes;
     }
 
-    private void actualizaSensibilizadasExtendido(Boolean[] tempSensibilizadas) {
+
+    private void actualizaSensibilizadasExtendido(Boolean[] antes) {
+        sensibilizadas = Operaciones.andVector(getVectorE(), getVectorB());
+        System.out.printf("--------------* rdp Vector Z %s *------------\n", Thread.currentThread().getName());
+
+        var vector = getVectorZ();
+        Operaciones.printB(vector);
+        sensibilizadasEx = Operaciones.andVector(sensibilizadas, getVectorZ());
+
+        System.out.printf("--------------* rdp Vector sensibilidas %s *------------\n", Thread.currentThread().getName());
+        Operaciones.printB(sensibilizadas);
+        System.out.printf("-------------- rdp Vector sensibilizadasEx %s  ------------\n", Thread.currentThread().getName());
+        Operaciones.printB(sensibilizadasEx);
+
+
+        nuevoTimeStamp(antes);
+        printTimeStamp();
+    }
+
+    private void nuevoTimeStamp(Boolean[] tempSensibilizadas) {
+        long timeStamp = System.currentTimeMillis();
+        for (int i = 0; i < transicionesConTiempo.length; i++) {
+            if (sensibilizadas[i] && transiciones[i].isTemporizada()) {///
+                if (!tempSensibilizadas[i]) {
+                    transicionesConTiempo[i].nuevoTimeStamp(timeStamp);
+                }
+            }
+        }
+    }
+
+    private void actualizaSensibilizadasExtendido2(Boolean[] tempSensibilizadas) {
 
 
 //        System.out.println("print E");
@@ -340,21 +381,21 @@ public class RedDePetri {
         sensibilizadasEx = Operaciones.andVector(getVectorE(), getVectorB());
 
         nuevoTimeStamp(tempSensibilizadas);
-        if (activoLogicaInmediata) {
-            for (int i = 0; i < soloInmediatas.size(); i++) {
-                if (sensibilizadasEx[soloInmediatas.get(i)]) {
-                    for (int j = 0; j < sensibilizadasEx.length; j++) {
-                        if (sensibilizadasEx[j] && transiciones[j].isTemporizada()) {
-                            sensibilizadasEx[j] = false;
-                        }
-                    }
-                    break;
-                }
-            }
-        }
+//        if (activoLogicaInmediata) {
+//            for (int i = 0; i < soloInmediatas.size(); i++) {
+//                if (sensibilizadasEx[soloInmediatas.get(i)]) {
+//                    for (int j = 0; j < sensibilizadasEx.length; j++) {
+//                        if (sensibilizadasEx[j] && transiciones[j].isTemporizada()) {
+//                            sensibilizadasEx[j] = false;
+//                        }
+//                    }
+//                    break;
+//                }
+//            }
+//        }
     }
 
-    private void nuevoTimeStamp(Boolean[] tempSensibilizadas) {
+    private void nuevoTimeStamp1(Boolean[] tempSensibilizadas) {
         //todo este rompe todo
         long timeStamp = System.currentTimeMillis();
         for (int i = 0; i < transicionesConTiempo.length; i++) {
