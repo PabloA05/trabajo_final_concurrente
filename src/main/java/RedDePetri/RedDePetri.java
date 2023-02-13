@@ -79,13 +79,13 @@ public class RedDePetri {
         if (vectorEandB[transicion.getPosicion()]) {
             if (transicion.isTemporizada()) {
                 if (checkInmediatas()) {
-                    return -1;
+                    return -2;
                 }
                 if (ventana) {
                     if (!esperando || esperando && Thread.currentThread().getId() == transicionesConTiempo[transicion.getPosicion()].getId()) {
-                        result = 0;
-                    } else {
                         result = -1;
+                    } else {
+                        result = -2;
                     }
                     System.out.printf(Colores.ANSI_PURPLE + "ventana - ventana:%b antes:%b esperando:%b %s %d t:%d - quien? id:%d\n" + Colores.ANSI_RESET, ventana, antes, esperando, Thread.currentThread().getName(), Thread.currentThread().getId(), transicion.getPosicion(), transicionesConTiempo[transicion.getPosicion()].getId());
 
@@ -100,7 +100,7 @@ public class RedDePetri {
                                 (transicionesConTiempo[transicion.getPosicion()].getTimeStamp() + transicionesConTiempo[transicion.getPosicion()].getAlpha()),
                                 (transicionesConTiempo[transicion.getPosicion()].getTimeStamp() - actual));
                         System.out.printf(Colores.ANSI_PURPLE + "antes - ventana:%b antes:%b esperando:%b %s %d t:%d - quien? id:%d\n" + Colores.ANSI_RESET, ventana, antes, esperando, Thread.currentThread().getName(), Thread.currentThread().getId(), transicion.getPosicion(), transicionesConTiempo[transicion.getPosicion()].getId());
-                        result = -1;
+                        result = -2;
                     } else {
                         Colores.purpleWrite("*** esperando", transicion);
                         transicionesConTiempo[transicion.getPosicion()].setEsperando();
@@ -110,12 +110,12 @@ public class RedDePetri {
                     return result;
                 }
             } else {
-                result = 0;
+                result = -1;
             }
         } else {
-            result = -1;
+            result = -2;
         }
-        if (result == 0) {
+        if (result == -1) {
             if (transicion.isTemporizada()) {
                 Colores.purpleWrite("entro reset esperando", transicion);
                 transicionesConTiempo[transicion.getPosicion()].resetEsperando();

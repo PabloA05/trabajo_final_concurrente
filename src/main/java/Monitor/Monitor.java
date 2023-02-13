@@ -268,7 +268,7 @@ public class Monitor {
             return;
         }
         long estado = -9999;
-        while (estado != 0) {
+        while (estado != -1) {
             estado = redDePetri.disparar(transicion);
             Colores.greenWrite("estado " + estado, transicion);
 
@@ -276,14 +276,14 @@ public class Monitor {
                 releaseMon();
                 return;
             }
-            if (estado == 0) {
+            if (estado == -1) {
                 update_condition(transicion.getId());
                 checkPolitica(transicion);
             } else if (estado > 0) {
                 semaforoMonitor.release();
                 sleep_thread(transicion, estado);
                 acquireMonitor();
-            } else if (estado == -1) {
+            } else if (estado == -2) {
                 semaforoMonitor.release();
                 Colores.blueWrite("se va a colas",transicion);
                 cola2[transicion.getPosicion()].acquire();
