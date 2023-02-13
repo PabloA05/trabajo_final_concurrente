@@ -97,7 +97,7 @@ public class TestMarcadoRdp {
         for (int i = 0; i < f_sen.length; i++) {
             redDePetri.disparar(arrTransiciones[f_sen[i]]);
         }
-        Boolean[] temp = redDePetri.getSensibilizadasEx();
+        Boolean[] temp = redDePetri.getSensibilizadas();
         System.out.println("antes");
         Operaciones.printBoolean(sensi5);
         System.out.println("despues");
@@ -113,6 +113,45 @@ public class TestMarcadoRdp {
         test("aaaaa", log);
         test("bbbbb", log);
         log.close();
+    }
+
+    @Test
+    public void testGetSensibilizados() { // anda solo cuando t0 y t6 son inmediatas
+
+        Boolean[] arr0 = {true, false, false, false, true, false, false, false, false, false};//T0
+        Boolean[] resultado = {true, false, false, false, false, false, false, false, false, false};//T0
+
+        redDePetri.setVectorEandB(arr0);
+        var cambiado = redDePetri.getSensibilizadas();
+        System.out.printf("-------------- resultado Vector sensibilizado  main ------------ \n");
+        Operaciones.printB(cambiado);
+        Assert.assertArrayEquals(cambiado, resultado); //todo descomentar
+    }
+
+    @Test
+    public void testEstado() {
+             /*
+        -------------- rdp antes de modif Vector sensibilizado  hilo_1 ------------
+        * * * 3 * * 6 * 8 *
+        -------------- Vector sensibilizado hilo_1 t:1 ------------
+        * * * 3 * * 6 * 8 *
+        ---------------------- Vector colas hilo_1 t:1 ------------
+        0 * 2 * * * 6 * 8 *
+        ---------------------- Vector m hilo_1 t:1 -------------
+        * * * * * * 6 * 8 *
+        * */
+
+        int[] temp_estado = {0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 2, 2};
+        redDePetri.setVectorDeEstado(temp_estado);
+        Boolean[] arr0 = {false, false, false, true, false, false, true, false, true, false};//T0
+        Boolean[] resultado = {false, false, false, false, false, false, true, false, false, false};//T0
+
+        redDePetri.setVectorEandB(arr0);
+        var cambiado = redDePetri.getSensibilizadas();
+        System.out.printf("-------------- resultado Vector sensibilizado  main ------------ \n");
+        Operaciones.printB(cambiado);
+        Assert.assertArrayEquals(cambiado, resultado); //todo descomentar
+
     }
 
     public void test(String str, Log log) {

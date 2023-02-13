@@ -21,7 +21,7 @@ public class Main {
         String logInvariantes = "src/main/resources/logInvariantes.csv";
         Log log = new Log(filepathLog);
 
-        int cantidadDeInvariantesADisparar = 10000;
+        int cantidadDeInvariantesADisparar = 15000;
 
 
         RedDePetri redDePetri = new RedDePetri(mji, I, H, tiempos, T, Pinv);
