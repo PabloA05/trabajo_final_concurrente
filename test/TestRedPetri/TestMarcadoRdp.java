@@ -154,6 +154,18 @@ public class TestMarcadoRdp {
 
     }
 
+    @Test
+    public void testVentana() {
+        long alpha = 2;
+        long beta = 10;
+        long ahora = 124;
+        long timeStamp = 123;
+        System.out.println((ahora - timeStamp));
+        System.out.println(((ahora - timeStamp)));
+        boolean ventana = ((ahora - timeStamp) >= alpha) && ((ahora - timeStamp) < beta);
+        Assert.assertTrue(ventana);
+    }
+
     public void test(String str, Log log) {
         log.write(str);
     }

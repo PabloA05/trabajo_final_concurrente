@@ -17,9 +17,8 @@ public class SensibilizadasConTiempo {
         this.esperando = false;
     }
 
-    public boolean testVentanaTiempo() {
-        long ahora = System.currentTimeMillis();
-        return ((ahora - timeStamp) >= alpha) && ((ahora - timeStamp) < beta);
+    public boolean testVentanaTiempo(long actual) {
+        return ((actual - timeStamp) >= alpha) && ((actual - timeStamp) < beta);
     }
 
     public void nuevoTimeStamp(long timeStamp) {

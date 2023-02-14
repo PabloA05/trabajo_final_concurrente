@@ -23,7 +23,6 @@ public class Main {
 
         int cantidadDeInvariantesADisparar = 1000;
 
-
         RedDePetri redDePetri = new RedDePetri(mji, I, H, tiempos, T, Pinv);
         Monitor monitor = new Monitor(redDePetri, log, cantidadDeInvariantesADisparar);
 
