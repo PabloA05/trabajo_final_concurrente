@@ -284,13 +284,14 @@ public class Monitor {
                 sleep_thread(transicion, estado);
                 acquireMonitor();
             } else if (estado == -2) {
+                cola2[transicion.getPosicion()].increment();
                 semaforoMonitor.release();
-                Colores.blueWrite("se va a colas",transicion);
+                Colores.blueWrite("se va a colas", transicion);
                 cola2[transicion.getPosicion()].acquire();
 //                cola[transicion.getPosicion()].increment();
 //                semaforoMonitor.release();
 //                cola[transicion.getPosicion()].acquire();
-                Colores.blueWrite("sale de colas",transicion);
+                Colores.blueWrite("sale de colas", transicion);
 
                 if (!condicion) {
                     releaseMon();

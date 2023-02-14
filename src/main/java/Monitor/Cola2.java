@@ -11,6 +11,10 @@ public class Cola2 {
         token = 0;
     }
 
+    public void increment() {
+        token++;
+    }
+
     public void acquire() {
         try {
             semaphore.acquire();
@@ -25,6 +29,6 @@ public class Cola2 {
     }
 
     public boolean isNotEmpty() {
-        return semaphore.getQueueLength() != 0;
+        return token != 0;
     }
 }
