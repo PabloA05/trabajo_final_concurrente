@@ -35,10 +35,10 @@ public class SensibilizadasConTiempo {
     }
 
     public void setEsperando() {
-        if (this.esperando) {
-            System.out.printf(Colores.ANSI_RED + "Error, esperando error h:%s id_H:%s esp:%b id:%d>>\n", Thread.currentThread().getName(), Thread.currentThread().getId(), esperando, id);
-            System.exit(1);
-        }
+//        if (this.esperando) { //todo verificar que esta bien sacar esto
+//            System.out.printf(Colores.ANSI_RED + "Error, esperando error h:%s id_H:%s esp:%b id:%d>>\n", Thread.currentThread().getName(), Thread.currentThread().getId(), esperando, id);
+//            System.exit(1);
+//        }
         this.esperando = true;
         this.id = Thread.currentThread().getId();
     }
