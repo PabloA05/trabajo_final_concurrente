@@ -21,11 +21,10 @@ public class Main {
         String logInvariantes = "src/main/resources/logInvariantes.csv";
         Log log = new Log(filepathLog);
 
-        int cantidadDeInvariantesADisparar = 1000;
+        int cantidadDeInvariantesADisparar = 100;
 
         RedDePetri redDePetri = new RedDePetri(mji, I, H, tiempos, T, Pinv);
         Monitor monitor = new Monitor(redDePetri, log, cantidadDeInvariantesADisparar);
-
 
         Boolean[] arr0 = {true, false, false, false, false, false, false, false, false, false};//T0
         Boolean[] arr1 = {false, true, false, true, false, false, false, false, false, false};//T1-T3
@@ -34,7 +33,6 @@ public class Main {
         Boolean[] arr4 = {false, false, false, false, false, false, true, true, true, true};//T6-T7-T8-T9
 
         Thread[] hilo = new Thread[7];
-
 
         Runnable runnable1 = new Hilo(redDePetri, monitor, arr0);
         hilo[0] = new Thread(runnable1, "hilo_0");
@@ -57,9 +55,9 @@ public class Main {
         Runnable runnable7 = new Hilo(redDePetri, monitor, arr4);
         hilo[6] = new Thread(runnable7, "hilo_6");
 
-
         System.out.println(Colores.ANSI_RED + "Ejecutando Red de Petri ..." + Colores.ANSI_RESET);
         long start = System.currentTimeMillis();
+
         for (int i = 0; i < hilo.length; i++) {
             hilo[i].start();
         }
@@ -69,18 +67,13 @@ public class Main {
             e.printStackTrace();
         }
 
-//        System.out.printf("calculo si el programa fuera un unico hilo %f \n",
-//                (redDePetri.getTransiciones()[3].getCantidadDisparada() * 0.090 * 3 +
-//                        redDePetri.getTransiciones()[4].getCantidadDisparada() * 0.090 * 3
-//                        + redDePetri.getTransiciones()[9].getCantidadDisparada() * 0.003 * 3));
-        System.out.printf("tiempo real: %f\n", (double) (System.currentTimeMillis() - start) / 1000);
-        System.out.println("Invariante 1: " + " se disparo: " + redDePetri.getTransiciones()[3].getCantidadDisparada());
-        System.out.println("Invariante 2: " + " se disparo: " + redDePetri.getTransiciones()[4].getCantidadDisparada());
-        System.out.println("Invariante 3: " + " se disparo: " + redDePetri.getTransiciones()[9].getCantidadDisparada());
+        System.out.printf(Colores.ANSI_BLUE + "Tiempo de ejecucion: %.3f [s]\n" + Colores.ANSI_RESET, (double) (System.currentTimeMillis() - start) / 1000);
+        System.out.println("Invariante 1 se disparo: " + redDePetri.getTransiciones()[3].getCantidadDisparada());
+        System.out.println("Invariante 2 se disparo: " + redDePetri.getTransiciones()[4].getCantidadDisparada());
+        System.out.println("Invariante 3 se disparo: " + redDePetri.getTransiciones()[9].getCantidadDisparada());
         monitor.printInvariantes(logInvariantes);
-        System.out.println("TERMINA EL PROGRAMA");
-        Grafico grafico = new Grafico(
-                "Cantidad de disparos por Invariante");
+        System.out.println(Colores.ANSI_RED + "TERMINA EL PROGRAMA" + Colores.ANSI_RESET);
+        Grafico grafico = new Grafico("Cantidad de disparos por Invariante");
         grafico.pack();
         RefineryUtilities.centerFrameOnScreen(grafico);
         grafico.setVisible(true);

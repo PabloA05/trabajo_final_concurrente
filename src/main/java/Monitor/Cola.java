@@ -2,11 +2,11 @@ package Monitor;
 
 import java.util.concurrent.Semaphore;
 
-public class Cola2 {
+public class Cola {
     private Semaphore semaphore;
     private int token;
 
-    public Cola2() {
+    public Cola() {
         semaphore = new Semaphore(0, true);
         token = 0;
     }

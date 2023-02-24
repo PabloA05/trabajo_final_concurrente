@@ -1,7 +1,5 @@
 package RedDePetri;
 
-import Util.Colores;
-
 public class SensibilizadasConTiempo {
     final private long alpha;
     final private long beta;
@@ -26,8 +24,6 @@ public class SensibilizadasConTiempo {
         if (!this.esperando) {
             this.id = -999999;
         }
-//        this.id = -999999;
-//        this.esperando = false;
     }
 
     public boolean isEsperando() {

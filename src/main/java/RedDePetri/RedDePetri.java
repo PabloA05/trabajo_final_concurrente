@@ -71,24 +71,20 @@ public class RedDePetri {
         long result = -999;
         long tiempoActual = System.currentTimeMillis();
         boolean esperando = transicionesConTiempo[transicion.getPosicion()].isEsperando();
-        boolean ventana = transicionesConTiempo[transicion.getPosicion()].testVentanaTiempo(tiempoActual);
-        boolean antes = antesDeLaVentana(transicion.getPosicion(), tiempoActual);
 
         if (vectorEandB[transicion.getPosicion()]) {
             if (transicion.isTemporizada()) {
                 if (checkInmediatas()) {
-                    Colores.purpleWrite("rdp inmedianta no disparo", transicion);
                     return -2;
                 }
-
+                boolean ventana = transicionesConTiempo[transicion.getPosicion()].testVentanaTiempo(tiempoActual);
+                boolean antes = antesDeLaVentana(transicion.getPosicion(), tiempoActual);
                 if (ventana) {
                     if (!esperando || esperando && Thread.currentThread().getId() == transicionesConTiempo[transicion.getPosicion()].getId()) {
                         result = -1;
                     } else {
                         result = -2;
                     }
-                    System.out.printf(Colores.ANSI_PURPLE + "ventana - ventana:%b antes:%b esperando:%b %s %d t:%d - quien? id:%d\n" + Colores.ANSI_RESET, ventana, antes, esperando, Thread.currentThread().getName(), Thread.currentThread().getId(), transicion.getPosicion(), transicionesConTiempo[transicion.getPosicion()].getId());
-
                 } else if (antes) {
                     if (esperando && Thread.currentThread().getId() != transicionesConTiempo[transicion.getPosicion()].getId()) {
                         result = -2;
@@ -96,16 +92,9 @@ public class RedDePetri {
 
                         transicionesConTiempo[transicion.getPosicion()].setEsperando();
                         result = timeToSleep(transicion, tiempoActual);
-                        Colores.purpleWrite("*** esperando:" + result + " ", transicion);
                     }
                 } else {
-                    Colores.purpleWrite("--------------  despues -- vectorDeEstado  ------------ ", transicion);
-                    Operaciones.printVector(vectorDeEstado);
-                    Colores.purpleWrite("--------------  despues -- ector sensibilizado  ------------ ", transicion);
-                    Operaciones.printB(vectorEandB);
-                    Colores.purpleWrite("rdp despues", transicion);
-
-                    return result;
+                    return result; //despues de la ventana
                 }
             } else {
                 result = -1;
@@ -115,7 +104,6 @@ public class RedDePetri {
         }
         if (result == -1) {
             if (transicion.isTemporizada()) {
-                Colores.purpleWrite("entro reset esperando", transicion);
                 transicionesConTiempo[transicion.getPosicion()].resetEsperando();
             }
             var vectorAntes = vectorEandB.clone();
@@ -127,7 +115,6 @@ public class RedDePetri {
         } else if (esperando && Thread.currentThread().getId() == transicionesConTiempo[transicion.getPosicion()].getId()) {
             transicionesConTiempo[transicion.getPosicion()].resetEsperando();
         }// todo ver si el esparando esta bien y se resetea cuando espero y no disparo
-        Colores.purpleWrite("rdp sale r:" + result + " v:" + ventana + " a:" + antes, transicion);
         return result;
     }
 
@@ -142,10 +129,6 @@ public class RedDePetri {
     }
 
     public Boolean[] getSensibilizadas() {
-//        System.out.printf("-------------- rdp marcado  %s ------------ \n", Thread.currentThread().getName());
-//        Operaciones.printVector(vectorDeEstado);
-//        System.out.printf("-------------- rdp antes de modif Vector sensibilizado  %s ------------ \n", Thread.currentThread().getName());
-//        Operaciones.printB(vectorEandB);
         if (checkInmediatas()) {
             Boolean[] temp;
             temp = new Boolean[vectorEandB.length];
@@ -155,7 +138,6 @@ public class RedDePetri {
                     temp[soloInmediata] = Boolean.TRUE;
                 }
             }
-
             return temp;
         } else {
             return vectorEandB;
@@ -196,7 +178,6 @@ public class RedDePetri {
     }
 
     private boolean esDisparoValido(int[] marcado_siguiente) {
-
         for (int j : marcado_siguiente) {
             if (j < 0) {
                 return false;
@@ -219,7 +200,6 @@ public class RedDePetri {
 
     private Boolean[] getVectorQ() {
         Boolean[] vectorQ = new Boolean[getVectorDeEstado().length];
-
         for (int i = 0; i < getCantPlazas(); i++) {
             vectorQ[i] = vectorDeEstado[i] != 0;
         }
@@ -227,16 +207,13 @@ public class RedDePetri {
     }
 
     private Boolean[] getVectorB() {
-
         Boolean[] vectorB;
         int[][] inhibidorTranspuesta = Operaciones.transpuesta(this.inhibidor);
         vectorB = Operaciones.productoMatrizVectorBoolean(inhibidorTranspuesta, this.getVectorQ());
         for (int i = 0; i < vectorB.length; i++) {
             vectorB[i] = !vectorB[i];
         }
-
         return vectorB;
-
     }
 
     private Boolean[] getVectorE() {
@@ -262,7 +239,7 @@ public class RedDePetri {
     private void nuevoTimeStamp(Boolean[] tempSensibilizadas) {
         long timeStamp = System.currentTimeMillis();
         for (int i = 0; i < transicionesConTiempo.length; i++) {
-            if (vectorEandB[i] && transiciones[i].isTemporizada()) {///
+            if (vectorEandB[i] && transiciones[i].isTemporizada()) {
                 if (!tempSensibilizadas[i]) {
                     transicionesConTiempo[i].nuevoTimeStamp(timeStamp);
                 }
@@ -271,7 +248,6 @@ public class RedDePetri {
     }
 
     private ArrayList<Integer> getsoloInmediatas() {
-
         ArrayList<Integer> soloInmediatas = new ArrayList<>();
         for (int i = 0; i < getCantTransiciones(); i++) {
             if (!transiciones[i].isTemporizada()) {
@@ -280,5 +256,4 @@ public class RedDePetri {
         }
         return soloInmediatas;
     }
-
 }
