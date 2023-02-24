@@ -147,13 +147,13 @@ public class Monitor {
     private void checkPolitica(Transicion transicion) {
         Boolean[] Vs = this.redDePetri.getSensibilizadas();
         Boolean[] Vc = quienesEstan2();
-//        System.out.printf("-------------- Vector sensibilizado %s t:%d ------------\n", Thread.currentThread().getName(), transicion.getPosicion());
-//        Operaciones.printB(Vs);
-//        System.out.printf("---------------------- Vector colas %s t:%d ------------\n", Thread.currentThread().getName(), transicion.getPosicion());
-//        Operaciones.printB(Vc);
+        System.out.printf("-------------- Vector sensibilizado %s t:%d ------------\n", Thread.currentThread().getName(), transicion.getPosicion());
+        Operaciones.printB(Vs);
+        System.out.printf("---------------------- Vector colas %s t:%d ------------\n", Thread.currentThread().getName(), transicion.getPosicion());
+        Operaciones.printB(Vc);
         Boolean[] m = Operaciones.andVector(Vs, Vc); //todo ver si se puede simplificar
-//        System.out.printf("---------------------- Vector m %s t:%d -------------\n", Thread.currentThread().getName(), transicion.getPosicion());
-//        Operaciones.printB(m);
+        System.out.printf("---------------------- Vector m %s t:%d -------------\n", Thread.currentThread().getName(), transicion.getPosicion());
+        Operaciones.printB(m);
         if (Operaciones.comprobarUnos(m)) {
             if (semaforoMonitor.availablePermits() != 0) {
                 System.out.printf("Error, valor del semaforo %d %s t:%d - politica\n", semaforoMonitor.availablePermits(), Thread.currentThread().getName(), transicion.getPosicion());

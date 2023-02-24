@@ -71,14 +71,16 @@ public class RedDePetri {
         long result = -999;
         long tiempoActual = System.currentTimeMillis();
         boolean esperando = transicionesConTiempo[transicion.getPosicion()].isEsperando();
+        boolean ventana = transicionesConTiempo[transicion.getPosicion()].testVentanaTiempo(tiempoActual);
+        boolean antes = antesDeLaVentana(transicion.getPosicion(), tiempoActual);
 
         if (vectorEandB[transicion.getPosicion()]) {
             if (transicion.isTemporizada()) {
                 if (checkInmediatas()) {
+                    Colores.purpleWrite("rdp inmedianta no disparo", transicion);
                     return -2;
                 }
-                boolean ventana = transicionesConTiempo[transicion.getPosicion()].testVentanaTiempo(tiempoActual);
-                boolean antes = antesDeLaVentana(transicion.getPosicion(), tiempoActual);
+
                 if (ventana) {
                     if (!esperando || esperando && Thread.currentThread().getId() == transicionesConTiempo[transicion.getPosicion()].getId()) {
                         result = -1;
@@ -88,7 +90,7 @@ public class RedDePetri {
                     System.out.printf(Colores.ANSI_PURPLE + "ventana - ventana:%b antes:%b esperando:%b %s %d t:%d - quien? id:%d\n" + Colores.ANSI_RESET, ventana, antes, esperando, Thread.currentThread().getName(), Thread.currentThread().getId(), transicion.getPosicion(), transicionesConTiempo[transicion.getPosicion()].getId());
 
                 } else if (antes) {
-                    if (esperando) {
+                    if (esperando && Thread.currentThread().getId() != transicionesConTiempo[transicion.getPosicion()].getId()) {
                         result = -2;
                     } else {
 
@@ -101,6 +103,8 @@ public class RedDePetri {
                     Operaciones.printVector(vectorDeEstado);
                     Colores.purpleWrite("--------------  despues -- ector sensibilizado  ------------ ", transicion);
                     Operaciones.printB(vectorEandB);
+                    Colores.purpleWrite("rdp despues", transicion);
+
                     return result;
                 }
             } else {
@@ -123,6 +127,7 @@ public class RedDePetri {
         } else if (esperando && Thread.currentThread().getId() == transicionesConTiempo[transicion.getPosicion()].getId()) {
             transicionesConTiempo[transicion.getPosicion()].resetEsperando();
         }// todo ver si el esparando esta bien y se resetea cuando espero y no disparo
+        Colores.purpleWrite("rdp sale r:" + result + " v:" + ventana + " a:" + antes, transicion);
         return result;
     }
 
