@@ -137,6 +137,10 @@ public class Monitor {
 //                semaforoMonitor.release();
 //                cola[transicion.getPosicion()].acquire();
                 Colores.blueWrite("sale de colas", transicion);
+                if (!condicion) {
+                    return;
+                }
+
             } else {
                 Colores.redWrite("Error, Disparo despues beta", transicion);
                 System.exit(1);
