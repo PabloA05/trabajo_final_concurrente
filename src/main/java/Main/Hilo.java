@@ -6,10 +6,10 @@ import RedDePetri.Transicion;
 
 public class Hilo implements Runnable {
 
-    RedDePetri rdp;
-    Monitor monitor;
-    Transicion[] transiciones;
-    Boolean[] secuencia = new Boolean[10];
+    private RedDePetri rdp;
+    private Monitor monitor;
+    private Transicion[] transiciones;
+    private Boolean[] secuencia = new Boolean[10];
 
     public Hilo(RedDePetri rdp, Monitor monitor, Boolean[] secuencia) {
         this.rdp = rdp;

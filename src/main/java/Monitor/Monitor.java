@@ -12,7 +12,7 @@ import java.util.concurrent.Semaphore;
 
 public class Monitor {
     public static ArrayList<int[]> datos;
-    private static Semaphore semaforoMonitor;
+    private Semaphore semaforoMonitor;
     private RedDePetri redDePetri;
     private Politica politica = new Politica(2);
     private boolean condicion;
@@ -52,13 +52,13 @@ public class Monitor {
     public void disparaTransicion(Transicion transicion) {
         acquireMonitor();
         if (!condicion) {
-            releaseMon();
+            releaseMonitor();
             return;
         }
         long estado = -9999;
         while (estado != -1) {
             if (!condicion) {
-                releaseMon();
+                releaseMonitor();
                 return;
             }
             estado = redDePetri.disparar(transicion);
@@ -93,7 +93,7 @@ public class Monitor {
                 System.out.printf("Error, valor del semaforo %d %s t:%d - solto el monitor\n", semaforoMonitor.availablePermits(), Thread.currentThread().getName(), transicion.getPosicion());
                 System.exit(1);
             }
-            releaseMon();
+            releaseMonitor();
         }
     }
 
@@ -128,11 +128,11 @@ public class Monitor {
         }
     }
 
-    private void releaseMon() {
+    private void releaseMonitor() {
         semaforoMonitor.release();
     }
 
-    public void acquireMonitor() {
+    private void acquireMonitor() {
         try {
             semaforoMonitor.acquire();
         } catch (InterruptedException e) {

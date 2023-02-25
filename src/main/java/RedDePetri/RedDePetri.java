@@ -13,10 +13,6 @@ public class RedDePetri {
     private final int[][] tInvariantes;
     private final int[][] inhibidor;
 
-    public void setVectorDeEstado(int[] vectorDeEstado) {
-        this.vectorDeEstado = vectorDeEstado;
-    }
-
     private int[] vectorDeEstado; //la marca actual
     private final SensibilizadasConTiempo[] transicionesConTiempo;
     private Boolean[] sensibilizadasEx;
@@ -24,7 +20,6 @@ public class RedDePetri {
     private final ArrayList<ArrayList<Integer>> pInvariantes;
     private final ArrayList<Integer> soloInmediatas;
     private final Boolean activoLogicaInmediata;
-
 
     private Boolean[] vectorEandB;
 
@@ -52,6 +47,9 @@ public class RedDePetri {
         setVectorEandB();
         nuevoTimeStamp(temp);
         verificarPInvariantes();
+    }
+    public void setVectorDeEstado(int[] vectorDeEstado) {
+        this.vectorDeEstado = vectorDeEstado;
     }
 
     public Boolean[] getVectorEandB() {
@@ -228,7 +226,7 @@ public class RedDePetri {
         return Operaciones.andVector(getVectorE(), getVectorB());
     }
 
-    public long timeToSleep(Transicion transicion, long actual) {
+    private long timeToSleep(Transicion transicion, long actual) {
         return transicionesConTiempo[transicion.getPosicion()].getTimeStamp() + transicionesConTiempo[transicion.getPosicion()].getAlpha() - actual;
     }
 

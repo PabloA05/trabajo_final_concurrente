@@ -96,7 +96,7 @@ public class Politica {
     }
 
 
-    public void cambiarPolitica(int modo) {
+    private void cambiarPolitica(int modo) {
         this.modo = modo;
     }
 
