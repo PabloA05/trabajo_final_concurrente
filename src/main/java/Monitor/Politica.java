@@ -2,6 +2,7 @@ package Monitor;
 
 import RedDePetri.Transicion;
 import RedDePetri.RedDePetri;
+import Util.Colores;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,29 +37,25 @@ public class Politica {
 
         Transicion[] transiciones = rdp.getTransiciones().clone();
         int[][] tInvariantes = rdp.gettInvariantes().clone();
-        boolean flagInmediatas = false;
 
-        for (int i = 0; i < transiciones.length; i++) {
-            if (m[i] && (!transiciones[i].isTemporizada())) {
-                flagInmediatas = true;
-                break;
-            }
-        }
         Arrays.sort(transiciones, Comparator.comparingInt(Transicion::getCantidadDisparada));
 
         if (modo == 2) {
-
             for (int i = 0; i < transiciones.length; i++) {
-                if(transiciones[i].getPosicion() == 3){
+                if (transiciones[i].getPosicion() == 3) {
                     invariantesMap[0].cantidad = transiciones[i].getCantidadDisparada();
-                }
-                else if(transiciones[i].getPosicion() == 4){
+
+                } else if (transiciones[i].getPosicion() == 4) {
                     invariantesMap[1].cantidad = transiciones[i].getCantidadDisparada();
-                }
-                else if(transiciones[i].getPosicion() == 9){
+                } else if (transiciones[i].getPosicion() == 9) {
                     invariantesMap[2].cantidad = transiciones[i].getCantidadDisparada();
                 }
             }
+            System.out.printf(Colores.ANSI_BLUE + "politica: ");
+
+            System.out.printf("%d ", invariantesMap[0].cantidad);
+            System.out.printf("%d ", invariantesMap[1].cantidad);
+            System.out.printf("%d\n" + Colores.ANSI_RESET, invariantesMap[2].cantidad);
 
             for (int i = 0; i < tInvariantes.length; i++) {
                 invariantesMap[i].posicion = i;
@@ -69,11 +66,7 @@ public class Politica {
                 int[] invarianteMenosDisparado = tInvariantes[invariantesMap[k].posicion];
                 for (int i = 0; i < transiciones.length; i++) {
                     if (m[transiciones[i].getPosicion()] && invarianteMenosDisparado[transiciones[i].getPosicion()] == 1) {
-                        if (flagInmediatas && !transiciones[i].isTemporizada()) {
-                            return transiciones[i];
-                        } else if (!flagInmediatas) {
-                            return transiciones[i];
-                        }
+                        return transiciones[i];
                     }
                 }
             }
@@ -82,11 +75,7 @@ public class Politica {
         if (modo == 1) {
             for (Transicion transicion : transiciones) {
                 if (m[transicion.getPosicion()]) {
-                    if (flagInmediatas && !transicion.isTemporizada()) {
-                        return transicion;
-                    } else if (!flagInmediatas) {
-                        return transicion;
-                    }
+                    return transicion;
                 }
             }
         }
