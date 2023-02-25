@@ -4,15 +4,15 @@ import java.util.concurrent.Semaphore;
 
 public class Cola {
     private Semaphore semaphore;
-    private int token;
+    private int hilosColas;
 
     public Cola() {
         semaphore = new Semaphore(0, true);
-        token = 0;
+        hilosColas = 0;
     }
 
     public void increment() {
-        token++;
+        hilosColas++;
     }
 
     public void acquire() {
@@ -24,11 +24,11 @@ public class Cola {
     }
 
     public void release() {
-        token--;
+        hilosColas--;
         semaphore.release();
     }
 
     public boolean isNotEmpty() {
-        return token != 0;
+        return hilosColas != 0;
     }
 }

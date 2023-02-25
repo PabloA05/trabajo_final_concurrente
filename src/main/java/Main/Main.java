@@ -4,7 +4,6 @@ import Monitor.*;
 import RedDePetri.RedDePetri;
 import Util.Colores;
 import Util.Log;
-import Util.Operaciones;
 import org.jfree.ui.RefineryUtilities;
 
 public class Main {
