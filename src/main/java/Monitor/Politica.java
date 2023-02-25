@@ -38,9 +38,9 @@ public class Politica {
         Transicion[] transiciones = rdp.getTransiciones().clone();
         int[][] tInvariantes = rdp.gettInvariantes().clone();
 
-        Arrays.sort(transiciones, Comparator.comparingInt(Transicion::getCantidadDisparada));
-
         if (modo == 2) {
+            Arrays.sort(transiciones, Comparator.comparingInt(Transicion::getCantidadDisparada));
+
             for (int i = 0; i < transiciones.length; i++) {
                 if (transiciones[i].getPosicion() == 3) {
                     invariantesMap[0].cantidad = transiciones[i].getCantidadDisparada();
