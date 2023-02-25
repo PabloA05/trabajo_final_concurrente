@@ -47,9 +47,18 @@ public class Politica {
         Arrays.sort(transiciones, Comparator.comparingInt(Transicion::getCantidadDisparada));
 
         if (modo == 2) {
-            invariantesMap[0].cantidad = transiciones[3].getCantidadDisparada();
-            invariantesMap[1].cantidad = transiciones[4].getCantidadDisparada();
-            invariantesMap[2].cantidad = transiciones[9].getCantidadDisparada();
+
+            for (int i = 0; i < transiciones.length; i++) {
+                if(transiciones[i].getPosicion() == 3){
+                    invariantesMap[0].cantidad = transiciones[i].getCantidadDisparada();
+                }
+                else if(transiciones[i].getPosicion() == 4){
+                    invariantesMap[1].cantidad = transiciones[i].getCantidadDisparada();
+                }
+                else if(transiciones[i].getPosicion() == 9){
+                    invariantesMap[2].cantidad = transiciones[i].getCantidadDisparada();
+                }
+            }
 
             for (int i = 0; i < tInvariantes.length; i++) {
                 invariantesMap[i].posicion = i;
