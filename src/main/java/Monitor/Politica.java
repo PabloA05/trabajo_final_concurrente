@@ -51,12 +51,7 @@ public class Politica {
                     invariantesMap[2].cantidad = transiciones[i].getCantidadDisparada();
                 }
             }
-            System.out.printf(Colores.ANSI_BLUE + "politica: ");
-
-            System.out.printf("%d ", invariantesMap[0].cantidad);
-            System.out.printf("%d ", invariantesMap[1].cantidad);
-            System.out.printf("%d\n" + Colores.ANSI_RESET, invariantesMap[2].cantidad);
-
+            
             for (int i = 0; i < tInvariantes.length; i++) {
                 invariantesMap[i].posicion = i;
             }
