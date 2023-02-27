@@ -12,15 +12,11 @@ public class RedDePetri {
     private final int[][] incidencia;
     private final int[][] tInvariantes;
     private final int[][] inhibidor;
-
     private int[] vectorDeEstado; //la marca actual
     private final SensibilizadasConTiempo[] transicionesConTiempo;
-    private Boolean[] sensibilizadasEx;
     private final Transicion[] transiciones;
     private final ArrayList<ArrayList<Integer>> pInvariantes;
     private final ArrayList<Integer> soloInmediatas;
-    private final Boolean activoLogicaInmediata;
-
     private Boolean[] vectorEandB;
 
     public RedDePetri(String mji, String I, String h, String t, String T, String Pinv) {
@@ -35,12 +31,11 @@ public class RedDePetri {
             this.transicionesConTiempo[i] = new SensibilizadasConTiempo((long) tiempos[0][i], (long) tiempos[1][i]);
         }
         this.transiciones = new Transicion[getCantTransiciones()];
-        this.vectorEandB = new Boolean[getCantTransiciones()]; // todo no hace falta creo
+        this.vectorEandB = new Boolean[getCantTransiciones()];
         for (int i = 0; i < getCantTransiciones(); i++) {
             this.transiciones[i] = new Transicion("T" + i, i, transicionesConTiempo[i].esTemporal());
         }
         this.soloInmediatas = getsoloInmediatas();
-        this.activoLogicaInmediata = true;
         var temp = new Boolean[getCantTransiciones()];
         Arrays.fill(temp, Boolean.FALSE);
 
@@ -48,6 +43,7 @@ public class RedDePetri {
         nuevoTimeStamp(temp);
         verificarPInvariantes();
     }
+
     public void setVectorDeEstado(int[] vectorDeEstado) {
         this.vectorDeEstado = vectorDeEstado;
     }
@@ -87,9 +83,8 @@ public class RedDePetri {
                     if (esperando && Thread.currentThread().getId() != transicionesConTiempo[transicion.getPosicion()].getId()) {
                         result = -2;
                     } else {
-
                         transicionesConTiempo[transicion.getPosicion()].setEsperando();
-                        result = timeToSleep(transicion, tiempoActual);
+                        return timeToSleep(transicion, tiempoActual);
                     }
                 } else {
                     return result; //despues de la ventana
@@ -110,16 +105,15 @@ public class RedDePetri {
             setVectorEandB();
             nuevoTimeStamp(vectorAntes);
             verificarPInvariantes();
-        } else if (esperando && Thread.currentThread().getId() == transicionesConTiempo[transicion.getPosicion()].getId()) {
-            transicionesConTiempo[transicion.getPosicion()].resetEsperando();
-        }// todo ver si el esparando esta bien y se resetea cuando espero y no disparo
+        } else if (esperando && Thread.currentThread().getId() == transicionesConTiempo[transicion.getPosicion()].getId()) { // si el hilo entra aca quiere decir que no disparo
+            transicionesConTiempo[transicion.getPosicion()].resetEsperando();                                                // y que anteriormente durmió pero su transicion
+        }                                                                                                                    // no estaba habilitado cuando despertó
         return result;
     }
 
     private boolean checkInmediatas() {
         for (int i = 0; i < soloInmediatas.size(); i++) {
-            if (vectorEandB[soloInmediatas.get(i)]) { //todo si esta en las colas la transicion inmediata probablemente no se despierte y se trabe el programa
-                // creo que se puede arreglar eligiendo bien el hilo antes en la politica
+            if (vectorEandB[soloInmediatas.get(i)]) {
                 return true;
             }
         }
